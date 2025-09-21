@@ -1,15 +1,11 @@
-﻿using System;
+﻿﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Zero;
 
 namespace TGC.MonoGame.TP;
 
-/// <summary>
-///     Esta es la clase principal del juego.
-///     Inicialmente puede ser renombrado o copiado para hacer mas ejemplos chicos, en el caso de copiar para que se
-///     ejecute el nuevo ejemplo deben cambiar la clase que ejecuta Program <see cref="Program.Main()" /> linea 10.
-/// </summary>
 public class TGCGame : Game
 {
     public const string ContentFolder3D = "Models/";
@@ -21,13 +17,22 @@ public class TGCGame : Game
     
     private readonly GraphicsDeviceManager _graphics;
 
-    private Effect _effect;
-    private Model _model;
-    private Matrix _projection;
+    //private Effect _effect;
+    //private Model _model;
+
+    //private Matrix _projection;
     private float _rotation;
     private SpriteBatch _spriteBatch;
     private Matrix _view;
     private Matrix _world;
+
+    //tanque
+    private TankModel _tank;
+
+    private FollowCamera _projection;
+
+
+    private LandModel _land;
 
     /// <summary>
     ///     Constructor del juego.
@@ -66,8 +71,9 @@ public class TGCGame : Game
         // Configuramos nuestras matrices de la escena.
         _world = Matrix.Identity;
         _view = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
-        _projection =
-            Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+        //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+
+        _projection = new FollowCamera(GraphicsDevice.Viewport.AspectRatio);
 
         base.Initialize();
     }
@@ -82,24 +88,11 @@ public class TGCGame : Game
         // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // Cargo el modelo del logo.
-        _model = Content.Load<Model>(ContentFolder3D + "tgc-logo/tgc-logo");
-
-        // Cargo un efecto basico propio declarado en el Content pipeline.
-        // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
-        _effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
-
-        // Asigno el efecto que cargue a cada parte del mesh.
-        // Un modelo puede tener mas de 1 mesh internamente.
-        foreach (var mesh in _model.Meshes)
-        {
-            // Un mesh puede tener mas de 1 mesh part (cada 1 puede tener su propio efecto).
-            foreach (var meshPart in mesh.MeshParts)
-            {
-                meshPart.Effect = _effect;
-            }
-        }
-
+        _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
+        _tank.Initialize(new Vector3(0,190,0));
+        _land = new LandModel(Content, ContentFolder3D, ContentFolderEffects);
+        _land.Initialize(new Vector3(0, -890, 0));
+        
         base.LoadContent();
     }
 
@@ -123,7 +116,7 @@ public class TGCGame : Game
         _rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
         _world = Matrix.CreateRotationY(_rotation);
-
+        _projection.Update(gameTime, _world);
         base.Update(gameTime);
     }
 
@@ -134,18 +127,11 @@ public class TGCGame : Game
     protected override void Draw(GameTime gameTime)
     {
         // Aca deberiamos poner toda la logia de renderizado del juego.
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // Para dibujar le modelo necesitamos pasarle informacion que el efecto esta esperando.
-        _effect.Parameters["View"].SetValue(_view);
-        _effect.Parameters["Projection"].SetValue(_projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
+        _tank.Draw(gameTime, _projection.View, _projection.Projection);
 
-        foreach (var mesh in _model.Meshes)
-        {
-            _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);
-            mesh.Draw();
-        }
+        _land.Draw(gameTime, _projection.View, _projection.Projection);
     }
 
     /// <summary>
