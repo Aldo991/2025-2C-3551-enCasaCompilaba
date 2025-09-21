@@ -36,6 +36,10 @@ public class TGCGame : Game
 
     private ArbolModel1 _arbol1;
 
+    private HouseModel1 _house1;
+
+    private ElementosLand _elementosLand;
+
     /// <summary>
     ///     Constructor del juego.
     /// </summary>
@@ -76,7 +80,7 @@ public class TGCGame : Game
         //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
 
         _projection = new FollowCamera(GraphicsDevice.Viewport.AspectRatio);
-
+        
         base.Initialize();
     }
 
@@ -89,7 +93,7 @@ public class TGCGame : Game
     {
         // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+        /*
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
         _tank.Initialize(new Vector3(0,490,0));
         _land = new LandModel(Content, ContentFolder3D, ContentFolderEffects);
@@ -97,7 +101,19 @@ public class TGCGame : Game
 
         _arbol1 = new ArbolModel1(Content, ContentFolder3D, ContentFolderEffects);
         _arbol1.Initialize(new Vector3(400,490,0));
+
+        _house1 = new HouseModel1(Content, ContentFolder3D, ContentFolderEffects);
+        _house1.Initialize(new Vector3(0,490,1490));
         
+        _spriteBatch = new SpriteBatch(GraphicsDevice);*/
+
+        _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
+        _tank.Initialize(new Vector3( 2000, 890, 2000));
+
+        _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
+        // acá cargamos TODOS los elementos del escenario
+
+
         base.LoadContent();
     }
 
@@ -122,6 +138,7 @@ public class TGCGame : Game
 
         _world = Matrix.CreateRotationY(_rotation);
         _projection.Update(gameTime, _world);
+
         base.Update(gameTime);
     }
 
@@ -136,9 +153,7 @@ public class TGCGame : Game
 
         _tank.Draw(gameTime, _projection.View, _projection.Projection);
 
-        _land.Draw(gameTime, _projection.View, _projection.Projection);
-
-        _arbol1.Draw(gameTime, _projection.View, _projection.Projection);
+        _elementosLand.Draw(gameTime, _projection.View, _projection.Projection);
     }
 
     /// <summary>
