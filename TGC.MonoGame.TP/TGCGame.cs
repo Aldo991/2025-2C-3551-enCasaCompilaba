@@ -21,8 +21,11 @@ public class TGCGame : Game
     //private Model _model;
 
     //private Matrix _projection;
-    private float _rotation;
+    private float _rotation;    
     private SpriteBatch _spriteBatch;
+    private Hud _hud;
+    private int _score = 0;
+    private float _life = 1f;
     private Matrix _view;
     private Matrix _world;
 
@@ -104,8 +107,9 @@ public class TGCGame : Game
 
         _house1 = new HouseModel1(Content, ContentFolder3D, ContentFolderEffects);
         _house1.Initialize(new Vector3(0,490,1490));
-        
-        _spriteBatch = new SpriteBatch(GraphicsDevice);*/
+        */
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _hud = new Hud(Content);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
         _tank.Initialize(new Vector3( 2000, 890, 2000));
@@ -133,6 +137,8 @@ public class TGCGame : Game
             Exit();
         }
 
+        _hud.Update(_score, _life);
+
         // Basado en el tiempo que paso se va generando una rotacion.
         _rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -150,10 +156,14 @@ public class TGCGame : Game
     {
         // Aca deberiamos poner toda la logia de renderizado del juego.
         GraphicsDevice.Clear(Color.CornflowerBlue);
-
-        _tank.Draw(gameTime, _projection.View, _projection.Projection);
+        
 
         _elementosLand.Draw(gameTime, _projection.View, _projection.Projection);
+        
+        _tank.Draw(gameTime, _projection.View, _projection.Projection);
+
+        
+        _hud.Draw(_spriteBatch, GraphicsDevice);
     }
 
     /// <summary>
