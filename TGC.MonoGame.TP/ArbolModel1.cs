@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP.Zero;
 
-internal class LandModel
+internal class ArbolModel1
 {
 
     private  Effect _effect;
@@ -15,11 +15,11 @@ internal class LandModel
 
     private  Matrix _world;
 
-    public LandModel(ContentManager content, string contentFolder3D, string contentFolderEffects)
+    public ArbolModel1(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
-        _model = content.Load<Model>(contentFolder3D + "land/walkers-land");
+        _model = content.Load<Model>(contentFolder3D + "tree/Tree_LL/Tree_LL");
 
-        _effect = content.Load<Effect>(contentFolderEffects + "LandShader");
+        _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
 
 
         foreach (var mesh in _model.Meshes)
@@ -36,7 +36,7 @@ internal class LandModel
     public void Initialize(Vector3 vector)
     {   
         _position = vector;
-        _world =  Matrix.CreateScale(9f) * Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateTranslation(_position);
     }
     
     public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -45,10 +45,7 @@ internal class LandModel
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        //_effect.Parameters["DiffuseColor"].SetValue(Color.Brown.ToVector3());
-
-       // _effect.Parameters["MinHeight"].SetValue(-1000f); // altura mínima del terreno
-       // _effect.Parameters["MaxHeight"].SetValue(1000f); // altura máxima del terreno
+        _effect.Parameters["DiffuseColor"].SetValue(Color.DarkGreen.ToVector3());
 
         foreach (var mesh in _model.Meshes)
         {

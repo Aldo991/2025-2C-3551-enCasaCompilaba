@@ -34,6 +34,8 @@ public class TGCGame : Game
 
     private LandModel _land;
 
+    private ArbolModel1 _arbol1;
+
     /// <summary>
     ///     Constructor del juego.
     /// </summary>
@@ -89,16 +91,19 @@ public class TGCGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3(0,190,0));
+        _tank.Initialize(new Vector3(0,490,0));
         _land = new LandModel(Content, ContentFolder3D, ContentFolderEffects);
-        _land.Initialize(new Vector3(0, -890, 0));
+        _land.Initialize(new Vector3(0, -990, 0));
+
+        _arbol1 = new ArbolModel1(Content, ContentFolder3D, ContentFolderEffects);
+        _arbol1.Initialize(new Vector3(400,490,0));
         
         base.LoadContent();
     }
 
     /// <summary>
     ///     Se llama en cada frame.
-    ///     Se debe escribir toda la logica de computo del modelo, asi como tambien verificar entradas del usuario y reacciones
+    ///     Se debe escribir toda la logica de computo del modelo, asi como tambien verisficar entradas del usuario y reacciones
     ///     ante ellas.
     /// </summary>
     protected override void Update(GameTime gameTime)
@@ -132,6 +137,8 @@ public class TGCGame : Game
         _tank.Draw(gameTime, _projection.View, _projection.Projection);
 
         _land.Draw(gameTime, _projection.View, _projection.Projection);
+
+        _arbol1.Draw(gameTime, _projection.View, _projection.Projection);
     }
 
     /// <summary>

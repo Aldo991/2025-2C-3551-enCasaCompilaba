@@ -6,7 +6,7 @@ namespace TGC.MonoGame.TP.Zero;
 
 internal class FollowCamera
 {
-    private const float AxisDistanceToTarget = 7600f;
+    private const float AxisDistanceToTarget = 9600f;
     private const float AngleFollowSpeed = 0.005f;
     private const float AngleThreshold = 0.85f;
 
