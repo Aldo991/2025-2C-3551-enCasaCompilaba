@@ -108,6 +108,7 @@
 /build:Models/land/walkers-land.fbx
 
 #begin Models/scene/arbol.fbx
+#begin Models/rocks/rock1/rock_base_lp.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -239,6 +240,7 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Models/stones/SM_LittleRock_06.fbx
+/build:Models/rocks/rock1/rock_base_lp.fbx
 
 #begin Models/tanque/CENTURION.fbx
 /importer:FbxImporter

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP;
 
-internal class stonesModel1
+internal class Rock1Model
 {
 
     private  Effect _effect;
@@ -15,9 +15,9 @@ internal class stonesModel1
 
     private  Matrix _world;
 
-    public stonesModel1(ContentManager content, string contentFolder3D, string contentFolderEffects)
+    public Rock1Model(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
-        _model = content.Load<Model>(contentFolder3D + "stones/SM_LittleRock_04");
+        _model = content.Load<Model>(contentFolder3D + "rocks/rock1/rock_base_lp");
 
         _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
 
@@ -26,7 +26,7 @@ internal class stonesModel1
         {
             // A mesh contains a collection of parts.
             foreach (var meshPart in mesh.MeshParts)
-                // Assign the loaded effect to each part.
+            // Assign the loaded effect to each part.
             {
                 meshPart.Effect = _effect;
             }

@@ -33,8 +33,7 @@ public class TGCGame : Game
     private TankModel _tank;
 
     private FollowCamera _projection;
-
-
+    
     private LandModel _land;
 
     private ArbolModel1 _arbol1;
@@ -112,7 +111,7 @@ public class TGCGame : Game
         _hud = new Hud(Content);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3( 2000, 890, 2000));
+        _tank.Initialize(new Vector3( 13000, 0, 2000));
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
         // acá cargamos TODOS los elementos del escenario

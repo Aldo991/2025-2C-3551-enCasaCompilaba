@@ -33,17 +33,31 @@ internal class Hud
     {
         var viewport = graphicsDevice.Viewport;
         var screenWidth = viewport.Width;
+        var screenHeight = viewport.Height;
 
         spriteBatch.Begin();
 
         // Score en la esquina superior izquierda
-        spriteBatch.DrawString(_font, $"Score: {_score}", new Vector2(20, 20), Color.White);
+        spriteBatch.DrawString(_font, $"Bajas: {_score}", new Vector2(20, 20), Color.White);
+        spriteBatch.DrawString(_font, $"Muertes: {_score}", new Vector2(20, 40), Color.White);
+
+        float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
+        float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla
+        float paddingPercent = 0.02f;        // 2% de padding desde los bordes
+
+        int lifeBarWidth = (int)(screenWidth * lifeBarWidthPercent);
+        int lifeBarHeight = (int)(screenHeight * lifeBarHeightPercent);
+        int padding = (int)(screenHeight * paddingPercent);
+
+        // Texto "Salud" encima de la barra
+        spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);
 
         // Barra de vida
-        spriteBatch.DrawString(_font, "Life", new Vector2(20, 60), Color.White);
-        spriteBatch.Draw(_lifeBarTexture,
-            new Rectangle(100, 60, (int)(200 * _life), 20), Color.Red);
-
+        spriteBatch.Draw(
+            _lifeBarTexture,
+            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * _life), lifeBarHeight),
+            Color.Red
+        );
 
         spriteBatch.End();
     }
