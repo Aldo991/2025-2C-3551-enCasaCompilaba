@@ -11,6 +11,8 @@ namespace TGC.MonoGame.TP.Zero
         private List<HouseModel1> _elementosH = new();
         private List<ArbolModel1> _arboles = new();
 
+        private List<Rock1Model> _rocks1 = new();
+
         public ElementosLand(ContentManager content, string contentFolder3D, string contentFolderEffects)
         {
             // Terreno
@@ -26,6 +28,14 @@ namespace TGC.MonoGame.TP.Zero
             var house2 = new HouseModel1(content, contentFolder3D, contentFolderEffects);
             house2.Initialize(new Vector3(-9100, 400, 12390));
             _elementosH.Add(house2);
+
+            var rock1 = new Rock1Model(content, contentFolder3D, contentFolderEffects);
+            rock1.Initialize(new Vector3(3000, 490, 0));
+            _rocks1.Add(rock1);
+
+            /*var house3 = new HouseModel3(content, contentFolder3D, contentFolderEffects);
+            house3.Initialize(new Vector3(9100, 400, 12390));
+            _elementosCasa3.Add(house3);*/
 
             //80 arboles de mismo modelo
             var posicionesArboles = new List<Vector3>
@@ -50,8 +60,8 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(9800, 490, 14000), new Vector3(9800, 490, 7800),
                 new Vector3(10000, 490, 4200), new Vector3(10000, 490, 6000),
                 new Vector3(10000, 490, 5800), new Vector3(10500, 490, 10200),
-                new Vector3(10500, 490, 6200), new Vector3(11000, 490, 2500),
-                new Vector3(11000, 490, 2600), new Vector3(11800, 490, 8000),
+                new Vector3(10500, 490, 6200), new Vector3(30000, 490, 2500),
+                new Vector3(30000, 490, 2600), new Vector3(11800, 490, 8000),
                 new Vector3(11800, 490, 14200), new Vector3(12000, 490, 12000),
                 new Vector3(12000, 490, 6200), new Vector3(12000, 490, 4400),
                 new Vector3(12500, 490, 10500), new Vector3(12500, 490, 6400),
@@ -63,14 +73,55 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
                 new Vector3(16000, 490, 4800)
             };
+            var posicionesRocas = new List<Vector3>
+            {
+                new Vector3(1000, 490, 1000), new Vector3(2000, 490, 5000),
+new Vector3(2000, 490, 3400), new Vector3(2500, 490, 5400),
+new Vector3(2500, 490, 9200), new Vector3(3000, 490, 1200),
+new Vector3(3000, 490, 1800), new Vector3(3000, 490, 9000),
+new Vector3(4000, 490, 3600), new Vector3(4000, 490, 5200),
+new Vector3(3800, 490, 7200), new Vector3(4500, 490, 5600),
+new Vector3(4500, 490, 9500), new Vector3(5000, 490, 1500),
+new Vector3(5000, 490, 2000), new Vector3(5000, 490, 9200),
+new Vector3(6000, 490, 3800), new Vector3(6000, 490, 5500),
+new Vector3(5800, 490, 7400), new Vector3(6500, 490, 5800),
+new Vector3(6500, 490, 9800), new Vector3(7000, 490, 1800),
+new Vector3(7000, 490, 2200), new Vector3(7000, 490, 9400),
+new Vector3(7800, 490, 7600), new Vector3(7800, 490, 13800),
+new Vector3(8000, 540, 200), new Vector3(8500, 540, 1200),
+new Vector3(8800, 540, 2500), new Vector3(9100, -200, 400),   // Y ajustada
+new Vector3(9400, 540, 5200), new Vector3(9700, -200, 600),   // Y ajustada
+new Vector3(10000, -200, 1800), new Vector3(10300, 540, 3500),
+new Vector3(10600, 540, 4700), new Vector3(10900, 540, 6000),
+new Vector3(11200, 540, 750), new Vector3(11500, 540, 2200),
+new Vector3(11800, 540, 3800), new Vector3(12100, 540, 5000),
+new Vector3(12400, 540, 6700), new Vector3(12700, -200, 1000), // Y ajustada
+new Vector3(13000, -200, 3200), new Vector3(13300, 540, 4600),
+new Vector3(13600, 540, 6000), new Vector3(13900, 540, 7800),
+new Vector3(14000, 490, 4600), new Vector3(14000, 490, 6500),
+new Vector3(14500, 490, 10800), new Vector3(14500, 490, 6600),
+new Vector3(15000, 490, 3000), new Vector3(15000, 490, 4600),
+new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
+new Vector3(16000, 490, 4800)
 
-                
+
+
+
+            };
+
 
             foreach (var pos in posicionesArboles)
             {
                 var arbol = new ArbolModel1(content, contentFolder3D, contentFolderEffects);
                 arbol.Initialize(pos);
                 _arboles.Add(arbol);
+            }
+            
+            foreach (var pos in posicionesRocas)
+            {
+                var roca = new Rock1Model(content, contentFolder3D, contentFolderEffects);
+                roca.Initialize(pos);
+                _rocks1.Add(roca);
             }
         }
 
@@ -84,6 +135,12 @@ namespace TGC.MonoGame.TP.Zero
 
             foreach (var arbol in _arboles)
                 arbol.Draw(gameTime, view, projection);
+
+            foreach (var arbol in _arboles)
+                arbol.Draw(gameTime, view, projection);
+
+            foreach (var rock in _rocks1)
+                rock.Draw(gameTime, view, projection);
         }
     }
 }

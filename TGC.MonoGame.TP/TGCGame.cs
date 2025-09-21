@@ -108,7 +108,7 @@ public class TGCGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);*/
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3( 2000, 890, 2000));
+        _tank.Initialize(new Vector3( 13000, 0, 2000));
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
         // acá cargamos TODOS los elementos del escenario
