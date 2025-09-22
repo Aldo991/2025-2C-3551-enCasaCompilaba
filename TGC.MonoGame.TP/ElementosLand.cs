@@ -14,6 +14,7 @@ namespace TGC.MonoGame.TP.Zero
 
         private List<Rock1Model> _rocks1 = new();
         private List<stonesModel1> _stones1 = new();
+        private List<BushModel1> _bushes;
 
         public ElementosLand(ContentManager content, string contentFolder3D, string contentFolderEffects)
         {
@@ -34,10 +35,13 @@ namespace TGC.MonoGame.TP.Zero
             var rock1 = new Rock1Model(content, contentFolder3D, contentFolderEffects);
             rock1.Initialize(new Vector3(3000, 490, 0));
             _rocks1.Add(rock1);
-            
+
             var stones1 = new stonesModel1(content, contentFolder3D, contentFolderEffects);
             stones1.Initialize(new Vector3(-3000, 490, 0));
             _stones1.Add(stones1);
+
+            // Inicializo los arbustos
+            _bushes = new List<BushModel1>();
 
             /*var house3 = new HouseModel3(content, contentFolder3D, contentFolderEffects);
             house3.Initialize(new Vector3(9100, 400, 12390));
@@ -162,6 +166,42 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(16000, 490, -4800)
             };
 
+            var posicionesArbustos = new List<Vector3>
+            {
+                new Vector3(-1000, 490, -1000), new Vector3(-2000, 490, -5000),
+                new Vector3(-2000, 490, -3400), new Vector3(-2500, 490, -5400),
+                new Vector3(-2500, 490, -9200), new Vector3(-3000, 490, -1200),
+                new Vector3(-3000, 490, -1800), new Vector3(-3000, 490, -9000),
+                new Vector3(-4000, 490, -3600), new Vector3(-4000, 490, -5200),
+                new Vector3(-3800, 490, -7200), new Vector3(-4500, 490, -5600),
+                new Vector3(-4500, 490, -9500), new Vector3(-5000, 490, -1500),
+                new Vector3(-5000, 490, -2000), new Vector3(-5000, 490, -9200),
+                new Vector3(-6000, 490, -3800), new Vector3(-6000, 490, -5500),
+                new Vector3(-5800, 490, -7400), new Vector3(-6500, 490, -5800), //10
+                new Vector3(-6500, 490, -9800), new Vector3(-7000, 490, -1800),
+                new Vector3(-7000, 490, -2200), new Vector3(-7000, 490, -9400),
+                new Vector3(-7800, 490, -7600), new Vector3(-7800, 490, -13800),
+                new Vector3(-8000, 490, -4000), new Vector3(-8000, 490, -5800),
+                new Vector3(-8500, 490, -6000), new Vector3(-8500, 490, -10000),
+                new Vector3(-9000, 490, -2000), new Vector3(-9000, 490, -2400),
+                new Vector3(-9000, 490, -6000), new Vector3(-9000, 490, -7800),
+                new Vector3(-9800, 490, -14000), new Vector3(-9800, 490, -7800),
+                new Vector3(-10000, 490, -4200), new Vector3(-10000, 490, -6000),
+                new Vector3(-10000, 490, -5800), new Vector3(-10500, 490, -10200), //20
+                new Vector3(-10500, 490, -6200), new Vector3(-11000, 490, -2500),
+                new Vector3(-11000, 490, -2600), new Vector3(-11800, 490, -8000),
+                new Vector3(-11800, 490, -14200), new Vector3(-12000, 490, -12000),
+                new Vector3(-12000, 490, -6200), new Vector3(-12000, 490, -4400),
+                new Vector3(-12500, 490, -10500), new Vector3(-12500, 490, -6400),
+                new Vector3(-13000, 490, -2800), new Vector3(-13000, 490, -6600),
+                new Vector3(-13800, 490, -14500), new Vector3(-13800, 490, -8200),
+                new Vector3(-14000, 490, -4600), new Vector3(-14000, 490, -6500),
+                new Vector3(-14500, 490, -10800), new Vector3(-14500, 490, -6600),
+                new Vector3(-15000, 490, -3000), new Vector3(-15000, 490, -4600), // 30
+                new Vector3(-15800, 490, -14800), new Vector3(-15800, 490, -8400),
+                new Vector3(-16000, 490, -4800)
+            };
+
 
 
             foreach (var pos in posicionesArboles)
@@ -190,6 +230,12 @@ namespace TGC.MonoGame.TP.Zero
                 piedra.Initialize(pos);
                 _stones1.Add(piedra);
             }
+            foreach (var pos in posicionesArbustos)
+            {
+                var bush = new BushModel1(content, contentFolder3D, contentFolderEffects);
+                bush.Initialize(pos);
+                _bushes.Add(bush);
+            }
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -202,7 +248,7 @@ namespace TGC.MonoGame.TP.Zero
 
             foreach (var arbol in _arboles)
                 arbol.Draw(gameTime, view, projection);
-            
+
             foreach (var arbol2 in _arboles2)
                 arbol2.Draw(gameTime, view, projection);
 
@@ -211,9 +257,11 @@ namespace TGC.MonoGame.TP.Zero
 
             foreach (var rock in _rocks1)
                 rock.Draw(gameTime, view, projection);
-            
+
             foreach (var stone in _stones1)
                 stone.Draw(gameTime, view, projection);
+            foreach (var bush in _bushes)
+                bush.Draw(gameTime, view, projection);
         }
     }
 }

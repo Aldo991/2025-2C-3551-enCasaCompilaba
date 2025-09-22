@@ -139,7 +139,9 @@ public class TGCGame : Game
         _hud.Update(_score, _life);
 
         // Basado en el tiempo que paso se va generando una rotacion.
-        _rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+        if (Keyboard.GetState().IsKeyDown(Keys.W))
+            _rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+        // _rotation = 0;
 
         _world = Matrix.CreateRotationY(_rotation);
         _projection.Update(gameTime, _world);
