@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP.Zero;
 
-internal class BushModel1
+internal class HouseModel2
 {
 
     private  Effect _effect;
@@ -15,9 +15,9 @@ internal class BushModel1
 
     private  Matrix _world;
 
-    public BushModel1(ContentManager content, string contentFolder3D, string contentFolderEffects)
+    public HouseModel2(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
-        _model = content.Load<Model>(contentFolder3D + "bushes/Bush1/Bush1");
+        _model = content.Load<Model>(contentFolder3D + "arqui/House3/Cottage_FREE");
 
         _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
 
@@ -36,7 +36,7 @@ internal class BushModel1
     public void Initialize(Vector3 vector)
     {   
         _position = vector;
-        _world = Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateScale(1f) * Matrix.CreateTranslation(_position);
     }
     
     public void Draw(GameTime gameTime, Matrix view, Matrix projection)

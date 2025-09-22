@@ -16,6 +16,8 @@ namespace TGC.MonoGame.TP.Zero
         private List<stonesModel1> _stones1 = new();
         private List<BushModel1> _bushes;
 
+        private List<HouseModel2> _elementoH3 = new();
+
         public ElementosLand(ContentManager content, string contentFolder3D, string contentFolderEffects)
         {
             // Terreno
@@ -23,14 +25,38 @@ namespace TGC.MonoGame.TP.Zero
             land.Initialize(new Vector3(0, -990, 0));
             _elementosL.Add(land);
 
+            /*
             // Una casa
             var house = new HouseModel1(content, contentFolder3D, contentFolderEffects);
             house.Initialize(new Vector3(0, 490, 1490));
             _elementosH.Add(house);
 
             var house2 = new HouseModel1(content, contentFolder3D, contentFolderEffects);
-            house2.Initialize(new Vector3(-9100, 400, 12390));
-            _elementosH.Add(house2);
+            house2.Initialize(new Vector3(-10100, 100, 14390));
+            _elementosH.Add(house2); */
+
+            var posicionesCasasModelo1 = new List<Vector3>
+            {
+                new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
+                new Vector3(-10100, 100, 14390), new Vector3(-3000, 490, -2000),
+                new Vector3(-3000, 100, -6000), new Vector3(-3000, 490, -10000),
+                new Vector3(-6000, 100, -2000), new Vector3(-6000, 490, -6000)
+            };
+
+            var posicionesCasasModelo3 = new List<Vector3>
+            {   
+                new Vector3(-8000, 100, 10090),
+                new Vector3(100, 490, -2000), new Vector3(100, 490, -6000),new Vector3(100, 490, -10000),
+                new Vector3(-6000, 490, -2000),
+                new Vector3(-9000, 490, -6000),new Vector3(-9000, 490, -10000),
+
+            };
+            /*
+            var house3 = new HouseModel2(content, contentFolder3D, contentFolderEffects);
+            house3.Initialize(new Vector3(-10000, 450, 1000));
+            _elementoH3.Add(house3);
+            */
+
 
             var rock1 = new Rock1Model(content, contentFolder3D, contentFolderEffects);
             rock1.Initialize(new Vector3(3000, 490, 0));
@@ -42,11 +68,7 @@ namespace TGC.MonoGame.TP.Zero
 
             // Inicializo los arbustos
             _bushes = new List<BushModel1>();
-
-            /*var house3 = new HouseModel3(content, contentFolder3D, contentFolderEffects);
-            house3.Initialize(new Vector3(9100, 400, 12390));
-            _elementosCasa3.Add(house3);*/
-
+            
             //80 arboles de mismo modelo
             var posicionesArboles = new List<Vector3>
             {
@@ -81,7 +103,13 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(14500, 490, 10800), new Vector3(14500, 490, 6600),
                 new Vector3(15000, 490, 3000), new Vector3(15000, 490, 4600),
                 new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
-                new Vector3(16000, 490, 4800)
+                new Vector3(16000, 490, 4800), 
+                new Vector3(-3200, 490, -2500),
+                new Vector3(-5800, 490, -2500),
+                new Vector3(-9200, 490, -6500),
+                new Vector3(-2500, 490, -9500),
+                new Vector3(-7500, 490, 12000),
+                new Vector3(-9500, 490, 14000)
             };
             var posicionesRocas = new List<Vector3>
             {
@@ -127,9 +155,47 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(-6000, 490, 3800), new Vector3(-6000, 490, 5500),
                 new Vector3(-5800, 490, 7400), new Vector3(-6500, 490, 5800),
                 new Vector3(-6500, 490, 9800), new Vector3(-7000, 490, 1800),
-                new Vector3(-7000, 490, 2200), new Vector3(-7000, 490, 9400)
-            };
+                new Vector3(-7000, 490, 2200), new Vector3(-7000, 490, 9400),
+                new Vector3(500, 490, -600), new Vector3(1200, 490, -800),
+                new Vector3(1800, 490, -1400), new Vector3(2400, 490, -600),
+                new Vector3(3000, 490, -1000), new Vector3(3500, 490, -1600),
+                new Vector3(4000, 490, -2000), new Vector3(4500, 490, -2500),
+                new Vector3(5000, 490, -3000), new Vector3(5500, 490, -3500),
 
+                new Vector3(600, 490, -2200), new Vector3(1300, 490, -2600),
+                new Vector3(1900, 490, -3200), new Vector3(2600, 490, -3800),
+                new Vector3(3200, 490, -4200), new Vector3(3800, 490, -4600),
+                new Vector3(4400, 490, -5000), new Vector3(5000, 490, -5400),
+                new Vector3(5600, 490, -5800), new Vector3(6200, 490, -6200),
+
+                new Vector3(700, 490, -4200), new Vector3(1400, 490, -4800),
+                new Vector3(2100, 490, -5200), new Vector3(2800, 490, -5800),
+                new Vector3(3500, 490, -6400), new Vector3(4200, 490, -7000),
+                new Vector3(4900, 490, -7400), new Vector3(5600, 490, -7800),
+                new Vector3(6300, 490, -7600), new Vector3(7000, 490, -7200),
+
+                new Vector3(7500, 490, -200), new Vector3(7800, 490, -1000),
+                new Vector3(7600, 490, -3000), new Vector3(7900, 490, -5000),
+                new Vector3(8000, 490, -7000),
+
+                new Vector3(-2800, 490, -2500),
+                new Vector3(-3500, 490, -4500),
+                new Vector3(-4200, 490, -7200),
+                new Vector3(-5000, 490, -2800),
+                new Vector3(-5800, 490, -5000),
+                new Vector3(-6600, 490, -2200),
+                new Vector3(-7200, 490, -8000),
+                new Vector3(-8000, 490, -3000),
+                new Vector3(-8800, 490, -6000),
+                new Vector3(-9500, 490, -2500),
+                new Vector3(-10200, 490, -7000),
+                new Vector3(-3000, 490, -8500),
+                new Vector3(-6000, 490, -9800),
+                new Vector3(-8700, 490, 11000),
+                new Vector3(-10500, 490, 13500)
+
+
+            };
             var posicionesArboles2 = new List<Vector3>
             {
                 new Vector3(1000, 490, -1000), new Vector3(2000, 490, -5000),
@@ -163,7 +229,13 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(14500, 490, -10800), new Vector3(14500, 490, -6600),
                 new Vector3(15000, 490, -3000), new Vector3(15000, 490, -4600),
                 new Vector3(15800, 490, -14800), new Vector3(15800, 490, -8400),
-                new Vector3(16000, 490, -4800)
+                new Vector3(16000, 490, -4800),
+                new Vector3(-3500, 490, -3000),
+                new Vector3(-6200, 490, -3000),
+                new Vector3(-9700, 490, -7000),
+                new Vector3(-2800, 490, -9800),
+                new Vector3(-7800, 490, 11800),
+                new Vector3(-9800, 490, 13700)
             };
 
             var posicionesArbustos = new List<Vector3>
@@ -236,6 +308,21 @@ namespace TGC.MonoGame.TP.Zero
                 bush.Initialize(pos);
                 _bushes.Add(bush);
             }
+
+            foreach (var house in posicionesCasasModelo1)
+            {
+                var casaModelo1 = new HouseModel1(content, contentFolder3D, contentFolderEffects);
+                casaModelo1.Initialize(house);
+                _elementosH.Add(casaModelo1);
+            }
+
+            foreach (var house in posicionesCasasModelo3)
+            {
+                var casaModelo3 = new HouseModel2(content, contentFolder3D, contentFolderEffects);
+                casaModelo3.Initialize(house);
+                _elementoH3.Add(casaModelo3);
+            }
+
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -262,6 +349,9 @@ namespace TGC.MonoGame.TP.Zero
                 stone.Draw(gameTime, view, projection);
             foreach (var bush in _bushes)
                 bush.Draw(gameTime, view, projection);
+
+            foreach (var house in _elementoH3)
+                house.Draw(gameTime, view, projection);
         }
     }
 }
