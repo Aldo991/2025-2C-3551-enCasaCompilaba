@@ -24,19 +24,13 @@ namespace TGC.MonoGame.TP.Zero
             var land = new LandModel(content, contentFolder3D, contentFolderEffects);
             land.Initialize(new Vector3(0, -990, 0));
             _elementosL.Add(land);
-            /*
-            var house3 = new HouseModel2(content, contentFolder3D, contentFolderEffects);
-            house3.Initialize(new Vector3(-10000, 450, 1000));
-            _elementoH3.Add(house3);
-            */
-
 
             var rock1 = new Rock1Model(content, contentFolder3D, contentFolderEffects);
-            rock1.Initialize(new Vector3(3000, 490, 0));
+            rock1.Initialize(new Vector3(3000, 770, 0));
             _rocks1.Add(rock1);
 
             var stones1 = new stonesModel1(content, contentFolder3D, contentFolderEffects);
-            stones1.Initialize(new Vector3(-3000, 490, 0));
+            stones1.Initialize(new Vector3(-3000, 690, 0));
             _stones1.Add(stones1);
 
             // Inicializo los arbustos
@@ -86,19 +80,19 @@ namespace TGC.MonoGame.TP.Zero
             };
             var posicionesRocas = new List<Vector3>
             {   
-                new Vector3(1000, 520, 1000), new Vector3(2000, 590, 5000),
+                new Vector3(1000, 580, 1000), new Vector3(2000, 590, 5000),
                 new Vector3(2000, 500, 3400), new Vector3(2500, 590, 5400),
                 new Vector3(2500, 640, 9200), new Vector3(3000, 740, 1200),
                 new Vector3(3000, 690, 1800), new Vector3(3000, 690, 9000),
                 new Vector3(4000, 690, 3600), new Vector3(4000, 690, 5200),
                 new Vector3(3800, 690, 7200), new Vector3(4500, 690, 5600),
                 new Vector3(4500, 690, 9500), new Vector3(5000, 690, 1500),
-                new Vector3(5000, 600, 2000), new Vector3(5000, 600, 9200),
-                new Vector3(6000, 690, 3800), new Vector3(6000, 590, 5500),
+                new Vector3(5000, 600, 2000), new Vector3(5000, 690, 9200),
+                new Vector3(6000, 690, 3800), new Vector3(6000, 690, 5500),
                 new Vector3(5800, 700, 7400), new Vector3(6500, 590, 5800),
                 new Vector3(6500, 1290, 9800), new Vector3(7000, 590, 1800),
-                new Vector3(7000, 690, 2200), new Vector3(7000, 590, 9400),
-                new Vector3(7800, 790, 7600), new Vector3(7800, 590, 13800),
+                new Vector3(7000, 690, 2200), new Vector3(7000, 800, 9400),
+                new Vector3(7800, 890, 7600), new Vector3(7800, 1890, 13800),
                 new Vector3(8000, 640, 200), new Vector3(8500, 640, 1200),
                 new Vector3(8800, 640, 2500), new Vector3(9100, -100, 400),
                 new Vector3(9400, 640, 5200), new Vector3(9700, -100, 600),
@@ -112,7 +106,7 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(14000, 260, 4600), new Vector3(14000, 420, 6500),
                 new Vector3(14500, 420, 10800), new Vector3(14500, 420, 6600),
                 new Vector3(15000, 420, 3000), new Vector3(15000, 420, 4600),
-                new Vector3(15800, 420, 14800), new Vector3(15800, 420, 8400),
+                new Vector3(15800, 950, 14800), new Vector3(15800, 420, 8400),
                 new Vector3(16000, 420, 4800),
                 new Vector3(100,740,-8000),
             };
@@ -131,27 +125,73 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(-5800, 490, 7400), new Vector3(-6500, 490, 5800),
                 new Vector3(-6500, 490, 9800), new Vector3(-7000, 490, 1800),
                 new Vector3(-7000, 490, 2200), new Vector3(-7000, 490, 9400),
-                new Vector3(500, 490, -600), new Vector3(1200, 490, -800),
-                new Vector3(1800, 490, -1400), new Vector3(2400, 490, -600),
-                new Vector3(3000, 490, -1000), new Vector3(3500, 490, -1600),
-                new Vector3(4000, 490, -2000), new Vector3(4500, 490, -2500),
-                new Vector3(5000, 490, -3000), new Vector3(5500, 490, -3500),
 
-                new Vector3(600, 490, -2200), new Vector3(1300, 490, -2600),
-                new Vector3(1900, 490, -3200), new Vector3(2600, 490, -3800),
-                new Vector3(3200, 490, -4200), new Vector3(3800, 490, -4600),
-                new Vector3(4400, 490, -5000), new Vector3(5000, 490, -5400),
-                new Vector3(5600, 490, -5800), new Vector3(6200, 490, -6200),
+                //cuadrante x>0 y z<0
+                new Vector3(1450, 570, -900),
+                new Vector3(2450, 670, -4900),
+                new Vector3(2450, 670, -3300),
+                new Vector3(2950, 660, -5300),
+                new Vector3(2950, 900, -9100),
+                new Vector3(3450, 670, -1100),
+                new Vector3(3450, 640, -1700),
+                new Vector3(3450, 870, -8900),
+                new Vector3(4450, 670, -3500),
+                new Vector3(4450, 1250, -5100),
+                new Vector3(4250, 670, -7100),
+                new Vector3(4950, 1250, -5500),
+                new Vector3(4950, 740, -9400),
+                new Vector3(5450, 700, -1400),
+                new Vector3(5450, 610, -1900),
+                new Vector3(5450, 740, -9100),
+                new Vector3(6450, 1550, -3700),
+                new Vector3(6450, 1500, -5400),
+                new Vector3(6250, 1506, -7300),
+                new Vector3(6950, 1580, -5700),
+                new Vector3(6950, 1550, -9700),
+                new Vector3(7450, 940, -1700),
+                new Vector3(7450, 540, -2100),
+                new Vector3(7450, 940, -9300),
+                new Vector3(8250, 780, -7500),
+                new Vector3(8250, 2540, -13700),
+                new Vector3(8450, 740, -3900),
+                new Vector3(8450, 940, -5700),
+                new Vector3(8950, 559, -5900),
+                new Vector3(8950, 2350, -9900),
+                new Vector3(9450, 540, -1900),
+                new Vector3(9450, 940, -2300),
+                new Vector3(9450, 540, -5900),
+                new Vector3(9450, 1640, -7700),
+                new Vector3(10250, 2720, -13900),
+                new Vector3(10250, 1640, -7700),
+                new Vector3(10450, 540, -4100),
+                new Vector3(10450, 940, -5900),
+                new Vector3(10450, 540, -5700),
+                new Vector3(10950, 2500, -10100),
+                new Vector3(10950, 1040, -6100),
+                new Vector3(11450, 940, -2400),
+                new Vector3(11450, 1040, -2500),
+                new Vector3(12250, 2150, -7900),
+                new Vector3(12250, 2650, -14100),
+                new Vector3(12450, 2450, -11900),
+                new Vector3(12450, 1040, -6100),
+                new Vector3(12450, 940, -4300),
+                new Vector3(12950, 2550, -10400),
+                new Vector3(12950, 940, -6300),
+                new Vector3(13450, 1040, -2700),
+                new Vector3(13450, 940, -6500),
+                new Vector3(14250, 3250, -14400),
+                new Vector3(14250, 1950, -8100),
+                new Vector3(14450, 780, -4500),
+                new Vector3(14450, 790, -6400),
+                new Vector3(14950, 2950, -10700),
+                new Vector3(14950, 790, -6500),
+                new Vector3(15450, 640, -2900),
+                new Vector3(15450, 640, -4500),
+                new Vector3(16250, 3250, -14700),
+                new Vector3(16250, 2640, -8300),
+                new Vector3(16450, 540, -4700),
 
-                new Vector3(700, 490, -4200), new Vector3(1400, 490, -4800),
-                new Vector3(2100, 490, -5200), new Vector3(2800, 490, -5800),
-                new Vector3(3500, 490, -6400), new Vector3(4200, 490, -7000),
-                new Vector3(4900, 490, -7400), new Vector3(5600, 490, -7800),
-                new Vector3(6300, 490, -7600), new Vector3(7000, 490, -7200),
 
-                new Vector3(7500, 490, -200), new Vector3(7800, 490, -1000),
-                new Vector3(7600, 490, -3000), new Vector3(7900, 490, -5000),
-                new Vector3(8000, 490, -7000),
 
                 new Vector3(-1800,540,-2000),
                 new Vector3(-1700,600,-4000),
@@ -180,35 +220,35 @@ namespace TGC.MonoGame.TP.Zero
             };
             var posicionesArboles2 = new List<Vector3>
             {
-                new Vector3(1000, 490, -1000), new Vector3(2000, 490, -5000),
-                new Vector3(2000, 520, -3400), new Vector3(2500, 520, -5400),
-                new Vector3(2500, 490, -9200), new Vector3(3000, 490, -1200),
-                new Vector3(3000, 490, -1800), new Vector3(3000, 490, -9000),
-                new Vector3(4000, 520, -3600), new Vector3(4000, 1200, -5200),
-                new Vector3(3800, 520, -7200), new Vector3(4500, 1200, -5600),
-                new Vector3(4500, 490, -9500), new Vector3(5000, 490, -1500),
-                new Vector3(5000, 490, -2000), new Vector3(5000, 490, -9200),
+                new Vector3(1000, 520, -1000), new Vector3(2000, 620, -5000),
+                new Vector3(2000, 620, -3400), new Vector3(2500, 610, -5400),
+                new Vector3(2500, 850, -9200), new Vector3(3000, 620, -1200),
+                new Vector3(3000, 590, -1800), new Vector3(3000, 820, -9000),
+                new Vector3(4000, 620, -3600), new Vector3(4000, 1200, -5200),
+                new Vector3(3800, 620, -7200), new Vector3(4500, 1200, -5600),
+                new Vector3(4500, 690, -9500), new Vector3(5000, 650, -1500),
+                new Vector3(5000, 560, -2000), new Vector3(5000, 690, -9200),
                 new Vector3(6000, 1500, -3800), new Vector3(6000, 1450, -5500),
                 new Vector3(5800, 1456, -7400), new Vector3(6500, 1530, -5800),
                 new Vector3(6500, 1500, -9800), new Vector3(7000, 890, -1800),
                 new Vector3(7000, 490, -2200), new Vector3(7000, 890, -9400),
-                new Vector3(7800, 490, -7600), new Vector3(7800, 2490, -13800),
-                new Vector3(8000, 490, -4000), new Vector3(8000, 890, -5800),
-                new Vector3(8500, 509, -6000), new Vector3(8500, 2000, -10000),
+                new Vector3(7800, 730, -7600), new Vector3(7800, 2490, -13800),
+                new Vector3(8000, 690, -4000), new Vector3(8000, 890, -5800),
+                new Vector3(8500, 509, -6000), new Vector3(8500, 2300, -10000),
                 new Vector3(9000, 490, -2000), new Vector3(9000, 890, -2400),
                 new Vector3(9000, 490, -6000), new Vector3(9000, 1590, -7800),
-                new Vector3(9800, 2000, -14000), new Vector3(9800, 1590, -7800),
+                new Vector3(9800, 2670, -14000), new Vector3(9800, 1590, -7800),
                 new Vector3(10000, 490, -4200), new Vector3(10000, 890, -6000),
-                new Vector3(10000, 490, -5800), new Vector3(10500, 2300, -10200),
+                new Vector3(10000, 490, -5800), new Vector3(10500, 2450, -10200),
                 new Vector3(10500, 990, -6200), new Vector3(11000, 890, -2500),
-                new Vector3(11000, 990, -2600), new Vector3(11800, 1890, -8000),
-                new Vector3(11800, 2300, -14200), new Vector3(12000, 2200, -12000),
+                new Vector3(11000, 990, -2600), new Vector3(11800, 2100, -8000),
+                new Vector3(11800, 2600, -14200), new Vector3(12000, 2400, -12000),
                 new Vector3(12000, 990, -6200), new Vector3(12000, 890, -4400),
                 new Vector3(12500, 2500, -10500), new Vector3(12500, 890, -6400),
                 new Vector3(13000, 990, -2800), new Vector3(13000, 890, -6600),
                 new Vector3(13800, 3200, -14500), new Vector3(13800, 1900, -8200),
-                new Vector3(14000, 690, -4600), new Vector3(14000, 490, -6500),
-                new Vector3(14500, 2900, -10800), new Vector3(14500, 690, -6600),
+                new Vector3(14000, 730, -4600), new Vector3(14000, 740, -6500),
+                new Vector3(14500, 2900, -10800), new Vector3(14500, 740, -6600),
                 new Vector3(15000, 590, -3000), new Vector3(15000, 590, -4600),
                 new Vector3(15800, 3200, -14800), new Vector3(15800, 2590, -8400),
                 new Vector3(16000, 490, -4800),
@@ -223,15 +263,17 @@ namespace TGC.MonoGame.TP.Zero
             var posicionesCasasModelo1 = new List<Vector3>
             {
                 new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
-                new Vector3(-10100, 100, 14390), new Vector3(-3000, 490, -2000),
+                new Vector3(-8100, 100, 14390),
+                new Vector3(-10100, 100, 16390), new Vector3(-3000, 490, -2000),
                 new Vector3(-3000, 700, -6000), new Vector3(-3000, 830, -10500)
             };
             var posicionesCasasModelo3 = new List<Vector3>
-            {   
-                new Vector3(-8000, 100, 10090),
+            {
+                new Vector3(-8000, 100, 8090),
                 new Vector3(100, 490, -2000), new Vector3(100, 490, -6000),new Vector3(100, 900, -10000),
                 new Vector3(-6000, 800, -2000),
                 new Vector3(-9000, 940, -10000),
+                new Vector3(-14100, 100, 11390)
 
             };
             var posicionesArbustos = new List<Vector3>

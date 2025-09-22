@@ -100,7 +100,7 @@ public class TGCGame : Game
         _hud = new Hud(Content);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3(15000, 1090, -3000));
+        _tank.Initialize(new Vector3(15800, 820, 14800));
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
         // acá cargamos TODOS los elementos del escenario
