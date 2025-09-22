@@ -95,23 +95,12 @@ public class TGCGame : Game
     {
         // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        /*
-        _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3(0,490,0));
-        _land = new LandModel(Content, ContentFolder3D, ContentFolderEffects);
-        _land.Initialize(new Vector3(0, -990, 0));
-
-        _arbol1 = new ArbolModel1(Content, ContentFolder3D, ContentFolderEffects);
-        _arbol1.Initialize(new Vector3(400,490,0));
-
-        _house1 = new HouseModel1(Content, ContentFolder3D, ContentFolderEffects);
-        _house1.Initialize(new Vector3(0,490,1490));
-        */
+        
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _hud = new Hud(Content);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3( 13000, 0, 2000));
+        _tank.Initialize(new Vector3(15000, 1090, -3000));
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
         // acá cargamos TODOS los elementos del escenario
@@ -157,13 +146,12 @@ public class TGCGame : Game
     {
         // Aca deberiamos poner toda la logia de renderizado del juego.
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        
+        GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
         _elementosLand.Draw(gameTime, _projection.View, _projection.Projection);
         
         _tank.Draw(gameTime, _projection.View, _projection.Projection);
 
-        
         _hud.Draw(_spriteBatch, GraphicsDevice);
     }
 
