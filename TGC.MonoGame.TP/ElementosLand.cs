@@ -311,9 +311,6 @@ namespace TGC.MonoGame.TP.Zero
 
             };
             
-
-
-
             foreach (var pos in posicionesArboles)
             {
                 var arbol = new ArbolModel1(content, contentFolder3D, contentFolderEffects);

@@ -18,6 +18,7 @@ internal class ArbolModel2
     public ArbolModel2(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
         _model = content.Load<Model>(contentFolder3D + "scene/arbol");
+        // _model = content.Load<Model>(contentFolder3D + "tree/tree_default");
 
         _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
 
@@ -34,8 +35,9 @@ internal class ArbolModel2
     }
 
     public void Initialize(Vector3 vector)
-    {   
+    {
         _position = vector;
+        // _world = Matrix.CreateScale(50f) * Matrix.CreateTranslation(_position);
         _world = Matrix.CreateTranslation(_position);
     }
     
@@ -45,7 +47,7 @@ internal class ArbolModel2
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.DarkGreen.ToVector3());
+        _effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3());
 
         foreach (var mesh in _model.Meshes)
         {

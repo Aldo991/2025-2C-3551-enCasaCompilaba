@@ -39,6 +39,7 @@ public class TGCGame : Game
     private ArbolModel1 _arbol1;
 
     private HouseModel1 _house1;
+    private Vector3 _cameraPosition;
 
     private ElementosLand _elementosLand;
 
@@ -75,10 +76,11 @@ public class TGCGame : Game
         rasterizerState.CullMode = CullMode.None;
         GraphicsDevice.RasterizerState = rasterizerState;
         // Seria hasta aca.
+        _cameraPosition = new Vector3();
 
         // Configuramos nuestras matrices de la escena.
         _world = Matrix.Identity;
-        _view = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
+        _view = Matrix.CreateLookAt(Vector3.UnitZ * 15, Vector3.Zero, Vector3.Up);
         //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
 
         _projection = new FollowCamera(GraphicsDevice.Viewport.AspectRatio);
@@ -117,6 +119,7 @@ public class TGCGame : Game
     protected override void Update(GameTime gameTime)
     {
         // Aca deberiamos poner toda la logica de actualizacion del juego.
+        float _dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -129,10 +132,20 @@ public class TGCGame : Game
 
         // Basado en el tiempo que paso se va generando una rotacion.
         if (Keyboard.GetState().IsKeyDown(Keys.W))
-            _rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-        // _rotation = 0;
-
-        _world = Matrix.CreateRotationY(_rotation);
+            _cameraPosition += Vector3.Left * 50f;
+        if (Keyboard.GetState().IsKeyDown(Keys.A))
+            _cameraPosition += Vector3.Backward * 50f;
+        if (Keyboard.GetState().IsKeyDown(Keys.S))
+            _cameraPosition += Vector3.Right * 50f;
+        if (Keyboard.GetState().IsKeyDown(Keys.D))
+            _cameraPosition += Vector3.Forward * 50f;
+        if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+            _cameraPosition += Vector3.Down * 50f;
+        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            _cameraPosition += Vector3.Up * 50f;
+        
+        // _world = Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_cameraPosition);
+        _world = Matrix.CreateTranslation(_cameraPosition);
         _projection.Update(gameTime, _world);
 
         base.Update(gameTime);
