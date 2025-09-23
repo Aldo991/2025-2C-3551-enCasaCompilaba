@@ -20,9 +20,28 @@ namespace TGC.MonoGame.TP.Zero
         
         private List<WallModel> _wallsElements = new();
 
+        private List<WallModel2> _wallsElements2 = new();
+
         public ElementosLand(ContentManager content, string contentFolder3D, string contentFolderEffects)
         {
             // Terreno
+            var posicionesWalls2Rot = new List<Vector3>
+            {
+                new Vector3(-22500, 0, 22700), new Vector3(-22500, 0, 20500),
+                new Vector3(-22500, -200, 18300), new Vector3(-22500, 0, 16100),
+                new Vector3(-22500, -250, 13900), new Vector3(-22500, -250, 11700),
+                new Vector3(-22500, -250, 9500), new Vector3(-22500, -250, 7300),
+                new Vector3(-22500, -250, 5100), new Vector3(-22500, 0, 2900),
+                new Vector3(-22500, 0, 700), new Vector3(-22500, 0, -1500),
+
+                new Vector3(22500, -250, 13900), new Vector3(22500, -250, 11700),
+                new Vector3(22500, -250, 9500), new Vector3(22500, -250, 7300),
+                new Vector3(22500, -250, 5100), new Vector3(22500, 0, 2900),
+                new Vector3(22500, 0, 700), new Vector3(22500, 0, -1500),
+                new Vector3(22500, 0, -3700), new Vector3(22500, 0, -5900),
+                new Vector3(22500, 0, -8100)
+            };
+
             var land = new LandModel(content, contentFolder3D, contentFolderEffects);
             land.Initialize(new Vector3(0, -990, 0));
             _elementosL.Add(land);
@@ -45,7 +64,7 @@ namespace TGC.MonoGame.TP.Zero
 
                 new Vector3(740,850,-11050), new Vector3(370, 850,-11050),
                 new Vector3(0, 850, -11050), new Vector3(-370, 850, -11050),
-                new Vector3(-740,850,-11050), 
+                new Vector3(-740,850,-11050),
 
                 new Vector3(-2960,850,-11050), new Vector3(-3330,900,-11050),
                 new Vector3(-3700,950,-11050), new Vector3(-4070,950,-11050),
@@ -102,8 +121,7 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(-10000, 980, -10080), new Vector3(-10000, 1050, -10450),
                 new Vector3(-10000, 1130, -10820)
             };
-
-            //80 arboles de mismo modelo
+            //80 arboles de mismo modelo (MAS O MENOS)
             var posicionesArboles = new List<Vector3>
             {
                 new Vector3(1000, 490, 1000), new Vector3(2000, 490, 5000),
@@ -145,7 +163,7 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(-9500, -400, 14000),
                 new Vector3(-14000, -400, 12000),
                 new Vector3(-12000, -400, 14000),
-                
+
                 new Vector3(-10000, -400, 17000),
                 new Vector3(-13000, -400, 17000)
             };
@@ -440,7 +458,13 @@ namespace TGC.MonoGame.TP.Zero
                 var wall = new WallModel(content, contentFolder3D, contentFolderEffects);
                 wall.Initialize(wallPos, 90f);
                 _wallsElements.Add(wall);
-            }   
+            }
+            foreach (var wallsRot in posicionesWalls2Rot)
+            {
+                var wall = new WallModel2(content, contentFolder3D, contentFolderEffects);
+                wall.Initialize(wallsRot, 90f);
+                _wallsElements2.Add(wall);
+            }
 
         }
 
@@ -473,6 +497,9 @@ namespace TGC.MonoGame.TP.Zero
                 house.Draw(gameTime, view, projection);
 
             foreach (var wall in _wallsElements)
+                wall.Draw(gameTime, view, projection);
+
+            foreach (var wall in _wallsElements2)
                 wall.Draw(gameTime, view, projection);
         }
     }
