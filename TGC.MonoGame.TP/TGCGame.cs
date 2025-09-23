@@ -102,7 +102,7 @@ public class TGCGame : Game
         _hud = new Hud(Content);
 
         _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3(15800, 820, 14800));
+        _tank.Initialize(new Vector3(1000, 490,500));
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
         // acá cargamos TODOS los elementos del escenario
@@ -119,7 +119,6 @@ public class TGCGame : Game
     protected override void Update(GameTime gameTime)
     {
         // Aca deberiamos poner toda la logica de actualizacion del juego.
-        float _dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))

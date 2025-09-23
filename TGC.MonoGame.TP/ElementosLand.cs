@@ -139,11 +139,15 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
                 new Vector3(16000, 490, 4800),
                 new Vector3(-3200, 490, -2500),
-                new Vector3(-5800, 800, -2500),
                 new Vector3(-9200, 940, -6500),
                 new Vector3(-2500, 730, -9500),
-                new Vector3(-7500, 490, 12000),
-                new Vector3(-9500, 490, 14000)
+                new Vector3(-7500, -400, 12000),
+                new Vector3(-9500, -400, 14000),
+                new Vector3(-14000, -400, 12000),
+                new Vector3(-12000, -400, 14000),
+                
+                new Vector3(-10000, -400, 17000),
+                new Vector3(-13000, -400, 17000)
             };
             var posicionesRocas = new List<Vector3>
             {
@@ -180,18 +184,18 @@ namespace TGC.MonoGame.TP.Zero
 
             var posicionesPiedras = new List<Vector3>
             {
-                new Vector3(-1000, 490, 1000), new Vector3(-2000, 490, 5000),
-                new Vector3(-2000, 490, 3400), new Vector3(-2500, 490, 5400),
-                new Vector3(-2500, 490, 9200), new Vector3(-3000, 490, 1200),
-                new Vector3(-3000, 490, 1800), new Vector3(-3000, 490, 9000),
-                new Vector3(-4000, 490, 3600), new Vector3(-4000, 490, 5200),
-                new Vector3(-3800, 490, 7200), new Vector3(-4500, 490, 5600),
-                new Vector3(-4500, 490, 9500), new Vector3(-5000, 490, 1500),
-                new Vector3(-5000, 490, 2000), new Vector3(-5000, 490, 9200),
-                new Vector3(-6000, 490, 3800), new Vector3(-6000, 490, 5500),
-                new Vector3(-5800, 490, 7400), new Vector3(-6500, 490, 5800),
-                new Vector3(-6500, 490, 9800), new Vector3(-7000, 490, 1800),
-                new Vector3(-7000, 490, 2200), new Vector3(-7000, 490, 9400),
+                new Vector3(-1000, 390, 1000), new Vector3(-2000, 300, 5000),
+                new Vector3(-2000, 390, 3400), new Vector3(-2500, 300, 5400),
+                new Vector3(-2500, 390, 9200), new Vector3(-3000, 390, 1200),
+                new Vector3(-3000, 390, 1800), new Vector3(-3000, 300, 9000),
+                new Vector3(-4000, 190, 3600), new Vector3(-4000, 190, 5200),
+                new Vector3(-3800, 190, 7200), new Vector3(-4500, -190, 5600),
+                new Vector3(-4500, -190, 9500), new Vector3(-5000, -190, 1500),
+                new Vector3(-5000, 290, 2000), new Vector3(-5000, 190, 9200),
+                new Vector3(-6000, 390, 3800), new Vector3(-6000, 190, 5500),
+                new Vector3(-5800, -290, 7400), new Vector3(-6500, -290, 5800),
+                new Vector3(-6500, -190, 9800), new Vector3(-7000, 290, 1800),
+                new Vector3(-7000, -190, 2200), new Vector3(-7000, -290, 9400),
 
                 //cuadrante x>0 y z<0
                 new Vector3(1450, 570, -900),
@@ -323,24 +327,24 @@ namespace TGC.MonoGame.TP.Zero
                 new Vector3(-6200, 490, -3000),
                 new Vector3(-9700, 940, -7000),
                 new Vector3(-2800, 730, -9800),
-                new Vector3(-7800, 100, 11800),
-                new Vector3(-9800, 100, 13700)
+                new Vector3(-7800, -130, 11800),
+                new Vector3(-9800, -400, 13700)
 
             };
             var posicionesCasasModelo1 = new List<Vector3>
             {
                 new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
-                new Vector3(-8100, 100, 14390),
-                new Vector3(-10100, 100, 16390), new Vector3(-3000, 490, -2000),
+                new Vector3(-8100, -480, 14390),
+                new Vector3(-10100, -550, 16390), new Vector3(-3000, 490, -2000),
                 new Vector3(-3000, 700, -6000), new Vector3(-3000, 830, -10500)
             };
             var posicionesCasasModelo3 = new List<Vector3>
             {
-                new Vector3(-8000, 100, 8090),
+                new Vector3(-8000, -400, 17090),
                 new Vector3(100, 490, -2000), new Vector3(100, 490, -6000),new Vector3(100, 900, -10000),
-                new Vector3(-6000, 800, -2000),
+                new Vector3(-6000, 600, -2000),
                 new Vector3(-9000, 940, -10000),
-                new Vector3(-14100, 100, 11390)
+                new Vector3(-14100, -580, 14390)
 
             };
             var posicionesArbustos = new List<Vector3>
@@ -467,6 +471,7 @@ namespace TGC.MonoGame.TP.Zero
 
             foreach (var house in _elementoH3)
                 house.Draw(gameTime, view, projection);
+
             foreach (var wall in _wallsElements)
                 wall.Draw(gameTime, view, projection);
         }
