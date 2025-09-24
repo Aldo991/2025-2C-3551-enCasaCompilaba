@@ -1,8 +1,8 @@
 using System;
 using Microsoft.Xna.Framework;
-using TGC.MonoGame.TP.Zero;
+using TGC.MonoGame.TP;
 
-namespace TGC.MonoGame.TP.Zero;
+namespace TGC.MonoGame.TP;
 
 internal class FollowCamera
 {

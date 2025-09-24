@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TGC.MonoGame.TP.Zero;
+using TGC.MonoGame.TP;
 
 namespace TGC.MonoGame.TP;
 
