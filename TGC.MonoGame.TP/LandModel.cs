@@ -15,7 +15,7 @@ internal class LandModel
 
     private  Matrix _world;
 
-    public const string ContentFolderTextures = "Textures/";
+    private const string ContentFolderTextures = "Textures/";
 
     public LandModel(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
@@ -47,10 +47,7 @@ internal class LandModel
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        //_effect.Parameters["DiffuseColor"].SetValue(Color.Brown.ToVector3());
-
-       // _effect.Parameters["MinHeight"].SetValue(-1000f); // altura mínima del terreno
-       // _effect.Parameters["MaxHeight"].SetValue(1000f); // altura máxima del terreno
+        _effect.Parameters["ModelTexture"].SetValue(_texture);
 
         foreach (var mesh in _model.Meshes)
         {

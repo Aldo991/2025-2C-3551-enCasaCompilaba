@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,8 @@ internal class TankModel
     private Vector3 _position;
 
     private  Matrix _world;
+    private const string ContentFolderTextures = "Textures/";
+    private Texture _texture;
 
     public TankModel(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
@@ -21,6 +24,7 @@ internal class TankModel
 
         _effect = content.Load<Effect>(contentFolderEffects + "TankShader");
 
+        _texture = content.Load<Texture>(ContentFolderTextures + "camuflaje3");
 
         foreach (var mesh in _model.Meshes)
         {
@@ -34,7 +38,7 @@ internal class TankModel
     }
 
     public void Initialize(Vector3 vector)
-    {   
+    {
         _position = vector;
         _world = Matrix.CreateTranslation(_position);
     }
@@ -45,7 +49,7 @@ internal class TankModel
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
+        _effect.Parameters["ModelTexture"].SetValue(_texture);
 
         foreach (var mesh in _model.Meshes)
         {

@@ -12,15 +12,18 @@ internal class WallModel
     private  Effect _effect;
     private  Model _model;
     private Vector3 _position;
-
+    private Texture _texture;
     private  Matrix _world;
+
+    private const string ContentFolderTextures = "Textures/";
 
     public WallModel(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
         _model = content.Load<Model>(contentFolder3D + "walls/wall1/wall");
 
-        _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
+        _effect = content.Load<Effect>(contentFolderEffects + "WallShader");
 
+        _texture = content.Load<Texture>(ContentFolderTextures + "brickwall_4");
 
         foreach (var mesh in _model.Meshes)
         {
@@ -49,7 +52,8 @@ internal class WallModel
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
+        //_effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
+        _effect.Parameters["ModelTexture"].SetValue(_texture);
 
         foreach (var mesh in _model.Meshes)
         {

@@ -161,7 +161,7 @@ public class TGCGame : Game
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
         _elementosLand.Draw(gameTime, _projection.View, _projection.Projection);
-        
+
         _tank.Draw(gameTime, _projection.View, _projection.Projection);
 
         _hud.Draw(_spriteBatch, GraphicsDevice);

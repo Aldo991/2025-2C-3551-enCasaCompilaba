@@ -17,6 +17,8 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
+float Time = 0;
+
 uniform texture ModelTexture;
 sampler2D TextureSampler = sampler_state
 {
@@ -26,9 +28,6 @@ sampler2D TextureSampler = sampler_state
 	AddressU = WRAP;
 	AddressV = WRAP;
 };
-//float3 DiffuseColor;
-
-float Time = 0;
 
 struct VertexShaderInput
 {
@@ -53,18 +52,16 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	// View space to Projection space
     output.Position = mul(viewPosition, Projection);
 
-	//Propagar
 	output.TextureCoodinates = input.TextureCoodinates;
 
     return output;
 }
 
-
 float4 MainPS(VertexShaderOutput input) : COLOR
-{	
-	//Cada fragmento va a buscar una textura
+{
+    //Cada fragmento va a buscar una textura
 	float4 textureColor = tex2D(TextureSampler, input.TextureCoodinates.xy);
-	//return float4(DiffuseColor, 1.0);
+	
 	return textureColor;
 }
 
