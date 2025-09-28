@@ -8,12 +8,14 @@ namespace TGC.MonoGame.TP;
 
 internal class LandModel
 {
-
+    private Texture _texture;
     private  Effect _effect;
     private  Model _model;
     private Vector3 _position;
 
     private  Matrix _world;
+
+    public const string ContentFolderTextures = "Textures/";
 
     public LandModel(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
@@ -21,7 +23,7 @@ internal class LandModel
 
         _effect = content.Load<Effect>(contentFolderEffects + "LandShader");
 
-
+        _texture = content.Load<Texture>(ContentFolderTextures + "albedo");
         foreach (var mesh in _model.Meshes)
         {
             // A mesh contains a collection of parts.
