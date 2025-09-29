@@ -68,13 +68,15 @@ namespace TGC.MonoGame.TP
             _bushes = new List<BushModel1>();
 
             var posicionesWalls1 = new List<Vector3>
-            {
-                new Vector3(740,490,-1000), new Vector3(370,490,-1000),
-                new Vector3(0, 490, -1000), new Vector3(-370, 490, -1000),
+            {   
+                //Primera Columna de paredes (z=-1000) Parte 1
+                new Vector3(740,345,-1000), new Vector3(370, 240,-1000),
+                new Vector3(0, 200, -1000), new Vector3(-370, 160, -1000),
 
-                new Vector3(740,850,-11050), new Vector3(370, 850,-11050),
-                new Vector3(0, 850, -11050), new Vector3(-370, 850, -11050),
-                new Vector3(-740,850,-11050),
+                //Segunda Columna de paredes (z=-11050)
+                new Vector3(740,800,-11050), new Vector3(370, 800,-11050),
+                new Vector3(0, 770, -11050), new Vector3(-370, 760, -11050),
+                new Vector3(-740,750,-11050),
 
                 new Vector3(-2960,850,-11050), new Vector3(-3330,900,-11050),
                 new Vector3(-3700,950,-11050), new Vector3(-4070,950,-11050),
@@ -82,54 +84,60 @@ namespace TGC.MonoGame.TP
                 new Vector3(-5180,850,-11050), new Vector3(-5550,850,-11050),
                 new Vector3(-5920,850,-11050), new Vector3(-6290,850,-11050),
 
-                new Vector3(-2590,500,-1000),
-                new Vector3(-2960,500,-1000), new Vector3(-3330,500,-1000),
-                new Vector3(-3700,500,-1000), new Vector3(-4070,500,-1000),
-                new Vector3(-4440,500,-1000), new Vector3(-4810,500,-1000),
-                new Vector3(-5180,500,-1000), new Vector3(-5550,500,-1000),
-                new Vector3(-5920,500,-1000), new Vector3(-6290,500,-1000),
-                new Vector3(-6660,500,-1000),
+                //Primera Columna de paredes (z=-1000) parte 2
+                new Vector3(-2590,100,-1000),
+                new Vector3(-2960,250,-1000), new Vector3(-3330,340,-1000),
+                new Vector3(-3700,305,-1000), new Vector3(-4070,240,-1000),
+                new Vector3(-4440,185,-1000), new Vector3(-4810,80,-1000),
+                new Vector3(-5180,70,-1000), new Vector3(-5550,70,-1000),
+                new Vector3(-5920,70,-1000), new Vector3(-6290,70,-1000),
+                new Vector3(-6660, 70,-1000),
 
                 new Vector3(-8540,850,-11050), new Vector3(-8890,950,-11050),
                 new Vector3(-9260,1000,-11050), new Vector3(-9630,1100,-11050),
                 new Vector3(-9800,1130,-11050),
 
-
-                new Vector3(-9800,560,-1000), new Vector3(-9630,560,-1000),
-                new Vector3(-9260,560,-1000), new Vector3(-8890,560,-1000),
+                //Primera Columna de paredes (z=-1000) parte 3
+                new Vector3(-9800,70,-1000), new Vector3(-9430,65,-1000),
+                new Vector3(-9060,15,-1000), new Vector3(-8690,-5,-1000),
             };
 
             var posicionesWalls1Rotated = new List<Vector3>
             {
-                new Vector3(940,490,-1200), new Vector3(940,490,-1570),
-                new Vector3(940, 490, -1940), new Vector3(940, 590,-2310),
-                new Vector3(940, 760, -2680), new Vector3(940, 1050, -3050),
-                new Vector3(940, 1400, -3420), new Vector3(940, 1500, -3790),
-                new Vector3(940, 1400, -4160), new Vector3(940, 1320, -4530),
-                new Vector3(940, 1000, -4900), new Vector3(940, 850, -5270),
-                new Vector3(940, 750, -5640), new Vector3(940, 650, -6010),
-                new Vector3(940, 650, -6380), new Vector3(940, 650, -6750),
-                new Vector3(940, 650, -7120), new Vector3(940, 710, -7490),
-                new Vector3(940, 760, -7860), new Vector3(940, 810, -8230),
-                new Vector3(940, 850, -8600), new Vector3(940, 910, -8970),
+                //Primera fila de paredes (x=940) parte 1
+                new Vector3(940, 390,-1200), new Vector3(940,330,-1570),
+                new Vector3(940, 365, -1940), new Vector3(940, 400,-2310),
+
+                //Primera fila de paredes (x=940) parte 2
+                new Vector3(940, 450, -4900), new Vector3(940, 405, -5270),
+                new Vector3(940, 370, -5640), new Vector3(940, 370, -6010),
+                new Vector3(940, 370, -6380), new Vector3(940, 430, -6750),
+                new Vector3(940, 610, -7120), new Vector3(940, 710, -7490),
+                new Vector3(940, 880, -7860), new Vector3(940, 890, -8230),
+                new Vector3(940, 930, -8600), new Vector3(940, 930, -8970),
                 new Vector3(940, 950, -9340), new Vector3(940, 930, -9710),
                 new Vector3(940, 850, -10080), new Vector3(940, 850, -10450),
                 new Vector3(940, 850, -10820),
+                //Fin primera fila de paredes (x=940)
 
-                new Vector3(-10000,560,-1200), new Vector3(-10000,615,-1570),
-                new Vector3(-10000, 650, -1940), new Vector3(-10000, 675,-2310),
-                new Vector3(-10000, 750, -2680), new Vector3(-10000, 780, -3050),
-                new Vector3(-10000, 840, -3420), new Vector3(-10000, 880, -3790),
-                new Vector3(-10000, 925, -4160), new Vector3(-10000, 950, -4530),
-                new Vector3(-10000, 1050, -4900), new Vector3(-10000, 1150, -5270),
-                new Vector3(-10000, 1200, -5640), new Vector3(-10000, 1150, -6010),
-                new Vector3(-10000, 1050, -6380), new Vector3(-10000, 950, -6750),
-                new Vector3(-10000, 850, -7120), new Vector3(-10000, 850, -7490),
-                new Vector3(-10000, 850, -7860), new Vector3(-10000, 850, -8230),
-                new Vector3(-10000, 850, -8600), new Vector3(-10000, 850, -8970),
-                new Vector3(-10000, 950, -9340), new Vector3(-10000, 950, -9710),
+                //Segunda fila de paredes (x=-10000) parte 1
+                new Vector3(-10000, 130,-1200), new Vector3(-10000,145,-1570),
+                new Vector3(-10000, 150, -1940), new Vector3(-10000, 150,-2310),
+                new Vector3(-10000, 190, -2680), new Vector3(-10000, 190, -3050),
+                new Vector3(-10000, 220, -3420), new Vector3(-10000, 280, -3790),
+                new Vector3(-10000, 365, -4160), new Vector3(-10000, 455, -4530),
+                new Vector3(-10000, 540, -4900),
+
+                //Segunda fila de paredes (x=-10000) parte 2
+                new Vector3(-10000, 850, -6010),
+                new Vector3(-10000, 820, -6380), new Vector3(-10000, 810, -6750),
+                new Vector3(-10000, 790, -7120), new Vector3(-10000, 790, -7490),
+                new Vector3(-10000, 800, -7860), new Vector3(-10000, 820, -8230),
+                new Vector3(-10000, 830, -8600), new Vector3(-10000, 870, -8970),
+                new Vector3(-10000, 895, -9340), new Vector3(-10000, 910, -9710),
                 new Vector3(-10000, 980, -10080), new Vector3(-10000, 1050, -10450),
-                new Vector3(-10000, 1130, -10820)
+                new Vector3(-10000, 1050, -10820)
+                //Fin segunda fila de paredes (x=-10000)
             };
             //80 arboles de mismo modelo (MAS O MENOS)
             var posicionesArboles = new List<Vector3>

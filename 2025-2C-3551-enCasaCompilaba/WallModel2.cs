@@ -14,13 +14,16 @@ internal class WallModel2
     private Vector3 _position;
 
     private  Matrix _world;
+    private const string ContentFolderTextures = "Textures/";
 
+    private Texture _texture;
     public WallModel2(ContentManager content, string contentFolder3D, string contentFolderEffects)
     {
         _model = content.Load<Model>(contentFolder3D + "walls/wall2/Bluestone wall");
 
-        _effect = content.Load<Effect>(contentFolderEffects + "BasicShader");
+        _effect = content.Load<Effect>(contentFolderEffects + "WallShader");
 
+        _texture = content.Load<Texture>(ContentFolderTextures + "Concrete_Cracked_DIFF");
 
         foreach (var mesh in _model.Meshes)
         {
@@ -49,7 +52,7 @@ internal class WallModel2
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.Brown.ToVector3());
+        _effect.Parameters["ModelTexture"].SetValue(_texture);
 
         foreach (var mesh in _model.Meshes)
         {
