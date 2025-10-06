@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TGC.MonoGame.TP.Zero;
 
 namespace TGC.MonoGame.TP;
 
@@ -16,40 +15,30 @@ public class TGCGame : Game
     public const string ContentFolderTextures = "Textures/";
     
     private readonly GraphicsDeviceManager _graphics;
-
-    //private Effect _effect;
-    //private Model _model;
-
-    //private Matrix _projection;
-    private float _rotation;    
     private SpriteBatch _spriteBatch;
     private Hud _hud;
     private int _score = 0;
     private float _life = 1f;
-    private Matrix _view;
-    private Matrix _world;
 
-    //tanque
-    private TankModel _tank;
-
-    private FollowCamera _projection;
-    
-    private LandModel _land;
-
-    private ArbolModel1 _arbol1;
-
-    private HouseModel1 _house1;
-    private Vector3 _cameraPosition;
-
+    // Tanque del jugador
+    private Tank _tank;
+    private FollowCamera _camera;
     private ElementosLand _elementosLand;
+
+    private Vector3 CameraPosition = new Vector3(4900f, 2350f, 2200f);
+
+    private GameManager _gameManager;
 
     /// <summary>
     ///     Constructor del juego.
     /// </summary>
     public TGCGame()
     {
+        _gameManager = new GameManager();
+
         // Maneja la configuracion y la administracion del dispositivo grafico.
         _graphics = new GraphicsDeviceManager(this);
+        Window.Title = "TankWars";
 
         _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
@@ -76,14 +65,10 @@ public class TGCGame : Game
         rasterizerState.CullMode = CullMode.None;
         GraphicsDevice.RasterizerState = rasterizerState;
         // Seria hasta aca.
-        _cameraPosition = new Vector3();
 
-        // Configuramos nuestras matrices de la escena.
-        _world = Matrix.Identity;
-        _view = Matrix.CreateLookAt(Vector3.UnitZ * 15, Vector3.Zero, Vector3.Up);
-        //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
-
-        _projection = new FollowCamera(GraphicsDevice.Viewport.AspectRatio);
+        // Vector3 cameraPosition = new Vector3(10000f, 20000f, 10000f);
+        Vector3 targetPosition = new Vector3(1000f, 490f, 500f);
+        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, CameraPosition, targetPosition);
         
         base.Initialize();
     }
@@ -95,18 +80,18 @@ public class TGCGame : Game
     /// </summary>
     protected override void LoadContent()
     {
+        _gameManager.LoadModels(Content);
+
         // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _hud = new Hud(Content);
 
-        _tank = new TankModel(Content, ContentFolder3D, ContentFolderEffects);
-        _tank.Initialize(new Vector3(1000, 490,500));
+        var tankModel = _gameManager.GetModel("tank", 0);
+        var tankPosition = new Vector3(1000, 490, 500);
+        _tank = new Tank(tankModel, tankPosition, 0f, 0.1f);
 
-        _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects);
+        _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects, _gameManager);
         // acá cargamos TODOS los elementos del escenario
-
 
         base.LoadContent();
     }
@@ -119,6 +104,7 @@ public class TGCGame : Game
     protected override void Update(GameTime gameTime)
     {
         // Aca deberiamos poner toda la logica de actualizacion del juego.
+        float _dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -128,24 +114,28 @@ public class TGCGame : Game
         }
 
         _hud.Update(_score, _life);
-
-        // Basado en el tiempo que paso se va generando una rotacion.
+        var delta = 10f;
         if (Keyboard.GetState().IsKeyDown(Keys.W))
-            _cameraPosition += Vector3.Left * 50f;
+            _tank.AccelerateTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.A))
-            _cameraPosition += Vector3.Backward * 50f;
+        {
+            _tank.RotateTankLeft(gameTime);
+            _camera.RotateCameraLeft(gameTime);
+        }
         if (Keyboard.GetState().IsKeyDown(Keys.S))
-            _cameraPosition += Vector3.Right * 50f;
+            _tank.DecelerateTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.D))
-            _cameraPosition += Vector3.Forward * 50f;
-        if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
-            _cameraPosition += Vector3.Down * 50f;
+        {
+            _tank.RotateTankRight(gameTime);
+            _camera.RotateCameraRight(gameTime);
+        }
         if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            _cameraPosition += Vector3.Up * 50f;
-        
-        // _world = Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_cameraPosition);
-        _world = Matrix.CreateTranslation(_cameraPosition);
-        _projection.Update(gameTime, _world);
+            CameraPosition.Y += delta;
+        if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+            CameraPosition.Y -= delta;
+
+        _tank.Update(gameTime);
+        _camera.UpdateCamera(_tank.Position);
 
         base.Update(gameTime);
     }
@@ -160,11 +150,11 @@ public class TGCGame : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-        _elementosLand.Draw(gameTime, _projection.View, _projection.Projection);
+        _elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         
-        _tank.Draw(gameTime, _projection.View, _projection.Projection);
+        _tank.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
 
-        _hud.Draw(_spriteBatch, GraphicsDevice);
+        _hud.Draw(_spriteBatch, GraphicsDevice, _tank.Position.X, _tank.Position.Y, _tank.Position.Z);
     }
 
     /// <summary>

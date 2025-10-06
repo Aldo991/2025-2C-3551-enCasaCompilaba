@@ -29,7 +29,7 @@ internal class Hud
         _life = MathHelper.Clamp(life, 0f,1f);
     }
 
-    public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+    public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, float x, float y, float z)
     {
         var viewport = graphicsDevice.Viewport;
         var screenWidth = viewport.Width;
@@ -40,6 +40,9 @@ internal class Hud
         // Score en la esquina superior izquierda
         spriteBatch.DrawString(_font, $"Bajas: {_score}", new Vector2(20, 20), Color.White);
         spriteBatch.DrawString(_font, $"Muertes: {_score}", new Vector2(20, 40), Color.White);
+        spriteBatch.DrawString(_font, $"X: {x}", new Vector2(20, 60), Color.White);
+        spriteBatch.DrawString(_font, $"Y: {y}", new Vector2(20, 80), Color.White);
+        spriteBatch.DrawString(_font, $"Z: {z}", new Vector2(20, 100), Color.White);
 
         float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
         float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla

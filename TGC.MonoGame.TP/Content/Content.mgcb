@@ -50,7 +50,7 @@
 /processorParam:TextureFormat=Color
 /build:hud/health.png
 
-#begin Models/arqui/House1/City_House_2_BI.fbx
+#begin Models/bushes/Bush1.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -67,9 +67,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/arqui/House1/City_House_2_BI.fbx
+/build:Models/bushes/Bush1.fbx;Models/bushes/Bush1
 
-#begin Models/arqui/House2/cottage_fbx.fbx
+#begin Models/houses/cottage_fbx.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -86,9 +86,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/arqui/House2/cottage_fbx.fbx
+/build:Models/houses/cottage_fbx.fbx
 
-#begin Models/arqui/House3/Cottage_FREE.fbx
+#begin Models/houses/Cottage_FREE.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -105,26 +105,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/arqui/House3/Cottage_FREE.fbx
-
-#begin Models/bushes/Bush1/Bush1.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/bushes/Bush1/Bush1.fbx
+/build:Models/houses/Cottage_FREE.fbx
 
 #begin Models/land/walkers-land.fbx
 /importer:FbxImporter
@@ -144,44 +125,6 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Models/land/walkers-land.fbx
-
-#begin Models/rocks/rock1/rock_base_lp.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/rocks/rock1/rock_base_lp.fbx
-
-#begin Models/scene/arbol.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/scene/arbol.fbx
 
 #begin Models/stones/SM_LittleRock_01.fbx
 /importer:FbxImporter
@@ -297,7 +240,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/stones/SM_LittleRock_06.fbx
 
-#begin Models/tanque/CENTURION.fbx
+#begin Models/tanks/CENTURION.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -314,9 +257,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/tanque/CENTURION.fbx
+/build:Models/tanks/CENTURION.fbx
 
-#begin Models/tanque/T90.fbx
+#begin Models/tanks/T90.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -333,38 +276,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/tanque/T90.fbx
-
-#begin Models/tanque/textures_mod/hullA.jpg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Models/tanque/textures_mod/hullA.jpg
-
-#begin Models/tanque/Tree_LL.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/tanque/Tree_LL.fbx
+/build:Models/tanks/T90.fbx
 
 #begin Models/tgc-logo/tgc-logo.fbx
 /importer:FbxImporter
@@ -385,7 +297,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/tgc-logo/tgc-logo.fbx
 
-#begin Models/tree/AlanTree/AlanTree.fbx
+#begin Models/trees/arbol.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -402,9 +314,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/tree/AlanTree/AlanTree.fbx
+/build:Models/trees/arbol.fbx
 
-#begin Models/tree/tree_default.fbx
+#begin Models/trees/tree_default.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -421,9 +333,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/tree/tree_default.fbx;Models/tree/tree_default
+/build:Models/trees/tree_default.fbx
 
-#begin Models/tree/Tree_LL/Tree_LL.fbx
+#begin Models/trees/Tree_LL.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -440,9 +352,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/tree/Tree_LL/Tree_LL.fbx
+/build:Models/trees/Tree_LL.fbx
 
-#begin Models/walls/wall1/wall.fbx
+#begin Models/walls/Bluestone_wall.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -459,24 +371,5 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/walls/wall1/wall.fbx
-
-#begin Models/walls/wall2/Bluestone wall.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/walls/wall2/Bluestone wall.fbx
+/build:Models/walls/Bluestone_wall.fbx;Models/walls/Bluestone_wall
 
