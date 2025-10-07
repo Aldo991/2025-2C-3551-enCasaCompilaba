@@ -23,7 +23,8 @@ public class FollowCamera
         float farPlaneDistance = DefaultFarPlaneDistance, float fieldOfViewDegrees = DefaultFieldOfViewDegrees)
     {
         UpDirection = Vector3.Up;
-        Offset = new Vector3(0, 3000f, 9000f);
+        Offset = new Vector3(0, 3000f, 9000f) * 10f;
+        // 0, 3000, 9000 
         Position = position + Offset;
         TargetPosition = targetPosition;
         BuildProjection(aspectRatio, nearPlaneDistance, farPlaneDistance, fieldOfViewDegrees);

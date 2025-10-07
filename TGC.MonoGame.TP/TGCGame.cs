@@ -88,7 +88,9 @@ public class TGCGame : Game
 
         var tankModel = _gameManager.GetModel("tank", 0);
         var tankPosition = new Vector3(1000, 490, 500);
-        _tank = new Tank(tankModel, tankPosition, 0f, 0.1f);
+        var tankTexture = _gameManager.GetTexture("tank", 0);
+        _tank = new Tank(tankModel, tankPosition, 1f, 0f, tankTexture);
+        
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects, _gameManager);
         // acá cargamos TODOS los elementos del escenario
@@ -109,30 +111,26 @@ public class TGCGame : Game
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
         {
-            //Salgo del juego.
             Exit();
         }
 
         _hud.Update(_score, _life);
-        var delta = 10f;
         if (Keyboard.GetState().IsKeyDown(Keys.W))
-            _tank.AccelerateTank(gameTime);
-        if (Keyboard.GetState().IsKeyDown(Keys.A))
+            _tank.MoveForwardTank(gameTime);
+        if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S))
+            _tank.DecelerateTank(gameTime);
+        if (Keyboard.GetState().IsKeyDown(Keys.A) && _tank.HasVelocity())
         {
             _tank.RotateTankLeft(gameTime);
             _camera.RotateCameraLeft(gameTime);
         }
         if (Keyboard.GetState().IsKeyDown(Keys.S))
-            _tank.DecelerateTank(gameTime);
-        if (Keyboard.GetState().IsKeyDown(Keys.D))
+            _tank.MoveBackwardTank(gameTime);
+        if (Keyboard.GetState().IsKeyDown(Keys.D) && _tank.HasVelocity())
         {
             _tank.RotateTankRight(gameTime);
             _camera.RotateCameraRight(gameTime);
         }
-        if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            CameraPosition.Y += delta;
-        if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
-            CameraPosition.Y -= delta;
 
         _tank.Update(gameTime);
         _camera.UpdateCamera(_tank.Position);

@@ -13,6 +13,17 @@
 // Reference for HLSL - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-reference
 // HLSL Semantics - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
 
+texture Texture;
+sampler TextureSampler = sampler_state
+{
+	Texture = <Texture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
+
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
@@ -29,6 +40,44 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
+};
+
+struct VS_INPUT
+{
+	float4 Position : POSITION0;
+	float2 TexCoord : TEXCOORD0;
+	float3 Normal : NORMAL0;
+};
+
+struct PS_INPUT
+{
+	float4 Position : SV_POSITION;
+	float2 TexCoord : TEXCOORD0;
+	// float3 Normal : NORMAL0;
+};
+
+PS_INPUT VS_Main(VS_INPUT input)
+{
+	PS_INPUT output;
+	float4 worldPosition = mul(input.Position, World);
+	output.Position = mul(worldPosition, View);
+	output.Position = mul(output.Position, Projection);
+	output.TexCoord = input.TexCoord;
+	return output;
+}
+
+float4 PS_Main(PS_INPUT input) : COLOR
+{
+	return tex2D(TextureSampler, input.TexCoord);
+}
+
+technique BasicTechnique
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL VS_Main();
+		PixelShader = compile PS_SHADERMODEL PS_Main();
+	}
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)

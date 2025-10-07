@@ -338,12 +338,12 @@ namespace TGC.MonoGame.TP
 
             foreach (var pos in posicionesArboles)
             {
-                var arbol = new Tree(_gameManager.GetModel("tree", 0), pos);
+                var arbol = new Tree(_gameManager.GetModel("tree", 0), pos, 0.3f, 0f);
                 _trees.Add(arbol);
             }
             foreach (var pos in posicionesArboles2)
             {
-                var arbol = new Tree(_gameManager.GetModel("tree", 1), pos);
+                var arbol = new Tree(_gameManager.GetModel("tree", 1), pos, 0.3f, 0f);
                 _trees.Add(arbol);
             }
             foreach (var pos in posicionesRocas)
@@ -363,32 +363,32 @@ namespace TGC.MonoGame.TP
             }
             foreach (var house in posicionesCasasModelo1)
             {
-                var casaModelo1 = new House(_gameManager.GetModel("house", 0), house, 0.01f, 0);
+                var casaModelo1 = new House(_gameManager.GetModel("house", 0), house, 0.3f, 0);
                 _houses.Add(casaModelo1);
             }
             foreach (var house in posicionesCasasModelo3)
             {
-                var casaModelo3 = new House(_gameManager.GetModel("house", 1), house, 0f, 0f);
+                var casaModelo3 = new House(_gameManager.GetModel("house", 1), house, 1f, 0f);
                 _houses.Add(casaModelo3);
             }
             foreach (var wallPos in posicionesWalls1)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 0f, 6f);
+                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 0f);
                 _walls.Add(wall);
             }
             foreach (var wallPos in posicionesWalls1Rotated)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 90f, 6f);
+                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 90f);
                 _walls.Add(wall);
             }
             foreach (var wallsRot in posicionesWalls2Rot)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallsRot, 90f, 6f);
+                var wall = new Wall(_gameManager.GetModel("wall", 0), wallsRot, 6f, 90f);
                 _walls.Add(wall);
             }
             foreach (var wallPos in posicionesWalls2)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 0f, 6f);
+                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 0f);
                 _walls.Add(wall);
             }
         }
@@ -399,7 +399,6 @@ namespace TGC.MonoGame.TP
                 land.Draw(gameTime, view, projection);
             foreach (var house in _houses)
                 house.Draw(gameTime, view, projection);
-            /*
             foreach (var arbol in _trees)
                 arbol.Draw(gameTime, view, projection);
             foreach (var stone in _stones)
@@ -408,6 +407,7 @@ namespace TGC.MonoGame.TP
                 bush.Draw(gameTime, view, projection);
             foreach (var wall in _walls)
                 wall.Draw(gameTime, view, projection);
+            /*
             */
         }
     }

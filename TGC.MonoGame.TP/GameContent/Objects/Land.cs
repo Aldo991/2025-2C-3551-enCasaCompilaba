@@ -17,7 +17,7 @@ public class Land // : GameObject
     public Land(
         Model model,
         Vector3 position,
-        float scale = 9f,
+        float scale = 4f,
         float rotation = 0f
         )
     {

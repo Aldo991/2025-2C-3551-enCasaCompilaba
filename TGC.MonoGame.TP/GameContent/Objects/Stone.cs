@@ -12,11 +12,16 @@ public class Stone : GameObject
 
     public Stone(
         Model model,
-        Vector3 position)
+        Vector3 position,
+        float scale = 1f,
+        float rotation = 0f
+        )
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _position = position;
+        _scale = scale;
+        _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(0.3f) * Matrix.CreateTranslation(_position);
     }
     

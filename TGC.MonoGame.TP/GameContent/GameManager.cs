@@ -27,6 +27,7 @@ public class GameManager
 {
     private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
+    private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
     private const string ContentFolderHouses = "/houses";
     private const string ContentFolderLands = "/land";
@@ -42,6 +43,7 @@ public class GameManager
     private Model[] _landModels;
     private Model[] _stoneModels;
     private Model[] _tankModel;
+    private Texture2D[] _tankTextures;
     private Model[] _treeModels;
     private Model[] _wallModels;
     /*
@@ -67,9 +69,10 @@ public class GameManager
 
         // Cargo los modelos de piedras
         LoadStoneModels(content);
-        
+
         // Cargo los modelos de tanques
         LoadTankModels(content);
+        LoadTankTextures(content);
 
         // Cargo los modelos de árboles
         LoadTreeModels(content);
@@ -178,6 +181,15 @@ public class GameManager
         }
     }
 
+    private void LoadTankTextures(ContentManager content)
+    {
+        _tankTextures = new Texture2D[3];
+        // _tankTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/");
+        _tankTextures[0] = content.Load<Texture2D>("Textures/tanks/T90/hullA");
+        _tankTextures[1] = content.Load<Texture2D>("Textures/tanks/T90/hullB");
+        _tankTextures[2] = content.Load<Texture2D>("Textures/tanks/T90/hullC");
+    }
+
     private void LoadTreeModels(ContentManager content)
     {
         if (_treeModels == null)
@@ -232,5 +244,25 @@ public class GameManager
             //_hudModels => _hudModels[index],
             _ => throw new ArgumentException("Invalid model name"),
         };
+    }
+    public Texture2D GetTexture(string modelName, int index)
+    {
+        return modelName switch
+        {
+            "tank" => _tankTextures[index],
+            //_hudModels => _hudModels[index],
+            _ => throw new ArgumentException("Invalid texture name"),
+        };
+    }
+
+    public void ApplyTextureToModel(Model model, Texture2D texture)
+    {
+        foreach (var mesh in model.Meshes)
+        {
+            foreach (var effect in mesh.Effects)
+            {
+                effect.Parameters["Texture"].SetValue(texture);
+            }
+        }
     }
 }

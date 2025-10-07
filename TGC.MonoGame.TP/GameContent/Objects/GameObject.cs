@@ -11,6 +11,7 @@
 
 #region Using Statements
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -21,6 +22,7 @@ public abstract class GameObject
     protected Vector3 _position { get; set; }
     protected float _scale { get; set; }
     protected float _rotation { get; set; }
+    protected Texture2D _texture { get; set; }
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
 
@@ -38,5 +40,10 @@ public abstract class GameObject
     {
         get => _rotation;
         set => _rotation = value;
+    }
+    public Texture2D Texture
+    {
+        get => _texture;
+        set => _texture = value;
     }
 }

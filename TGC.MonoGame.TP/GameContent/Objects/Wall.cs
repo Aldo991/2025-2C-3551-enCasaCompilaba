@@ -13,7 +13,7 @@ public class Wall : GameObject
     public Wall(
         Model model,
         Vector3 position,
-        float scale = 35f,
+        float scale = 1f,
         float rotation = 0f
         )
     {
