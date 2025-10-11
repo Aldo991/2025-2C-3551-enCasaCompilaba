@@ -1,6 +1,6 @@
-// using System;
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace TGC.MonoGame.TP;
@@ -16,16 +16,25 @@ public class FollowCamera
     private Vector3 Position { get; set; }
     private Vector3 TargetPosition { get; set; }
     private Vector3 UpDirection { get; set; }
-    private Vector3 Offset { get; set; }
+    private int CenterXPosition;
+    private int CenterYPosition;
+    private float Radius;
+    private float VerticalAngle;
+    private float HorizontalAngle;
 
     public FollowCamera(float aspectRatio, Vector3 position, Vector3 targetPosition,
+        int centerX, int centerY, float radius,
         float nearPlaneDistance = DefaultNearPlaneDistance,
         float farPlaneDistance = DefaultFarPlaneDistance, float fieldOfViewDegrees = DefaultFieldOfViewDegrees)
     {
         UpDirection = Vector3.Up;
-        Offset = new Vector3(0, 3000f, 9000f) * 10f;
-        // 0, 3000, 9000 
-        Position = position + Offset;
+        CenterXPosition = centerX;
+        CenterYPosition = centerY;
+        Radius = radius;
+        HorizontalAngle = MathHelper.PiOver2;
+        VerticalAngle = 0.3f;
+        Vector3 offset = CalculateOffsetPosition();
+        Position = position + offset;
         TargetPosition = targetPosition;
         BuildProjection(aspectRatio, nearPlaneDistance, farPlaneDistance, fieldOfViewDegrees);
         BuildView();
@@ -37,34 +46,40 @@ public class FollowCamera
         Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(fieldOfViewDegrees), aspectRatio, nearPlaneDistance,
             farPlaneDistance);
     }
-    public void RotateCameraRight(GameTime gameTime)
-    {
-        RotateCamera(gameTime, true);
-    }
-    public void RotateCameraLeft(GameTime gameTime)
-    {
-        RotateCamera(gameTime, false);
-    }
-    public void RotateCamera(GameTime gameTime, bool right)
-    {
-        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        float rotationAngle = RotationSpeed * deltaTime;
-        if (right)
-            rotationAngle = -rotationAngle;
-        Offset = Vector3.Transform(Offset, Matrix.CreateRotationY(rotationAngle));
-    }
-
     private void BuildView()
     {
         View = Matrix.CreateLookAt(Position, TargetPosition, UpDirection);
     }
 
-    public void UpdateCamera(Vector3 targetPosition)
+    public void UpdateCamera(Vector3 targetPosition, int mousePositionX, int mousePositionY)
     {
+        float sensitivity = 0.001f;
+        int offsetX = mousePositionX - CenterXPosition;
+        int offsetY = mousePositionY - CenterYPosition;
+        // Ajusto el eje horizontal y vertical
+        HorizontalAngle += offsetX * sensitivity;
+        VerticalAngle += offsetY * sensitivity;
+
+        VerticalAngle = MathHelper.Clamp(VerticalAngle, -MathHelper.PiOver2 + 0.1f, MathHelper.PiOver2 - 0.1f);
+
+        // Creo el vector donde se va a ubicar la cámara, que es el borde de una esfera
+
+
+        Vector3 Offset = CalculateOffsetPosition();
         Position = targetPosition + Offset;
+
         TargetPosition = targetPosition;
         BuildView();
     }
+
+    private Vector3 CalculateOffsetPosition()
+    {
+        float x = Radius * (float)(Math.Cos(HorizontalAngle) * Math.Cos(VerticalAngle));
+        float y = Radius * (float)Math.Sin(VerticalAngle);
+        float z = Radius * (float)(Math.Sin(HorizontalAngle) * Math.Cos(VerticalAngle));
+        return new Vector3(x, y, z);
+    }
+
     public Matrix ViewMatrix => View;
     public Matrix ProjectionMatrix => Projection;
 }

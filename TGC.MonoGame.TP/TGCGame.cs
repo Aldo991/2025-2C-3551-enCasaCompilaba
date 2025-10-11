@@ -28,6 +28,8 @@ public class TGCGame : Game
     private Vector3 CameraPosition = new Vector3(4900f, 2350f, 2200f);
 
     private GameManager _gameManager;
+    private bool _pressingPause;
+    private bool _isPause;
 
     /// <summary>
     ///     Constructor del juego.
@@ -47,7 +49,7 @@ public class TGCGame : Game
         // Carpeta raiz donde va a estar toda la Media.
         Content.RootDirectory = "Content";
         // Hace que el mouse sea visible.
-        IsMouseVisible = true;
+        IsMouseVisible = false;
     }
 
     /// <summary>
@@ -65,10 +67,13 @@ public class TGCGame : Game
         rasterizerState.CullMode = CullMode.None;
         GraphicsDevice.RasterizerState = rasterizerState;
         // Seria hasta aca.
+        _pressingPause = false;
 
-        // Vector3 cameraPosition = new Vector3(10000f, 20000f, 10000f);
         Vector3 targetPosition = new Vector3(1000f, 490f, 500f);
-        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, CameraPosition, targetPosition);
+        int centerX = GraphicsDevice.Viewport.Width / 2;
+        int centerY = GraphicsDevice.Viewport.Height / 2;
+        float radius = 50000;
+        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, CameraPosition, targetPosition, centerX, centerY, radius);
         
         base.Initialize();
     }
@@ -106,7 +111,8 @@ public class TGCGame : Game
     protected override void Update(GameTime gameTime)
     {
         // Aca deberiamos poner toda la logica de actualizacion del juego.
-        float _dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+        float dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+        float totalGameTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -120,20 +126,30 @@ public class TGCGame : Game
         if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S))
             _tank.DecelerateTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.A) && _tank.HasVelocity())
-        {
             _tank.RotateTankLeft(gameTime);
-            _camera.RotateCameraLeft(gameTime);
-        }
         if (Keyboard.GetState().IsKeyDown(Keys.S))
             _tank.MoveBackwardTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.D) && _tank.HasVelocity())
-        {
             _tank.RotateTankRight(gameTime);
-            _camera.RotateCameraRight(gameTime);
+        if (Keyboard.GetState().IsKeyDown(Keys.P) && !_pressingPause)
+        {
+            _pressingPause = true;
+            IsMouseVisible = Pause();
+        }
+        if (Keyboard.GetState().IsKeyUp(Keys.P) && _pressingPause)
+            _pressingPause = false;
+        if (!_isPause)
+        {
+            int mousePositionX = Mouse.GetState().X;
+            int mousePositionY = Mouse.GetState().Y;
+            _tank.Update(gameTime);
+            _camera.UpdateCamera(_tank.Position, mousePositionX, mousePositionY);
+            // Window.
+            int width = GraphicsDevice.Viewport.Width;
+            int height = GraphicsDevice.Viewport.Height;
+            Mouse.SetPosition(width / 2, height / 2);
         }
 
-        _tank.Update(gameTime);
-        _camera.UpdateCamera(_tank.Position);
 
         base.Update(gameTime);
     }
@@ -149,10 +165,20 @@ public class TGCGame : Game
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
         _elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        
+
         _tank.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
 
         _hud.Draw(_spriteBatch, GraphicsDevice, _tank.Position.X, _tank.Position.Y, _tank.Position.Z);
+    }
+
+    private bool Pause()
+    {
+        var actualPause = _isPause;
+        _isPause = !_isPause;
+        if (actualPause)
+            return false;
+        else
+            return true;
     }
 
     /// <summary>
