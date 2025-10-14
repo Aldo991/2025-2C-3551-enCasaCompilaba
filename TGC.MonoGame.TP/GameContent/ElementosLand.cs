@@ -393,6 +393,17 @@ namespace TGC.MonoGame.TP
             }
         }
 
+        public List<GameObject> GetStaticObjects()
+        {
+            var staticObjects = new List<GameObject>();
+            staticObjects.AddRange(_houses);
+            staticObjects.AddRange(_trees);
+            staticObjects.AddRange(_stones);
+            staticObjects.AddRange(_bushes);
+            staticObjects.AddRange(_walls);
+            return staticObjects;
+        }
+
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
             foreach (var land in _landElements)

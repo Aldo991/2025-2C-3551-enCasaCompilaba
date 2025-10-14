@@ -22,6 +22,8 @@ public class Tree : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(_position);
+        // Define local AABB for tree (approximate dimensions)
+        _localAABB = new BoundingBox(new Vector3(-20, -20, -20), new Vector3(20, 20, 20));
     }
     
     public override void Update(GameTime gameTime)

@@ -33,6 +33,8 @@ public class Tank : GameObject
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
         _velocity = 0f;
         _isMovingforward = true;
+        // Define local AABB for tank (approximate dimensions)
+        _localAABB = new BoundingBox(new Vector3(-50, -20, -50), new Vector3(50, 20, 50));
     }
     public void MoveForwardTank(GameTime gameTime)
     {
@@ -106,7 +108,7 @@ public class Tank : GameObject
         // Set the View and Projection matrices, needed to draw every 3D model.
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
+        //_effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
         var modelMeshesBaseTransform = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransform);
         foreach (var mesh in _model.Meshes)

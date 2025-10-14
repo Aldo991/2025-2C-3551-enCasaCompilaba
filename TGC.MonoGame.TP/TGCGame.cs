@@ -64,7 +64,7 @@ public class TGCGame : Game
         // Esto se hace por un problema en el diseno del modelo del logo de la materia.
         // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
         var rasterizerState = new RasterizerState();
-        rasterizerState.CullMode = CullMode.None;
+        rasterizerState.CullMode = CullMode.CullCounterClockwiseFace;
         GraphicsDevice.RasterizerState = rasterizerState;
         // Seria hasta aca.
         _pressingPause = false;
@@ -122,13 +122,25 @@ public class TGCGame : Game
 
         _hud.Update(_score, _life);
         if (Keyboard.GetState().IsKeyDown(Keys.W))
+        {
             _tank.MoveForwardTank(gameTime);
+            if (_gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects()))
+            {
+                _tank.MoveBackwardTank(gameTime); // Revert movement if collision
+            }
+        }
         if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S))
             _tank.DecelerateTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.A) && _tank.HasVelocity())
             _tank.RotateTankLeft(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.S))
+        {
             _tank.MoveBackwardTank(gameTime);
+            if (_gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects()))
+            {
+                _tank.MoveForwardTank(gameTime); // Revert movement if collision
+            }
+        }
         if (Keyboard.GetState().IsKeyDown(Keys.D) && _tank.HasVelocity())
             _tank.RotateTankRight(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.P) && !_pressingPause)

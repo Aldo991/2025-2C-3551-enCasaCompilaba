@@ -23,6 +23,8 @@ public class Wall : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        // Define local AABB for wall (approximate dimensions)
+        _localAABB = new BoundingBox(new Vector3(-50, -50, -10), new Vector3(50, 50, 10));
     }
 
     public void Rotate(float rotationDegrees)

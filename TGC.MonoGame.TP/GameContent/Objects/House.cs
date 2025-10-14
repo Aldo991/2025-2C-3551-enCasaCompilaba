@@ -22,6 +22,8 @@ public class House : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        // Define local AABB for house (approximate dimensions)
+        _localAABB = new BoundingBox(new Vector3(-100, -100, -100), new Vector3(100, 100, 100));
     }
 
     public override void Update(GameTime gameTime)

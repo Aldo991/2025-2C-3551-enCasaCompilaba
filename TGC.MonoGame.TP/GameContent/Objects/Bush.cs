@@ -14,14 +14,18 @@ public class Bush : GameObject
         Model model,
         Vector3 position,
         float scale = 1f,
-        float rotation = 0f)
+        float rotation = 0f,
+        Texture2D texture = null)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _position = position;
         _scale = scale;
+        _texture = texture;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        // Define local AABB for bush (approximate dimensions)
+        _localAABB = new BoundingBox(new Vector3(-15, -15, -15), new Vector3(15, 15, 15));
     }
 
     public override void Update(GameTime gameTime)

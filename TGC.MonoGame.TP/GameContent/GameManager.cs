@@ -16,7 +16,10 @@ GameManager las carga por una única vez, en vez de un LoadContent() en cada cla
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using TGC.MonoGame.TP;
+
 #endregion
 
 // namespace TGC.MonoGame.TP;
@@ -25,7 +28,7 @@ using System.IO;
 /// </summary>
 public class GameManager
 {
-    private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
+    private const string RootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
@@ -41,6 +44,7 @@ public class GameManager
     private Model[] _bushModels;
     private Model[] _houseModels;
     private Model[] _landModels;
+    private Texture2D[] _stoneTextures;
     private Model[] _stoneModels;
     private Model[] _tankModel;
     private Texture2D[] _tankTextures;
@@ -68,11 +72,12 @@ public class GameManager
         LoadLandModels(content);
 
         // Cargo los modelos de piedras
+        LoadStonesTextures(content);
         LoadStoneModels(content);
 
         // Cargo los modelos de tanques
-        LoadTankModels(content);
         LoadTankTextures(content);
+        LoadTankModels(content);
 
         // Cargo los modelos de árboles
         LoadTreeModels(content);
@@ -151,14 +156,24 @@ public class GameManager
             {
                 var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
                 _stoneModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderStones + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+                Effect effect = content.Load<Effect>(ContentFolderEffects + "StoneShader");
                 foreach (var mesh in _stoneModels[i].Meshes)
                 {
                     foreach (var meshPart in mesh.MeshParts)
+                    {
                         meshPart.Effect = effect;
+                        meshPart.Effect.Parameters["Texture"].SetValue(_stoneTextures[0]);
+                    }
                 }
             }
         }
+    }
+    
+    private void LoadStonesTextures(ContentManager content)
+    {
+        _stoneTextures = new Texture2D[1];
+        // _tankTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/");
+        _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
     }
 
     private void LoadTankModels(ContentManager content)
@@ -172,10 +187,14 @@ public class GameManager
                 var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
                 _tankModel[i] = content.Load<Model>(ContentFolder3D + ContentFolderTanks + "/" + pathWithoutExtension);
                 Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
+                //effect.CurrentTechnique = effect.Techniques["BasicTechnique"];
                 foreach (var mesh in _tankModel[i].Meshes)
                 {
                     foreach (var meshPart in mesh.MeshParts)
+                    {
                         meshPart.Effect = effect;
+                        meshPart.Effect.Parameters["Texture"].SetValue(_tankTextures[1]);
+                    }
                 }
             }
         }
@@ -264,5 +283,19 @@ public class GameManager
                 effect.Parameters["Texture"].SetValue(texture);
             }
         }
+    }
+
+    public bool CheckCollision(Tank tank, List<GameObject> staticObjects)
+    {
+        var tankAABB = tank.GetWorldAABB();
+        foreach (var obj in staticObjects)
+        {
+            var objAABB = obj.GetWorldAABB();
+            if (tankAABB.Intersects(objAABB))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
