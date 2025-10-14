@@ -1,7 +1,9 @@
-﻿﻿using System;
+﻿﻿#region Using Statements
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+#endregion
 
 namespace TGC.MonoGame.TP;
 
@@ -13,31 +15,22 @@ public class TGCGame : Game
     public const string ContentFolderSounds = "Sounds/";
     public const string ContentFolderSpriteFonts = "SpriteFonts/";
     public const string ContentFolderTextures = "Textures/";
-    
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private Hud _hud;
-    private int _score = 0;
-    private float _life = 1f;
-
     // Tanque del jugador
     private Tank _tank;
     private FollowCamera _camera;
     private ElementosLand _elementosLand;
-
-    private Vector3 CameraPosition = new Vector3(4900f, 2350f, 2200f);
-
     private GameManager _gameManager;
-    private bool _pressingPause;
-    private bool _isPause;
+    private ProjectileManager _projectileManager;
+    private TankManager _tankManager;
 
     /// <summary>
     ///     Constructor del juego.
     /// </summary>
     public TGCGame()
     {
-        _gameManager = new GameManager();
-
         // Maneja la configuracion y la administracion del dispositivo grafico.
         _graphics = new GraphicsDeviceManager(this);
         Window.Title = "TankWars";
@@ -58,22 +51,14 @@ public class TGCGame : Game
     /// </summary>
     protected override void Initialize()
     {
-        // La logica de inicializacion que no depende del contenido se recomienda poner en este metodo.
+        _gameManager = new GameManager();
+        _projectileManager = new ProjectileManager();
+        _tankManager = new TankManager();
 
-        // Apago el backface culling.
-        // Esto se hace por un problema en el diseno del modelo del logo de la materia.
-        // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
-        var rasterizerState = new RasterizerState();
-        rasterizerState.CullMode = CullMode.None;
-        GraphicsDevice.RasterizerState = rasterizerState;
-        // Seria hasta aca.
-        _pressingPause = false;
-
-        Vector3 targetPosition = new Vector3(1000f, 490f, 500f);
         int centerX = GraphicsDevice.Viewport.Width / 2;
         int centerY = GraphicsDevice.Viewport.Height / 2;
         float radius = 50000;
-        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, CameraPosition, targetPosition, centerX, centerY, radius);
+        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
         
         base.Initialize();
     }
@@ -95,7 +80,8 @@ public class TGCGame : Game
         var tankPosition = new Vector3(1000, 490, 500);
         var tankTexture = _gameManager.GetTexture("tank", 0);
         _tank = new Tank(tankModel, tankPosition, 1f, 0f, tankTexture);
-        
+        var projectileModel = _gameManager.GetModel("projectile", 0);
+        _tank.SetProjectileModel(projectileModel);
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects, _gameManager);
         // acá cargamos TODOS los elementos del escenario
@@ -116,11 +102,7 @@ public class TGCGame : Game
 
         // Capturar Input teclado
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-        {
             Exit();
-        }
-
-        _hud.Update(_score, _life);
         if (Keyboard.GetState().IsKeyDown(Keys.W))
             _tank.MoveForwardTank(gameTime);
         if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S))
@@ -131,26 +113,51 @@ public class TGCGame : Game
             _tank.MoveBackwardTank(gameTime);
         if (Keyboard.GetState().IsKeyDown(Keys.D) && _tank.HasVelocity())
             _tank.RotateTankRight(gameTime);
-        if (Keyboard.GetState().IsKeyDown(Keys.P) && !_pressingPause)
+        if (Keyboard.GetState().IsKeyDown(Keys.P) && !_gameManager.IsPressingPause)
         {
-            _pressingPause = true;
             IsMouseVisible = Pause();
+            _gameManager.IsPressingPause = true;
         }
-        if (Keyboard.GetState().IsKeyUp(Keys.P) && _pressingPause)
-            _pressingPause = false;
-        if (!_isPause)
+        if (Keyboard.GetState().IsKeyUp(Keys.P) && _gameManager.IsPressingPause)
+            _gameManager.IsPressingPause = false;
+        if (Keyboard.GetState().IsKeyDown(Keys.F) && !_tank.IsShooting)
+        {
+            Projectile p = _tank.Shoot();
+            _projectileManager.AddProjectile(p);
+            _tank.IsShooting = true;
+        }
+        if (Keyboard.GetState().IsKeyUp(Keys.F) && _tank.IsShooting)
+            _tank.IsShooting = false;
+
+        /************************ BORRAR ************************
+        if (Keyboard.GetState().IsKeyDown(Keys.Up) && !_pressingUp)
+        {
+            _tank.AumentarNumeroEnUno();
+            _pressingUp = true;
+        }
+        if (Keyboard.GetState().IsKeyUp(Keys.Up) && _pressingUp)
+            _pressingUp = false;
+        if (Keyboard.GetState().IsKeyDown(Keys.Down) && !_pressingDown)
+        {
+            _tank.DisminuirNumeroEnUno();
+            _pressingDown = true;
+        }
+        if (Keyboard.GetState().IsKeyUp(Keys.Down) && _pressingDown)
+            _pressingDown = false;
+        ************************ BORRAR ************************/
+
+        if (!_gameManager.IsPause)
         {
             int mousePositionX = Mouse.GetState().X;
             int mousePositionY = Mouse.GetState().Y;
             _tank.Update(gameTime);
             _camera.UpdateCamera(_tank.Position, mousePositionX, mousePositionY);
+            _projectileManager.Update(gameTime);
             // Window.
             int width = GraphicsDevice.Viewport.Width;
             int height = GraphicsDevice.Viewport.Height;
             Mouse.SetPosition(width / 2, height / 2);
         }
-
-
         base.Update(gameTime);
     }
 
@@ -164,17 +171,23 @@ public class TGCGame : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
+        // Mesh
+
         _elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
 
         _tank.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
 
-        _hud.Draw(_spriteBatch, GraphicsDevice, _tank.Position.X, _tank.Position.Y, _tank.Position.Z);
+        _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+
+        _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+
+        _hud.Draw(_spriteBatch, GraphicsDevice, _tank);
     }
 
     private bool Pause()
     {
-        var actualPause = _isPause;
-        _isPause = !_isPause;
+        var actualPause = _gameManager.IsPause;
+        _gameManager.IsPause = !_gameManager.IsPause;
         if (actualPause)
             return false;
         else

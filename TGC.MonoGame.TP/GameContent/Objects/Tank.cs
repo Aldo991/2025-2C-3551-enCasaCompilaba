@@ -1,4 +1,5 @@
 #region Using Statements
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -10,12 +11,15 @@ public class Tank : GameObject
     private const float TankMaxSpeed = 40f; // Unidades por segundo
     private const float RotationSpeed = 1.5f; // Radianes por segundo
     private const float Acceleration = 4f; // Aceleracion del tanque
-    private Model _model;
     private Effect _effect;
     private Vector3 _tankFrontDirection;
+    private Matrix[] _boneTransforms;
     private bool _isMovingforward;
-    private float _velocity; // Velocidad actual del tanque
-
+    private float _velocity;
+    private Model _projectileModel;
+    private bool _isShooting;
+    private float _life;
+    private int _score;
     public Tank(
         Model model,
         Vector3 position,
@@ -31,8 +35,25 @@ public class Tank : GameObject
         _texture = texture;
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
+        _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
+        _boneTransforms = new Matrix[model.Bones.Count];
+    }
+    public bool IsShooting
+    {
+        get => _isShooting;
+        set => _isShooting = value;
+    }
+    public float Life
+    {
+        get => _life;
+        set => _life = value;
+    }
+    public int Score
+    {
+        get => _score;
+        set => _score = value;
     }
     public void MoveForwardTank(GameTime gameTime)
     {
@@ -97,8 +118,28 @@ public class Tank : GameObject
             _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
         }
     }
+    public Projectile Shoot()
+    {
+        ModelBone turretBone = _model.Bones[31];
+        Matrix turretWorld = _boneTransforms[turretBone.Index];
+        Matrix turretWorldPos = turretWorld * _world;
+        Vector3 turretPos = turretWorldPos.Translation;
+        Vector3 turretDirection = turretWorldPos.Up;
+        // Console.WriteLine($"{turretDirection} dirección de la torreta");
+        return new Projectile(_projectileModel, turretPos, turretDirection);
+    }
+    public Model ProjectileModel
+    {
+        get => _projectileModel;
+        set => _projectileModel = value;
+    }
+    public void SetProjectileModel(Model model)
+    {
+        _projectileModel = model;
+    }
     public override void Update(GameTime gameTime)
     {
+        _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)

@@ -8,12 +8,11 @@ namespace TGC.MonoGame.TP;
 public class Wall : GameObject
 {
     private Effect _effect;
-    private Model _model;
     
     public Wall(
         Model model,
         Vector3 position,
-        float scale = 1f,
+        float scale = 0.05f,
         float rotation = 0f
         )
     {

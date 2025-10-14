@@ -7,7 +7,6 @@ namespace TGC.MonoGame.TP;
 
 public class Tree : GameObject
 {
-    private Model _model;
     private Effect _effect;
 
     public Tree(

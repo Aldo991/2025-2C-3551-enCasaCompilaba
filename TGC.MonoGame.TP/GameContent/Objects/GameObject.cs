@@ -18,6 +18,7 @@ namespace TGC.MonoGame.TP;
 
 public abstract class GameObject
 {
+    protected Model _model;
     protected Matrix _world { get; set; }
     protected Vector3 _position { get; set; }
     protected float _scale { get; set; }

@@ -17,7 +17,7 @@ public class Land // : GameObject
     public Land(
         Model model,
         Vector3 position,
-        float scale = 4f,
+        float scale = 1f,
         float rotation = 0f
         )
     {
@@ -33,7 +33,6 @@ public class Land // : GameObject
     {
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

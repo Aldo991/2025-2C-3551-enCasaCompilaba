@@ -16,7 +16,9 @@ GameManager las carga por una única vez, en vez de un LoadContent() en cada cla
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using TGC.MonoGame.TP;
 #endregion
 
 // namespace TGC.MonoGame.TP;
@@ -25,12 +27,14 @@ using System.IO;
 /// </summary>
 public class GameManager
 {
+    private static GameManager instance;
     private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
     private const string ContentFolderHouses = "/houses";
     private const string ContentFolderLands = "/land";
+    private const string ContentFolderProjectiles = "/projectiles";
     private const string ContentFolderStones = "/stones";
     private const string ContentFolderTanks = "/tanks";
     // private const string ContentFolderHuds = "/hud";
@@ -41,20 +45,41 @@ public class GameManager
     private Model[] _bushModels;
     private Model[] _houseModels;
     private Model[] _landModels;
+    private Model[] _projectileModels;
     private Model[] _stoneModels;
     private Model[] _tankModel;
     private Texture2D[] _tankTextures;
     private Model[] _treeModels;
     private Model[] _wallModels;
-    /*
-    private Model _hudModels[];
-    */
-
-    public GameManager()
+    private List<GameObject> _gameObjects;
+    private bool _isPause;
+    private bool _isPressingPause;
+    public static GameManager Instance
     {
-
+        get
+        {
+            if (instance == null)
+            {
+                instance = new GameManager();
+            }
+            return instance;
+        }
     }
-
+    public void Initialize()
+    {
+        _gameObjects = new List<GameObject>();
+        _isPause = false;
+    }
+    public bool IsPause
+    {
+        get => _isPause;
+        set => _isPause = value;
+    }
+    public bool IsPressingPause
+    {
+        get => _isPressingPause;
+        set => _isPressingPause = value;
+    }
     // LoadModels carga los modelos 3D
     public void LoadModels(ContentManager content)
     {
@@ -66,6 +91,9 @@ public class GameManager
 
         // Cargo los modelos de terrenos
         LoadLandModels(content);
+
+        // Cargo los modelos de los proyectiles
+        LoadProjectileModels(content);
 
         // Cargo los modelos de piedras
         LoadStoneModels(content);
@@ -138,6 +166,26 @@ public class GameManager
                         meshPart.Effect = effect;
                 }
             }
+        }
+    }
+
+    private void LoadProjectileModels(ContentManager content)
+    {
+        if (_projectileModels == null)
+        {
+            var paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
+            _projectileModels = new Model[paths.Length];
+            for (int i = 0; i < paths.Length; i++)
+            {
+                var pathWithoutExtension = Path.GetFileNameWithoutExtension(paths[i]);
+                _projectileModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderProjectiles + "/" + pathWithoutExtension);
+                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+                foreach (var mesh in _projectileModels[i].Meshes)
+                {
+                    foreach (var meshPart in mesh.MeshParts)
+                        meshPart.Effect = effect;
+                }
+            }            
         }
     }
 
@@ -237,6 +285,7 @@ public class GameManager
             "house" => _houseModels[index],
             "bush" => _bushModels[index],
             "land" => _landModels[index],
+            "projectile" => _projectileModels[index],
             "stone" => _stoneModels[index],
             "tank" => _tankModel[index],
             "tree" => _treeModels[index],

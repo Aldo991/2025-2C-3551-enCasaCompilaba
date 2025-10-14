@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿#region Using Statements
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+#endregion
 
 namespace TGC.MonoGame.TP;
 
@@ -9,9 +11,6 @@ internal class Hud
     private readonly SpriteFont _font;
     private readonly Texture2D _lifeBarTexture;
 
-    private int _score;
-    private float _life;
-
     public Hud(ContentManager content)
     {
         _font = content.Load<SpriteFont>("hud/DefaultFont");
@@ -19,17 +18,15 @@ internal class Hud
         _lifeBarTexture = content.Load<Texture2D>("hud/health");
 
         // Valores iniciales
-        _score = 0;
-        _life = 1f;  // de 0 a 1
     }
-
-    public void Update(int score, float life)
+    /*
+    public void Update(Tank tank)
     {
-        _score = score;
-        _life = MathHelper.Clamp(life, 0f,1f);
+        _score = tank.Score;
+        _life = MathHelper.Clamp(tank.Life, 0f,1f);
     }
-
-    public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, float x, float y, float z)
+    */
+    public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, Tank player)
     {
         var viewport = graphicsDevice.Viewport;
         var screenWidth = viewport.Width;
@@ -38,11 +35,10 @@ internal class Hud
         spriteBatch.Begin();
 
         // Score en la esquina superior izquierda
-        spriteBatch.DrawString(_font, $"Bajas: {_score}", new Vector2(20, 20), Color.White);
-        spriteBatch.DrawString(_font, $"Muertes: {_score}", new Vector2(20, 40), Color.White);
-        spriteBatch.DrawString(_font, $"X: {x}", new Vector2(20, 60), Color.White);
-        spriteBatch.DrawString(_font, $"Y: {y}", new Vector2(20, 80), Color.White);
-        spriteBatch.DrawString(_font, $"Z: {z}", new Vector2(20, 100), Color.White);
+        spriteBatch.DrawString(_font, $"Bajas/Muertes: {player.Score}", new Vector2(20, 20), Color.White);
+        spriteBatch.DrawString(_font, $"X: {player.Position.X}", new Vector2(20, 60), Color.White);
+        spriteBatch.DrawString(_font, $"Y: {player.Position.Y}", new Vector2(20, 80), Color.White);
+        spriteBatch.DrawString(_font, $"Z: {player.Position.Z}", new Vector2(20, 100), Color.White);
 
         float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
         float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla
@@ -58,7 +54,7 @@ internal class Hud
         // Barra de vida
         spriteBatch.Draw(
             _lifeBarTexture,
-            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * _life), lifeBarHeight),
+            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * player.Life), lifeBarHeight),
             Color.Red
         );
 
