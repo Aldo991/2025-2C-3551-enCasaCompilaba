@@ -28,7 +28,7 @@ using TGC.MonoGame.TP;
 /// </summary>
 public class GameManager
 {
-    private const string RootDirectory = "C:/UsersMV_E91236/OneDrive - Red Link S.A/Documentos/Eclipse_Workspace/Repos_Locales/Utn/TGC/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
+    private const string RootDirectory = "C:/UsersMV_E91236/OneDrive - Red Link S.A/Documentos/Eclipse_Workspace/Repos_Locales/Utn/TGC/2025-2C-3551-enCasaCompilaba/2025-2C-3551-enCasaCompilaba/Content/";
     //private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
