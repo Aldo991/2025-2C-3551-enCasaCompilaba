@@ -404,6 +404,16 @@ namespace TGC.MonoGame.TP
             return staticObjects;
         }
 
+        public void RemoveStone(Stone stone)
+        {
+            _stones.Remove(stone);
+        }
+
+        public void RemoveBush(Bush bush)
+        {
+            _bushes.Remove(bush);
+        }
+
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
             foreach (var land in _landElements)

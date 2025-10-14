@@ -14,7 +14,8 @@ public class Wall : GameObject
         Model model,
         Vector3 position,
         float scale = 1f,
-        float rotation = 0f
+        float rotation = 0f,
+        Texture2D texture = null
         )
     {
         _model = model;
@@ -47,7 +48,7 @@ public class Wall : GameObject
         // Set the View and Projection matrices, needed to draw every 3D model.
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
+        //_effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

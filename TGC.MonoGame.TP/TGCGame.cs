@@ -124,9 +124,25 @@ public class TGCGame : Game
         if (Keyboard.GetState().IsKeyDown(Keys.W))
         {
             _tank.MoveForwardTank(gameTime);
-            if (_gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects()))
+            var collidedObjects = _gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects());
+            if (collidedObjects.Count > 0)
             {
-                _tank.MoveBackwardTank(gameTime); // Revert movement if collision
+                foreach (var obj in collidedObjects)
+                {
+                    if (obj is Stone stone)
+                    {
+                        _elementosLand.RemoveStone(stone);
+                    }
+                    else if (obj is Bush bush)
+                    {
+                        _elementosLand.RemoveBush(bush);
+                    }
+                    else
+                    {
+                        _tank.MoveBackwardTank(gameTime); // Revert movement for other objects
+                        break;
+                    }
+                }
             }
         }
         if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S))
@@ -136,9 +152,25 @@ public class TGCGame : Game
         if (Keyboard.GetState().IsKeyDown(Keys.S))
         {
             _tank.MoveBackwardTank(gameTime);
-            if (_gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects()))
+            var collidedObjects = _gameManager.CheckCollision(_tank, _elementosLand.GetStaticObjects());
+            if (collidedObjects.Count > 0)
             {
-                _tank.MoveForwardTank(gameTime); // Revert movement if collision
+                foreach (var obj in collidedObjects)
+                {
+                    if (obj is Stone stone)
+                    {
+                        _elementosLand.RemoveStone(stone);
+                    }
+                    else if (obj is Bush bush)
+                    {
+                        _elementosLand.RemoveBush(bush);
+                    }
+                    else
+                    {
+                        _tank.MoveForwardTank(gameTime); // Revert movement for other objects
+                        break;
+                    }
+                }
             }
         }
         if (Keyboard.GetState().IsKeyDown(Keys.D) && _tank.HasVelocity())
@@ -156,6 +188,7 @@ public class TGCGame : Game
             int mousePositionY = Mouse.GetState().Y;
             _tank.Update(gameTime);
             _camera.UpdateCamera(_tank.Position, mousePositionX, mousePositionY);
+            _tank.SetTurretRotation(_camera.HorizontalAngle);
             // Window.
             int width = GraphicsDevice.Viewport.Width;
             int height = GraphicsDevice.Viewport.Height;

@@ -28,7 +28,8 @@ using TGC.MonoGame.TP;
 /// </summary>
 public class GameManager
 {
-    private const string RootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
+    private const string RootDirectory = "C:/UsersMV_E91236/OneDrive - Red Link S.A/Documentos/Eclipse_Workspace/Repos_Locales/Utn/TGC/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
+    //private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
@@ -50,6 +51,7 @@ public class GameManager
     private Texture2D[] _tankTextures;
     private Model[] _treeModels;
     private Model[] _wallModels;
+    private Texture2D[] _wallTextures;
     /*
     private Model _hudModels[];
     */
@@ -83,6 +85,7 @@ public class GameManager
         LoadTreeModels(content);
 
         // Cargo los modelos de muros
+        LoadWallTextures(content);
         LoadWallModels(content);
     }
 
@@ -172,7 +175,6 @@ public class GameManager
     private void LoadStonesTextures(ContentManager content)
     {
         _stoneTextures = new Texture2D[1];
-        // _tankTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/");
         _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
     }
 
@@ -209,6 +211,7 @@ public class GameManager
         _tankTextures[2] = content.Load<Texture2D>("Textures/tanks/T90/hullC");
     }
 
+
     private void LoadTreeModels(ContentManager content)
     {
         if (_treeModels == null)
@@ -229,6 +232,12 @@ public class GameManager
         }
     }
 
+    private void LoadWallTextures(ContentManager content)
+    {
+        _wallTextures = new Texture2D[1];
+        _wallTextures[0] = content.Load<Texture2D>("Textures/walls/concrete");
+    }
+
     private void LoadWallModels(ContentManager content)
     {
         if (_wallModels == null)
@@ -239,11 +248,14 @@ public class GameManager
             {
                 var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
                 _wallModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderWalls + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+                Effect effect = content.Load<Effect>(ContentFolderEffects + "WallShader");
                 foreach (var mesh in _wallModels[i].Meshes)
                 {
                     foreach (var meshPart in mesh.MeshParts)
+                    {
                         meshPart.Effect = effect;
+                        meshPart.Effect.Parameters["Texture"].SetValue(_wallTextures[0]);
+                    }
                 }
             }
         }
@@ -285,17 +297,18 @@ public class GameManager
         }
     }
 
-    public bool CheckCollision(Tank tank, List<GameObject> staticObjects)
+    public List<GameObject> CheckCollision(Tank tank, List<GameObject> staticObjects)
     {
+        var collidedObjects = new List<GameObject>();
         var tankAABB = tank.GetWorldAABB();
         foreach (var obj in staticObjects)
         {
             var objAABB = obj.GetWorldAABB();
             if (tankAABB.Intersects(objAABB))
             {
-                return true;
+                collidedObjects.Add(obj);
             }
         }
-        return false;
+        return collidedObjects;
     }
 }

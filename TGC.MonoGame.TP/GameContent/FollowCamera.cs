@@ -82,4 +82,5 @@ public class FollowCamera
 
     public Matrix ViewMatrix => View;
     public Matrix ProjectionMatrix => Projection;
+    public float HorizontalAngle => HorizontalAngle;
 }

@@ -15,6 +15,7 @@ public class Tank : GameObject
     private Vector3 _tankFrontDirection;
     private bool _isMovingforward;
     private float _velocity; // Velocidad actual del tanque
+    private float _turretRotation; // Rotación de la torreta
 
     public Tank(
         Model model,
@@ -33,6 +34,7 @@ public class Tank : GameObject
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
         _velocity = 0f;
         _isMovingforward = true;
+        _turretRotation = 0f;
         // Define local AABB for tank (approximate dimensions)
         _localAABB = new BoundingBox(new Vector3(-50, -20, -50), new Vector3(50, 20, 50));
     }
@@ -87,6 +89,10 @@ public class Tank : GameObject
     {
         RotateTank(gameTime, false);
     }
+    public void SetTurretRotation(float rotation)
+    {
+        _turretRotation = rotation;
+    }
     private void RotateTank(GameTime gameTime, bool right)
     {
         if (_velocity > 0)
@@ -111,13 +117,21 @@ public class Tank : GameObject
         //_effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
         var modelMeshesBaseTransform = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransform);
+        int meshIndex = 0;
         foreach (var mesh in _model.Meshes)
         {
             var relativeTransform = modelMeshesBaseTransform[mesh.ParentBone.Index];
-            _effect.Parameters["World"].SetValue(relativeTransform * _world);
+            Matrix worldMatrix = relativeTransform * _world;
+            // Apply additional turret rotation to the second mesh (assuming it's the turret)
+            if (meshIndex == 1)
+            {
+                worldMatrix = Matrix.CreateRotationY(_turretRotation) * worldMatrix;
+            }
+            _effect.Parameters["World"].SetValue(worldMatrix);
             if (_texture != null)
                 _effect.Parameters["Texture"].SetValue(_texture);
             mesh.Draw();
+            meshIndex++;
         }
     }
 }
