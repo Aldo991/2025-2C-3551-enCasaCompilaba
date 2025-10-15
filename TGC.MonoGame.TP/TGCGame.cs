@@ -52,6 +52,7 @@ public class TGCGame : Game
     protected override void Initialize()
     {
         _gameManager = new GameManager();
+        _gameManager.Initialize();
         _projectileManager = new ProjectileManager();
         _tankManager = new TankManager();
 

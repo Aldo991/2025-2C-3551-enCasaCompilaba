@@ -13,7 +13,7 @@ public class StaticObjectManager
     private List<GameObject> _staticObjects;
     public StaticObjectManager(List<GameObject> gameObject = null)
     {
-        if (_staticObjects != null)
+        if (gameObject != null)
             _staticObjects = new List<GameObject>(gameObject);
         else
             _staticObjects = new List<GameObject>();

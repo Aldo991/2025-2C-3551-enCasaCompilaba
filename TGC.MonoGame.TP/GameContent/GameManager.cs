@@ -28,8 +28,7 @@ using TGC.MonoGame.TP;
 public class GameManager
 {
     private static GameManager instance;
-    private const string RootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/Nueva Carpeta/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
-    //private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
+    // private const string _rootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/Nueva Carpeta/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
@@ -42,6 +41,7 @@ public class GameManager
     private const string ContentFolderTrees = "/trees";
     private const string ContentFolderWalls = "/walls";
     private const string ContentFolderEffects = "Effects/";
+    private string _rootDirectory; // = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
 
     private Model[] _bushModels;
     private Model[] _houseModels;
@@ -71,6 +71,9 @@ public class GameManager
     {
         _gameObjects = new List<GameObject>();
         _isPause = false;
+        var aux1 = Directory.GetCurrentDirectory();
+        _rootDirectory = Directory.GetParent(aux1).Parent.Parent.FullName;
+        _rootDirectory += "/Content/";
     }
     public bool IsPause
     {
@@ -116,7 +119,7 @@ public class GameManager
     {
         if (_bushModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderBushes + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderBushes + "/", "*.fbx");
             _bushModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -136,7 +139,7 @@ public class GameManager
     {
         if (_houseModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderHouses + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderHouses + "/", "*.fbx");
             _houseModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -156,7 +159,7 @@ public class GameManager
     {
         if (_landModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderLands + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderLands + "/", "*.fbx");
             _landModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -176,7 +179,7 @@ public class GameManager
     {
         if (_projectileModels == null)
         {
-            var paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
+            var paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
             _projectileModels = new Model[paths.Length];
             for (int i = 0; i < paths.Length; i++)
             {
@@ -203,7 +206,7 @@ public class GameManager
     {
         if (_stoneModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderStones + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderStones + "/", "*.fbx");
             _stoneModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -226,7 +229,7 @@ public class GameManager
     {
         if (_tankModel == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
             _tankModel = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -255,7 +258,7 @@ public class GameManager
     {
         if (_treeModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderTrees + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTrees + "/", "*.fbx");
             _treeModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
@@ -275,7 +278,7 @@ public class GameManager
     {
         if (_wallModels == null)
         {
-            var _paths = Directory.GetFiles(RootDirectory + ContentFolder3D + ContentFolderWalls + "/", "*.fbx");
+            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderWalls + "/", "*.fbx");
             _wallModels = new Model[_paths.Length];
             for (int i = 0; i < _paths.Length; i++)
             {
