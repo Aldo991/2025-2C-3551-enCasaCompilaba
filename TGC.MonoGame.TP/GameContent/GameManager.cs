@@ -28,7 +28,8 @@ using TGC.MonoGame.TP;
 public class GameManager
 {
     private static GameManager instance;
-    private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
+    private const string RootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/Nueva Carpeta/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
+    //private const string RootDirectory = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderTextures = "Textures";
     private const string ContentFolderBushes = "/bushes";
@@ -47,6 +48,7 @@ public class GameManager
     private Model[] _landModels;
     private Model[] _projectileModels;
     private Model[] _stoneModels;
+    private Texture2D[] _stoneTextures;
     private Model[] _tankModel;
     private Texture2D[] _tankTextures;
     private Model[] _treeModels;
@@ -96,6 +98,7 @@ public class GameManager
         LoadProjectileModels(content);
 
         // Cargo los modelos de piedras
+        LoadStonesTextures(content);
         LoadStoneModels(content);
 
         // Cargo los modelos de tanques
@@ -189,6 +192,13 @@ public class GameManager
         }
     }
 
+    private void LoadStonesTextures(ContentManager content)
+    {
+        _stoneTextures = new Texture2D[1];
+        _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
+    }
+
+
     private void LoadStoneModels(ContentManager content)
     {
         if (_stoneModels == null)
@@ -199,11 +209,14 @@ public class GameManager
             {
                 var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
                 _stoneModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderStones + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+                Effect effect = content.Load<Effect>(ContentFolderEffects + "StoneShader");
                 foreach (var mesh in _stoneModels[i].Meshes)
                 {
                     foreach (var meshPart in mesh.MeshParts)
+                    {
                         meshPart.Effect = effect;
+                        meshPart.Effect.Parameters["Texture"].SetValue(_stoneTextures[0]);
+                    }
                 }
             }
         }

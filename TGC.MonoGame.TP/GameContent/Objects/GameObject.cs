@@ -24,6 +24,9 @@ public abstract class GameObject
     protected float _scale { get; set; }
     protected float _rotation { get; set; }
     protected Texture2D _texture { get; set; }
+    protected BoundingBox _boundingBox { get; set; }
+    protected float _collisionRadius { get; set; }
+
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
 
@@ -46,5 +49,15 @@ public abstract class GameObject
     {
         get => _texture;
         set => _texture = value;
+    }
+    public BoundingBox BoundingBox
+    {
+        get => _boundingBox;
+        set => _boundingBox = value;
+    }
+    public float CollisionRadius
+    {
+        get => _collisionRadius;
+        set => _collisionRadius = value;
     }
 }

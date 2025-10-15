@@ -1,4 +1,6 @@
 #region Using Statements
+
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -410,5 +412,84 @@ namespace TGC.MonoGame.TP
             /*
             */
         }
+
+        public bool CheckCollisionMesh(GameObject tank, Vector3 newPosition)
+        {
+            if (tank is not Tank t)
+                return false;
+
+            // Crear world matrix hipotética del tanque en su nueva posición
+            var newWorld = Matrix.CreateScale(tank.Scale) *
+                           Matrix.CreateRotationY(tank.Rotation) *
+                           Matrix.CreateTranslation(newPosition);
+
+            var tankVertices = GetTransformedVertices(t.Model, newWorld);
+
+            // Comparar con cada casa
+            foreach (var house in _houses)
+            {
+                var houseWorld = Matrix.CreateScale(house.Scale) *
+                                 Matrix.CreateRotationY(house.Rotation) *
+                                 Matrix.CreateTranslation(house.Position);
+
+                var houseVertices = GetTransformedVertices(house.Model, houseWorld);
+
+                // Chequear colisión: si algún vértice del tanque entra dentro del volumen de la casa
+                foreach (var v in tankVertices)
+                {
+                    if (IsPointInsideMesh(v, houseVertices))
+                        return true; // colisión detectada
+                }
+            }
+
+            return false;
+        }
+
+        private List<Vector3> GetTransformedVertices(Model model, Matrix world)
+        {
+            var vertices = new List<Vector3>();
+
+            foreach (var mesh in model.Meshes)
+            {
+                foreach (var part in mesh.MeshParts)
+                {
+                    var vertexBuffer = part.VertexBuffer;
+                    var vertexSize = vertexBuffer.VertexDeclaration.VertexStride;
+                    var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
+                    vertexBuffer.GetData(vertexData);
+
+                    for (int i = 0; i < vertexBuffer.VertexCount; i++)
+                    {
+                        var position = new Vector3(
+                            BitConverter.ToSingle(vertexData, i * vertexSize),
+                            BitConverter.ToSingle(vertexData, i * vertexSize + 4),
+                            BitConverter.ToSingle(vertexData, i * vertexSize + 8)
+                        );
+                        position = Vector3.Transform(position, world);
+                        vertices.Add(position);
+                    }
+                }
+            }
+
+            return vertices;
+        }
+
+        private bool IsPointInsideMesh(Vector3 point, List<Vector3> meshVertices)
+        {
+            Vector3 min = Vector3.One * float.MaxValue;
+            Vector3 max = Vector3.One * float.MinValue;
+
+            foreach (var v in meshVertices)
+            {
+                min = Vector3.Min(min, v);
+                max = Vector3.Max(max, v);
+            }
+
+            // Si el punto está dentro de los límites del modelo (en los tres ejes)
+            return (point.X >= min.X && point.X <= max.X &&
+                    point.Y >= min.Y && point.Y <= max.Y &&
+                    point.Z >= min.Z && point.Z <= max.Z);
+        }
+
     }
 }

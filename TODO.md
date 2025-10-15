@@ -1,0 +1,6 @@
+- [ ] Add CollisionRadius property to GameObject.cs
+- [ ] Update all GameObject subclasses (Tank, Stone, Bush, House, Tree, Wall) to set CollisionRadius in constructors
+- [ ] Add ElementosLand reference to Tank and modify constructor
+- [ ] Add CheckCollision method to ElementosLand.cs that checks distance between tank position and object positions using radii
+- [ ] Modify Tank movement methods (MoveForwardTank, MoveBackwardTank, DecelerateTank) to check collisions before moving: if collision with stone or bush, remove them; else, stop movement
+- [ ] Update TGCGame.cs to pass ElementosLand to Tank constructor

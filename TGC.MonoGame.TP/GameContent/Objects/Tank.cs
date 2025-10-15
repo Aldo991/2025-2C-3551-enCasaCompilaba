@@ -1,4 +1,6 @@
 #region Using Statements
+
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,12 +22,49 @@ public class Tank : GameObject
     private bool _isShooting;
     private float _life;
     private int _score;
+    private ElementosLand _elementosLand;
+
+    private BoundingBox CreateBoundingBox(Model model, Matrix world)
+    {
+        Vector3 min = Vector3.One * float.MaxValue;
+        Vector3 max = Vector3.One * float.MinValue;
+
+        foreach (var mesh in model.Meshes)
+        {
+            foreach (var meshPart in mesh.MeshParts)
+            {
+                var vertexBuffer = meshPart.VertexBuffer;
+                var declaration = vertexBuffer.VertexDeclaration;
+                var vertexSize = declaration.VertexStride;
+                var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
+                vertexBuffer.GetData(vertexData);
+
+                for (int i = 0; i < vertexBuffer.VertexCount; i++)
+                {
+                    var position = new Vector3(
+                        BitConverter.ToSingle(vertexData, i * vertexSize),
+                        BitConverter.ToSingle(vertexData, i * vertexSize + 4),
+                        BitConverter.ToSingle(vertexData, i * vertexSize + 8)
+                    );
+                    position = Vector3.Transform(position, world);
+
+                    min = Vector3.Min(min, position);
+                    max = Vector3.Max(max, position);
+                }
+            }
+        }
+
+        return new BoundingBox(min, max);
+    }
     public Tank(
         Model model,
         Vector3 position,
         float scale = 1f,
         float rotation = 0f,
-        Texture2D texture = null)
+        Texture2D texture = null,
+        ElementosLand elementosLand = null
+        
+        )
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
@@ -33,13 +72,23 @@ public class Tank : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _texture = texture;
+        _elementosLand = elementosLand;
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        _boundingBox = CreateBoundingBox(model, _world);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
         _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
         _boneTransforms = new Matrix[model.Bones.Count];
-    }
+        _collisionRadius = 60f; // Set collision radius for tank
+        
+    } 
+    public Model Model => _model; 
+    public Vector3 Position => _position;
+    public float Scale => _scale;
+    public float Rotation => _rotation;
+    
+    
     public bool IsShooting
     {
         get => _isShooting;
@@ -65,6 +114,7 @@ public class Tank : GameObject
                 _velocity = TankMaxSpeed;
             _position += _tankFrontDirection * _velocity;
             _isMovingforward = true;
+            
         }
         else
             DecelerateTank(gameTime);
@@ -141,6 +191,7 @@ public class Tank : GameObject
     {
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        _boundingBox = CreateBoundingBox(_model, _world);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {

@@ -77,7 +77,7 @@ public class TGCGame : Game
         _hud = new Hud(Content);
 
         var tankModel = _gameManager.GetModel("tank", 0);
-        var tankPosition = new Vector3(1000, 490, 500);
+        var tankPosition = new Vector3(320, 490, 300);
         var tankTexture = _gameManager.GetTexture("tank", 0);
         _tank = new Tank(tankModel, tankPosition, 1f, 0f, tankTexture);
         var projectileModel = _gameManager.GetModel("projectile", 0);

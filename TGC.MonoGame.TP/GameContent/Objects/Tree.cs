@@ -1,4 +1,6 @@
 #region Using Statements
+
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -8,6 +10,39 @@ namespace TGC.MonoGame.TP;
 public class Tree : GameObject
 {
     private Effect _effect;
+
+    private BoundingBox CreateBoundingBox(Model model, Matrix world)
+    {
+        Vector3 min = Vector3.One * float.MaxValue;
+        Vector3 max = Vector3.One * float.MinValue;
+
+        foreach (var mesh in model.Meshes)
+        {
+            foreach (var meshPart in mesh.MeshParts)
+            {
+                var vertexBuffer = meshPart.VertexBuffer;
+                var declaration = vertexBuffer.VertexDeclaration;
+                var vertexSize = declaration.VertexStride;
+                var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
+                vertexBuffer.GetData(vertexData);
+
+                for (int i = 0; i < vertexBuffer.VertexCount; i++)
+                {
+                    var position = new Vector3(
+                        BitConverter.ToSingle(vertexData, i * vertexSize),
+                        BitConverter.ToSingle(vertexData, i * vertexSize + 4),
+                        BitConverter.ToSingle(vertexData, i * vertexSize + 8)
+                    );
+                    position = Vector3.Transform(position, world);
+
+                    min = Vector3.Min(min, position);
+                    max = Vector3.Max(max, position);
+                }
+            }
+        }
+
+        return new BoundingBox(min, max);
+    }
 
     public Tree(
         Model model,
@@ -21,6 +56,8 @@ public class Tree : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(_position);
+        _boundingBox = CreateBoundingBox(model, _world);
+        _collisionRadius = 40f; // Set collision radius for trees
     }
     
     public override void Update(GameTime gameTime)
