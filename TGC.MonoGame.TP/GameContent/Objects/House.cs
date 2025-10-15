@@ -57,7 +57,7 @@ public class House : GameObject
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
-        _collisionRadius = 100f; // Set collision radius for houses
+        _collisionRadius = 30f; // Set collision radius for houses
     }
     public Model Model => _model;
     public Vector3 Position => _position;

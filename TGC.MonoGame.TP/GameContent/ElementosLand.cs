@@ -415,6 +415,9 @@ namespace TGC.MonoGame.TP
 
         public bool CheckCollisionMesh(GameObject tank, Vector3 newPosition)
         {
+            
+            var stonesToRemove = new List<Stone>();
+            var bushesToRemove = new List<Bush>();
             if (tank is not Tank t)
                 return false;
 
@@ -426,23 +429,56 @@ namespace TGC.MonoGame.TP
             var tankVertices = GetTransformedVertices(t.Model, newWorld);
 
             // Comparar con cada casa
-            foreach (var house in _houses)
+            foreach (var stone in _stones)
             {
-                var houseWorld = Matrix.CreateScale(house.Scale) *
-                                 Matrix.CreateRotationY(house.Rotation) *
-                                 Matrix.CreateTranslation(house.Position);
-
-                var houseVertices = GetTransformedVertices(house.Model, houseWorld);
-
-                // Chequear colisión: si algún vértice del tanque entra dentro del volumen de la casa
-                foreach (var v in tankVertices)
+                float distance = Vector3.Distance(newPosition, stone.Position);
+                if (distance < tank.CollisionRadius + stone.CollisionRadius)
                 {
-                    if (IsPointInsideMesh(v, houseVertices))
-                        return true; // colisión detectada
+                    stonesToRemove.Add(stone);
                 }
             }
 
-            return false;
+            foreach (var s in stonesToRemove)
+                _stones.Remove(s);
+
+            // --- Collisiones con arbustos ---
+            foreach (var bush in _bushes)
+            {
+                float distance = Vector3.Distance(newPosition, bush.Position);
+                if (distance < tank.CollisionRadius + bush.CollisionRadius)
+                {
+                    bushesToRemove.Add(bush);
+                }
+            }
+
+            foreach (var b in bushesToRemove)
+                _bushes.Remove(b);
+
+            // --- Colisiones con muros ---
+            foreach (var wall in _walls)
+            {
+                float distance = Vector3.Distance(newPosition, wall.Position);
+                if (distance < tank.CollisionRadius + wall.CollisionRadius)
+                    return true; // Detener movimiento
+            }
+
+            // --- Colisiones con casas ---
+            foreach (var house in _houses)
+            {
+                float distance = Vector3.Distance(newPosition, house.Position);
+                if (distance < tank.CollisionRadius + house.CollisionRadius)
+                    return true; // Detener movimiento
+            }
+
+            // --- Colisiones con árboles ---
+            foreach (var tree in _trees)
+            {
+                float distance = Vector3.Distance(newPosition, tree.Position);
+                if (distance < tank.CollisionRadius + tree.CollisionRadius)
+                    return true; // Detener movimiento
+            }
+
+            return stonesToRemove.Count > 0 || bushesToRemove.Count > 0;
         }
 
         private List<Vector3> GetTransformedVertices(Model model, Matrix world)

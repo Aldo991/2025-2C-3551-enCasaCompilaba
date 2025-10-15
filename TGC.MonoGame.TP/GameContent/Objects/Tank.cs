@@ -112,9 +112,15 @@ public class Tank : GameObject
             _velocity += Acceleration * deltaTime;
             if (_velocity > TankMaxSpeed)
                 _velocity = TankMaxSpeed;
-            _position += _tankFrontDirection * _velocity;
-            _isMovingforward = true;
-            
+            var newPosition = _tankFrontDirection * _velocity;
+                _position += _tankFrontDirection * _velocity;
+                _isMovingforward = true;
+            if (_elementosLand!= null && _elementosLand.CheckCollisionMesh(this, newPosition))
+            {
+                
+            }
+            else
+                _velocity = 10;
         }
         else
             DecelerateTank(gameTime);

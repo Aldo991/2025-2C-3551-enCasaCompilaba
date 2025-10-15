@@ -10,7 +10,7 @@ namespace TGC.MonoGame.TP;
 public class Bush : GameObject
 {
     private Effect _effect;
-
+    public bool IsActive { get; set; } = true;
     private BoundingBox CreateBoundingBox(Model model, Matrix world)
     {
         Vector3 min = Vector3.One * float.MaxValue;
@@ -67,6 +67,7 @@ public class Bush : GameObject
     
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
+        if (!IsActive) return;
         // Set the View and Projection matrices, needed to draw every 3D model.
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
