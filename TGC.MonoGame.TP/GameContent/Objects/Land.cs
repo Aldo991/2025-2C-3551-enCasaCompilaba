@@ -39,4 +39,8 @@ public class Land // : GameObject
             mesh.Draw();
         }
     }
+
+    public Model Model => _model;
+    public Matrix World => _world;
 }
+

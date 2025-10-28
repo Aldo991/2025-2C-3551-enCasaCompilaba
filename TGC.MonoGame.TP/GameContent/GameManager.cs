@@ -105,8 +105,8 @@ public class GameManager
         LoadStoneModels(content);
 
         // Cargo los modelos de tanques
-        LoadTankModels(content);
         LoadTankTextures(content);
+        LoadTankModels(content);
 
         // Cargo los modelos de árboles
         LoadTreeModels(content);
@@ -231,16 +231,22 @@ public class GameManager
         {
             var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
             _tankModel = new Model[_paths.Length];
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
             for (int i = 0; i < _paths.Length; i++)
             {
                 var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _tankModel[i] = content.Load<Model>(ContentFolder3D + ContentFolderTanks + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
-                foreach (var mesh in _tankModel[i].Meshes)
+                var model = content.Load<Model>(ContentFolder3D + ContentFolderTanks + "/" + pathWithoutExtension);
+                foreach (var mesh in model.Meshes)
                 {
                     foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
+                    {
+                        meshPart.Effect = effect.Clone();
+                        // (opcional) seleccionar técnica por defecto del shader
+                        meshPart.Effect.CurrentTechnique = meshPart.Effect.Techniques["BasicTechnique"];
+                    }
                 }
+
+                _tankModel[i] = model;
             }
         }
     }

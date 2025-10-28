@@ -7,12 +7,6 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-// Custom Effects - https://docs.monogame.net/articles/content/custom_effects.html
-// High-level shader language (HLSL) - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl
-// Programming guide for HLSL - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-pguide
-// Reference for HLSL - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-reference
-// HLSL Semantics - https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
-
 texture Texture;
 sampler TextureSampler = sampler_state
 {
@@ -27,20 +21,8 @@ sampler TextureSampler = sampler_state
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
-
 float3 DiffuseColor;
-
-float Time = 0;
-
-struct VertexShaderInput
-{
-	float4 Position : POSITION0;
-};
-
-struct VertexShaderOutput
-{
-	float4 Position : SV_POSITION;
-};
+float ScrollOffset = 0.0f;
 
 struct VS_INPUT
 {
@@ -53,16 +35,20 @@ struct PS_INPUT
 {
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
-	// float3 Normal : NORMAL0;
 };
 
 PS_INPUT VS_Main(VS_INPUT input)
 {
 	PS_INPUT output;
+
+	// Transformar vértices
 	float4 worldPosition = mul(input.Position, World);
 	output.Position = mul(worldPosition, View);
 	output.Position = mul(output.Position, Projection);
-	output.TexCoord = input.TexCoord;
+
+	// ✅ aplicar desplazamiento de textura
+	output.TexCoord = input.TexCoord + float2(ScrollOffset, 0);
+
 	return output;
 }
 
@@ -80,30 +66,23 @@ technique BasicTechnique
 	}
 };
 
+// Versión simple sin textura (solo color)
+struct VertexShaderInput
+{
+	float4 Position : POSITION0;
+};
+
+struct VertexShaderOutput
+{
+	float4 Position : SV_POSITION;
+};
+
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
-    // Clear the output
 	VertexShaderOutput output = (VertexShaderOutput)0;
-    // Model space to World space
-    float4 worldPosition = mul(input.Position, World);
-    // World space to View space
-    float4 viewPosition = mul(worldPosition, View);	
-	// View space to Projection space
-    output.Position = mul(viewPosition, Projection);
-
-    return output;
+	float4 worldPosition = mul(input.Position, World);
+	float4 viewPosition = mul(worldPosition, View);
+	output.Position = mul(viewPosition, Projection);
+	return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
-{
-    return float4(DiffuseColor, 1.0);
-}
-
-technique BasicColorDrawing
-{
-	pass P0
-	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
-	}
-};
