@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
@@ -34,6 +35,7 @@ public class TGCGame : Game
     private bool _mousePressedLast;
     private Texture2D _pixel;
     private bool _showScoreboard;
+    private SoundEffect _shootSfx;
 
     public TGCGame()
     {
@@ -68,6 +70,8 @@ public class TGCGame : Game
         _menuFont = Content.Load<SpriteFont>("hud/DefaultFont");
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
+        // Sonidos
+        try { _shootSfx = Content.Load<SoundEffect>(ContentFolderSounds + "shoot"); } catch { _shootSfx = null; }
 
         _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects, _gameManager);
         // acá cargamos TODOS los elementos del escenario
@@ -117,6 +121,7 @@ public class TGCGame : Game
         {
             Projectile p = _tank.Shoot();
             _projectileManager.AddProjectile(p);
+            _shootSfx?.Play();
             _tank.IsShooting = true;
         }
         if (kb.IsKeyUp(Keys.F) && _tank.IsShooting) _tank.IsShooting = false;
