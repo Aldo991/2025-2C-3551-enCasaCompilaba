@@ -398,10 +398,11 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/walls/Bluestone_wall.fbx;Models/walls/Bluestone_wall
 
-#begin Sounds/tank-firing.flac
-/importer:
-/processor:
-/build:Sounds/tank-firing.flac
+#begin Sounds/shoot.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/shoot.mp3
 
 #begin Textures/stones/Rocks011.png
 /importer:TextureImporter

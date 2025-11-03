@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 #endregion
 
 namespace TGC.MonoGame.TP;
 
-    public class Tank : GameObject
-    {
+public class Tank : GameObject
+{
     private const float TankMaxSpeed = 40f; // Unidades por segundo
     private const float RotationSpeed = 1.5f; // Radianes por segundo
     private const float Acceleration = 4f; // Aceleracion del tanque
@@ -24,28 +25,29 @@ namespace TGC.MonoGame.TP;
     private float _life;
     private int _score;
     private ElementosLand _elementosLand;
-    private float _trackRotation = 0f;          
-    private Vector3 _previousPosition;          
-    private float _trackRotationFactor = 2.0f;  
-    private float _groundOffset = 0.0f; 
+    private float _trackRotation = 0f;
+    private Vector3 _previousPosition;
+    private float _trackRotationFactor = 2.0f;
+    private float _groundOffset = 0.0f;
+    private Song _shootSound;
     private readonly int _turretBoneIndex = 31;   // torreta (lo usabas para disparar)
-    private readonly int _gunBoneIndex    = 32;   // cañón (el hueso hijo que eleva el cañón)
+    private readonly int _gunBoneIndex = 32;   // cañón (el hueso hijo que eleva el cañón)
 
-// Rotaciones relativas de torreta y cañón
+    // Rotaciones relativas de torreta y cañón
     private float _turretYaw = 0f;                // rotación Y local respecto al casco
-    private float _gunPitch  = 0f;                // rotación X local del cañón
+    private float _gunPitch = 0f;                // rotación X local del cañón
 
-// Límites de elevación del cañón
+    // Límites de elevación del cañón
     private static readonly float GunPitchMin = MathHelper.ToRadians(-10f);
     private static readonly float GunPitchMax = MathHelper.ToRadians(+20f);
 
-// Transforms originales de cada bone (para no acumular errores)
+    // Transforms originales de cada bone (para no acumular errores)
     private Matrix[] _bindPose;                   // transform local original de cada bone
     private Matrix _gunWorldAbs;                  // último transform absoluto del cañón
     private List<int> _turretGroup;               // huesos que giran con la torreta
     private bool _modelZUp = false;               // si el modelo está en Z-up (en vez de Y-up)
 
-// Cámara “pegada” al cañón
+    // Cámara “pegada” al cañón
     public Matrix ViewFromGun { get; private set; }
     public Vector3 CameraPositionFromGun { get; private set; }
     public Matrix GunWorldAbs => _gunWorldAbs;
@@ -56,7 +58,6 @@ namespace TGC.MonoGame.TP;
     }
 
     // (revertido) sin offset adicional para el heading de la torreta
-
     private BoundingBox CreateBoundingBox(Model model, Matrix world)
     {
         Vector3 min = Vector3.One * float.MaxValue;
@@ -116,7 +117,7 @@ namespace TGC.MonoGame.TP;
         float rotation = 0f,
         Texture2D texture = null,
         ElementosLand elementosLand = null
-        
+
         )
     {
         _model = model;
@@ -135,7 +136,7 @@ namespace TGC.MonoGame.TP;
         _boneTransforms = new Matrix[model.Bones.Count];
         _bindPose = new Matrix[model.Bones.Count];
         for (int i = 0; i < model.Bones.Count; i++)
-            _bindPose[i] = model.Bones[i].Transform; 
+            _bindPose[i] = model.Bones[i].Transform;
         _previousPosition = position;
         _collisionRadius = 60f; // Set collision radius for tank
 
@@ -165,13 +166,8 @@ namespace TGC.MonoGame.TP;
         AddIfValid(FindBoneIndex("periscope"));
         AddIfValid(FindBoneIndex("hatch"));
 
-    } 
-    public Model Model => _model; 
-    public Vector3 Position => _position;
-    public float Scale => _scale;
-    public float Rotation => _rotation;
-    
-    
+    }
+    public Model Model => _model;
     public bool IsShooting
     {
         get => _isShooting;
@@ -192,7 +188,6 @@ namespace TGC.MonoGame.TP;
     {
         _turretYaw = yawRelative;
     }
-
     // Setea el pitch del cañón en radianes, clamped a los límites internos
     public void SetGunPitch(float pitchRadians)
     {
@@ -201,7 +196,7 @@ namespace TGC.MonoGame.TP;
     public void AimWithMouse(float deltaX, float deltaY, float sensitivity = 0.01f)
     {
         _turretYaw += deltaX * sensitivity;                 // girar torreta (Y)
-        _gunPitch  = MathHelper.Clamp(_gunPitch - deltaY * sensitivity, // invertido para “levantarse”
+        _gunPitch = MathHelper.Clamp(_gunPitch - deltaY * sensitivity, // invertido para “levantarse”
             GunPitchMin, GunPitchMax);         // limitar elevación
     }
     public void MoveForwardTank(GameTime gameTime)
@@ -275,6 +270,9 @@ namespace TGC.MonoGame.TP;
         Matrix turretWorldPos = turretWorld * _world;
         Vector3 turretPos = turretWorldPos.Translation;
         Vector3 turretDirection = turretWorldPos.Up;
+        // _shootSound.Play();
+        // _shootSound.
+        MediaPlayer.Play(_shootSound);
         // Console.WriteLine($"{turretDirection} dirección de la torreta");
         return new Projectile(_projectileModel, turretPos, turretDirection);
     }
@@ -308,7 +306,7 @@ namespace TGC.MonoGame.TP;
             {
                 var b = _model.Bones[i];
                 var parent = b.Parent;
-                sb.AppendLine($"[{i}] Bone='{b.Name}' Parent={(parent!=null?parent.Index:-1)} ParentName='{parent?.Name}'");
+                sb.AppendLine($"[{i}] Bone='{b.Name}' Parent={(parent != null ? parent.Index : -1)} ParentName='{parent?.Name}'");
             }
             sb.AppendLine();
             sb.AppendLine("=== MESHES ===");
@@ -335,7 +333,7 @@ namespace TGC.MonoGame.TP;
             {
                 var b = _model.Bones[i];
                 var parent = b.Parent;
-                Console.WriteLine($"[{i}] Bone='{b.Name}' Parent={(parent!=null?parent.Index:-1)} ParentName='{parent?.Name}'");
+                Console.WriteLine($"[{i}] Bone='{b.Name}' Parent={(parent != null ? parent.Index : -1)} ParentName='{parent?.Name}'");
             }
             Console.WriteLine();
             Console.WriteLine("=== MESHES ===");
@@ -394,7 +392,7 @@ namespace TGC.MonoGame.TP;
         // Mantener en [0,1) para evitar overflow
         if (_trackRotation >= 1f) _trackRotation -= 1f;
         else if (_trackRotation < 0f) _trackRotation += 1f;
-        
+
         // Asegurar que _turretBone apunte a la parte superior correcta
         if ((_turretBone < 0 || _turretBone >= _model.Bones.Count) && (_gunBone >= 0 && _gunBone < _model.Bones.Count))
         {
@@ -407,9 +405,9 @@ namespace TGC.MonoGame.TP;
         // Aplicar yaw de torreta a todos los huesos asociados, rotando alrededor del pivote de la torreta
         var pivot = _bindPose[_turretBone].Translation;
         // Yaw: eje Y para rigs Y-up y eje Z para rigs Z-up, rotando alrededor del pivote de la torreta
-        var Ryaw  = _modelZUp ? Matrix.CreateRotationY(_turretYaw) : Matrix.CreateRotationZ(_turretYaw);
+        var Ryaw = _modelZUp ? Matrix.CreateRotationY(_turretYaw) : Matrix.CreateRotationZ(_turretYaw);
         var Tpivot = Matrix.CreateTranslation(-pivot);
-        var Tinv   = Matrix.CreateTranslation(pivot);
+        var Tinv = Matrix.CreateTranslation(pivot);
 
         foreach (var idx in _turretGroup)
         {
@@ -442,10 +440,10 @@ namespace TGC.MonoGame.TP;
         // Ojo: en tu modelo el “forward” de la torreta/cañón podría ser Up/Forward/Right.
         // Usabas 'Up' para disparar; mantenemos esa convención:
         Vector3 gunForward = Vector3.Normalize(gunAbs.Up);       // dirección donde apunta el cañón
-        Vector3 gunOrigin  = gunAbs.Translation;                 // punto del cañón (mantelete)
+        Vector3 gunOrigin = gunAbs.Translation;                 // punto del cañón (mantelete)
 
         float camBack = 120f;   // distancia hacia atrás
-        float camUp   = 60f;    // altura sobre el cañón
+        float camUp = 60f;    // altura sobre el cañón
 
         CameraPositionFromGun = gunOrigin - gunForward * camBack + Vector3.Up * camUp;
         var lookAt = gunOrigin + gunForward * 100f;
@@ -460,7 +458,7 @@ namespace TGC.MonoGame.TP;
         float scroll = _trackRotation;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-       // _effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
+        // _effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
         var modelMeshesBaseTransform = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransform);
         foreach (var mesh in _model.Meshes)
@@ -468,14 +466,13 @@ namespace TGC.MonoGame.TP;
             foreach (var part in mesh.MeshParts)
             {
                 var decl = part.VertexBuffer.VertexDeclaration;
-                bool hasTex0 = false;
+                /*
                 foreach (var e in decl.GetVertexElements())
                     if (e.VertexElementUsage == VertexElementUsage.TextureCoordinate && e.UsageIndex == 0)
-                        hasTex0 = true;
-                System.Diagnostics.Debug.WriteLine($"{mesh.Name}:{hasTex0}");
+                */
             }
             var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
-            
+
             var relativeTransform = modelMeshesBaseTransform[mesh.ParentBone.Index];
             _effect.Parameters["World"].SetValue(relativeTransform * _world);
             foreach (var fx in mesh.Effects)
@@ -490,7 +487,12 @@ namespace TGC.MonoGame.TP;
             mesh.Draw();
         }
     }
+    public void SetShootSound(Song soundEffect)
+    {
+        _shootSound = soundEffect;
+    }
+    public Song GetShootSound()
+    {
+        return _shootSound;
+    }
 }
-
-
-

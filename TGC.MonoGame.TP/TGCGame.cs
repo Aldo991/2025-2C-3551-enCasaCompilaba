@@ -1,183 +1,164 @@
 ﻿#region Using Statements
 using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 #endregion
 
 namespace TGC.MonoGame.TP;
 
 public class TGCGame : Game
 {
-    public const string ContentFolder3D = "Models/";
     public const string ContentFolderEffects = "Effects/";
     public const string ContentFolderMusic = "Music/";
     public const string ContentFolderSounds = "Sounds/";
     public const string ContentFolderSpriteFonts = "SpriteFonts/";
     public const string ContentFolderTextures = "Textures/";
     private readonly GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-    private Hud _hud;
     private Tank _tank;
-    private FollowCamera _camera;
     private ElementosLand _elementosLand;
     private GameManager _gameManager;
-    private ProjectileManager _projectileManager;
-    private TankManager _tankManager;
-    private bool _pressingF9;
-
-    private enum GameState { Menu, Options, Playing }
-    private GameState _state = GameState.Menu;
-    private SpriteFont _menuFont;
-    private Rectangle _btnJugar, _btnOpciones;
-    private bool _mousePressedLast;
     private Texture2D _pixel;
-    private bool _showScoreboard;
-    private SoundEffect _shootSfx;
-
     public TGCGame()
     {
         _graphics = new GraphicsDeviceManager(this);
-        Window.Title = "TankWars";
+        Window.Title = "TankWars"; // Título del juego en el nombre del programa
+        // Ancho del programa
         _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+        // Altura del programa
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-        Content.RootDirectory = "Content";
+        Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
+        // Visibilidad del mouse
         IsMouseVisible = false;
     }
 
     protected override void Initialize()
     {
-        _gameManager = new GameManager();
-        _gameManager.Initialize();
-        _projectileManager = new ProjectileManager();
-        _tankManager = new TankManager();
+        // Instancio e inicializo GameManager, donde voy a controlar todos los objetos del juego
+        _gameManager = GameManager.Instance;
+        _gameManager.Initialize(Content, GraphicsDevice);
 
-        int centerX = GraphicsDevice.Viewport.Width / 2;
-        int centerY = GraphicsDevice.Viewport.Height / 2;
-        float radius = 50000;
-        _camera = new FollowCamera(GraphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
-        _camera.SetLockToGun(false);
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
-        _gameManager.LoadModels(Content);
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _hud = new Hud(Content);
-        _menuFont = Content.Load<SpriteFont>("hud/DefaultFont");
+        // Cargo todos los elementos del juego, como efectos, modelos, sprites, sonidos y texturas
+        ContentLoader.Load(Content);
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
-        // Sonidos
-        try { _shootSfx = Content.Load<SoundEffect>(ContentFolderSounds + "shoot"); } catch { _shootSfx = null; }
 
-        _elementosLand = new ElementosLand(Content, ContentFolder3D, ContentFolderEffects, _gameManager);
-        // acá cargamos TODOS los elementos del escenario
+        // Cargo los elementos del mundo, esto debería ir en GameManager?
+        /// todo: revisar si esto debería ir en GameManager y pasarlo
+        _elementosLand = new ElementosLand(Content, ContentFolderEffects, _gameManager);
 
-        var tankModel = _gameManager.GetModel("tank", 0);
-        var tankPosition = new Vector3(320, 490, 300);
-        var tankTexture = _gameManager.GetTexture("tank", 0);
+        // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
+        // Personaje que vamos a controlar. Revisar si debería estar en GameManager
+        // Todo: revisar si debería estar en GameManager
+        Model tankModel = ContentLoader.GetModel("tank", 0);
+        Vector3 tankPosition = new Vector3(320, 490, 300);
+        Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
         _tank = new Tank(tankModel, tankPosition, 1f, 0f, tankTexture);
         _tank.SetGround(_elementosLand);
-        var projectileModel = _gameManager.GetModel("projectile", 0);
+        Model projectileModel = ContentLoader.GetModel("projectile", 0);
         _tank.SetProjectileModel(projectileModel);
-        // Initialize menu button rectangles (centered)
-        var vp = GraphicsDevice.Viewport;
-        int vw = vp.Width;
-        int vh = vp.Height;
-        int bw = Math.Max(220, vw / 5);
-        int bh = Math.Max(60, vh / 12);
-        int cx = vw / 2;
-        int cy = vh / 2;
-        _btnJugar = new Rectangle(cx - bw / 2, cy - bh - 12, bw, bh);
-        _btnOpciones = new Rectangle(cx - bw / 2, cy + 12, bw, bh);
+        Song shootTank = ContentLoader.GetSoundEffect();
+        _tank.SetShootSound(shootTank);
 
         base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        // Delta t de tiempo entre intervalos de actualización
         float dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-        var kb = Keyboard.GetState();
-        if (kb.IsKeyDown(Keys.Escape)) Exit();
-        _showScoreboard = kb.IsKeyDown(Keys.Tab);
+        // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.
+        KeyboardState kb = Keyboard.GetState();
+        // Si presiono el botón de salir, el estado del juego cambia a salir y se cierra la ventana.
+        if (_gameManager.IsExit()) Exit();
+        // _showScoreboard = kb.IsKeyDown(Keys.Tab);
 
-        if (_state == GameState.Playing && kb.IsKeyDown(Keys.W)) _tank.MoveForwardTank(gameTime);
-        if (_state == GameState.Playing && kb.IsKeyUp(Keys.W) && kb.IsKeyUp(Keys.S)) _tank.DecelerateTank(gameTime);
-        if (_state == GameState.Playing && kb.IsKeyDown(Keys.A) && _tank.HasVelocity()) _tank.RotateTankLeft(gameTime);
-        if (_state == GameState.Playing && kb.IsKeyDown(Keys.S)) _tank.MoveBackwardTank(gameTime);
-        if (_state == GameState.Playing && kb.IsKeyDown(Keys.D) && _tank.HasVelocity()) _tank.RotateTankRight(gameTime);
-
-        if (kb.IsKeyDown(Keys.P) && !_gameManager.IsPressingPause)
+        // Si estoy jugando, se me permiten movimientos como mover el tanque, acelerar, frenar,
+        // disparar
+        if (_gameManager.IsPlaying())
         {
-            IsMouseVisible = Pause();
-            _gameManager.IsPressingPause = true;
-        }
-        if (kb.IsKeyUp(Keys.P) && _gameManager.IsPressingPause) _gameManager.IsPressingPause = false;
+            // Acelero el tanque
+            if (kb.IsKeyDown(Keys.W)) _tank.MoveForwardTank(gameTime);
+            // Desacelero el tanque
+            if (kb.IsKeyUp(Keys.W) && kb.IsKeyUp(Keys.S)) _tank.DecelerateTank(gameTime);
+            // Giro el tanque hacia la izquierda si tiene velocidad
+            if (kb.IsKeyDown(Keys.A) && _tank.HasVelocity()) _tank.RotateTankLeft(gameTime);
+            // Muevo el tanque en reversa
+            if (kb.IsKeyDown(Keys.S)) _tank.MoveBackwardTank(gameTime);
+            // Giro el tanque hacia la derecha si tiene velocidad
+            if (kb.IsKeyDown(Keys.D) && _tank.HasVelocity()) _tank.RotateTankRight(gameTime);
+            // Disparo projectiles
+            if (kb.IsKeyDown(Keys.F) && !_tank.IsShooting)
+            {
+                Projectile p = _tank.Shoot();
+                _gameManager.AddToProjectileManager(p);
+                _tank.IsShooting = true;
+            }
+            if (kb.IsKeyUp(Keys.F) && _tank.IsShooting) _tank.IsShooting = false;
 
-        if (kb.IsKeyDown(Keys.F) && !_tank.IsShooting)
-        {
-            Projectile p = _tank.Shoot();
-            _projectileManager.AddProjectile(p);
-            _shootSfx?.Play();
-            _tank.IsShooting = true;
-        }
-        if (kb.IsKeyUp(Keys.F) && _tank.IsShooting) _tank.IsShooting = false;
-
-        if (!_gameManager.IsPause)
-        {
+            // De acá para abajo no entendí xd
+            // Todo: entender esto
+            // Tank Update
             var ms = Mouse.GetState();
             int mouseX = ms.X;
             int mouseY = ms.Y;
             int width = GraphicsDevice.Viewport.Width;
             int height = GraphicsDevice.Viewport.Height;
 
-            if (_state == GameState.Menu || _state == GameState.Options)
-            {
-                _camera.UpdateOrbitAuto(_tank.Position, dt, 0.35f, 0.25f);
-                IsMouseVisible = true;
-                bool pressed = ms.LeftButton == ButtonState.Pressed;
-                if (pressed && !_mousePressedLast)
-                {
-                    var pt = new Point(ms.X, ms.Y);
-                    if (_btnJugar.Contains(pt)) { _state = GameState.Playing; _camera.ResetOrbitBehind(); }
-                    else if (_btnOpciones.Contains(pt)) _state = GameState.Options;
-                }
-                _mousePressedLast = pressed;
-            }
-            else
-            {
-                _tank.Update(gameTime);
-                var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.Rotation));
-                _camera.UpdateOrbitBehind(_tank.Position, bodyForward, mouseX, mouseY);
 
-                var camFwd = _camera.Forward;
-                if (camFwd.LengthSquared() > 1e-6f)
-                {
-                    camFwd.Normalize();
-                    float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
-                                                  : (float)Math.Atan2(camFwd.X, camFwd.Y);
-                    float yawRel = MathHelper.WrapAngle(yawAbs - _tank.Rotation + MathHelper.Pi);
-                    _tank.SetTurretYaw(yawRel);
-                    if (!_tank.ModelZUp)
-                    {
-                        float pitch = (float)Math.Atan2(camFwd.Y, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Z * camFwd.Z));
-                        _tank.SetGunPitch(pitch);
-                    }
-                    else
-                    {
-                        float pitch = (float)Math.Atan2(camFwd.Z, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Y * camFwd.Y));
-                        _tank.SetGunPitch(pitch);
-                    }
-                }
-                IsMouseVisible = false;
-                Mouse.SetPosition(width / 2, height / 2);
-            }
+            _tank.Update(gameTime);
+            var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.Rotation));
+            _gameManager.UpdateOrbitBehind(_tank.Position, bodyForward, mouseX, mouseY);
 
-            _projectileManager.Update(gameTime);
+            // var camFwd = _camera.Forward;
+            var camFwd = _gameManager.GetCameraForward();
+            if (camFwd.LengthSquared() > 1e-6f)
+            {
+                camFwd.Normalize();
+                float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
+                                                : (float)Math.Atan2(camFwd.X, camFwd.Y);
+                float yawRel = MathHelper.WrapAngle(yawAbs - _tank.Rotation + MathHelper.Pi);
+                _tank.SetTurretYaw(yawRel);
+                if (!_tank.ModelZUp)
+                {
+                    float pitch = (float)Math.Atan2(camFwd.Y, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Z * camFwd.Z));
+                    _tank.SetGunPitch(pitch);
+                }
+                else
+                {
+                    float pitch = (float)Math.Atan2(camFwd.Z, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Y * camFwd.Y));
+                    _tank.SetGunPitch(pitch);
+                }
+            }
+            IsMouseVisible = false;
+            Mouse.SetPosition(width / 2, height / 2);
         }
+        
+        // Si presiono la tecla P o la tecla Escape, pauso el juego
+        if ( (kb.IsKeyDown(Keys.P) || kb.IsKeyDown(Keys.Escape)) && !_gameManager.GetPressingPause())
+        {
+            if (_gameManager.IsPause()) // El juego está en pausa y va a dejar de estarlo
+            { _gameManager.SetState(GameState.Playing); IsMouseVisible = false; }
+            else // Se está jugando y se desea poner en pausa
+            { _gameManager.SetState(GameState.Pause); IsMouseVisible = true; }
+            // _gameManager.IsPressingPause = true;
+            _gameManager.SetPressingPause(true);
+        }
+        if (kb.IsKeyUp(Keys.P) && kb.IsKeyUp(Keys.Escape) && _gameManager.GetPressingPause()) _gameManager.SetPressingPause(false);
+
+        // Si el juego no está en estado de jugando (está en menú, opciones, etc.)
+        // Hago que la cámara orbite sobre el tanque
+        if (!_gameManager.IsPlaying())
+        { _gameManager.UpdateOrbitAuto(_tank.Position, dt, 0.35f, 0.25f); IsMouseVisible = true; }
+        
+        // Actualizo el GameManager para que actualice todos los objetos del juego
+        _gameManager.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -187,86 +168,9 @@ public class TGCGame : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-        _elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        _tank.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-
-        if (_state == GameState.Playing)
-        {
-            _hud.Draw(_spriteBatch, GraphicsDevice, _tank);
-            if (_showScoreboard)
-            {
-                var vpSB = GraphicsDevice.Viewport;
-                int pw = (int)(vpSB.Width * 0.55f);
-                int ph = (int)(vpSB.Height * 0.55f);
-                int px = (vpSB.Width - pw) / 2;
-                int py = (vpSB.Height - ph) / 2;
-                var panel = new Rectangle(px, py, pw, ph);
-
-                _spriteBatch.Begin();
-                _spriteBatch.Draw(_pixel, panel, new Color(0, 0, 0, 200));
-                int b = 3;
-                _spriteBatch.Draw(_pixel, new Rectangle(panel.X, panel.Y, panel.Width, b), Color.White * 0.7f);
-                _spriteBatch.Draw(_pixel, new Rectangle(panel.X, panel.Bottom - b, panel.Width, b), Color.White * 0.7f);
-                _spriteBatch.Draw(_pixel, new Rectangle(panel.X, panel.Y, b, panel.Height), Color.White * 0.7f);
-                _spriteBatch.Draw(_pixel, new Rectangle(panel.Right - b, panel.Y, b, panel.Height), Color.White * 0.7f);
-
-                string title = "Puntajes";
-                var titleSize = _menuFont.MeasureString(title);
-                var titlePos = new Vector2(panel.X + (panel.Width - titleSize.X) / 2f, panel.Y + 12);
-                _spriteBatch.DrawString(_menuFont, title, titlePos, Color.Yellow);
-
-                float colLeft = panel.X + 24f;
-                float colMid = panel.X + panel.Width * 0.65f;
-                float row = titlePos.Y + titleSize.Y + 18f;
-                _spriteBatch.DrawString(_menuFont, "Jugador", new Vector2(colLeft, row), Color.LightGray);
-                _spriteBatch.DrawString(_menuFont, "Puntos", new Vector2(colMid, row), Color.LightGray);
-
-                row += _menuFont.LineSpacing * 1.2f;
-                string playerName = "Tú";
-                _spriteBatch.DrawString(_menuFont, playerName, new Vector2(colLeft, row), Color.White);
-                _spriteBatch.DrawString(_menuFont, _tank.Score.ToString(), new Vector2(colMid, row), Color.White);
-
-                _spriteBatch.End();
-            }
-        }
-        else
-        {
-            var vp = GraphicsDevice.Viewport;
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_pixel, new Rectangle(0, 0, vp.Width, vp.Height), new Color(0, 0, 0, 180));
-            string title = _state == GameState.Menu ? "TankWars" : "Opciones";
-            var titleSize = _menuFont.MeasureString(title);
-            var center = new Vector2(vp.Width / 2f, vp.Height / 5f);
-            _spriteBatch.DrawString(_menuFont, title, center - titleSize / 2f, Color.Yellow);
-
-            if (_state == GameState.Menu)
-            {
-                _spriteBatch.Draw(_pixel, _btnJugar, new Color(20, 20, 20, 220));
-                _spriteBatch.Draw(_pixel, _btnOpciones, new Color(20, 20, 20, 220));
-                var jugarSize = _menuFont.MeasureString("Jugar");
-                var opcSize = _menuFont.MeasureString("Opciones");
-                _spriteBatch.DrawString(_menuFont, "Jugar", new Vector2(_btnJugar.X + (_btnJugar.Width - jugarSize.X) / 2f, _btnJugar.Y + (_btnJugar.Height - jugarSize.Y) / 2f), Color.White);
-                _spriteBatch.DrawString(_menuFont, "Opciones", new Vector2(_btnOpciones.X + (_btnOpciones.Width - opcSize.X) / 2f, _btnOpciones.Y + (_btnOpciones.Height - opcSize.Y) / 2f), Color.White);
-            }
-            else
-            {
-                _spriteBatch.DrawString(_menuFont, "Sensibilidad: mover mouse", new Vector2(40, vp.Height * 0.6f), Color.White);
-                _spriteBatch.DrawString(_menuFont, "Volumen: (placeholder)", new Vector2(40, vp.Height * 0.65f), Color.White);
-                _spriteBatch.DrawString(_menuFont, "[Enter] Volver", new Vector2(40, vp.Height * 0.75f), Color.LightGray);
-            }
-            _spriteBatch.End();
-        }
+        // En el GameManager están todos los contenidos
+        _gameManager.Draw(_elementosLand, _tank, gameTime);
     }
-
-    private bool Pause()
-    {
-        var actualPause = _gameManager.IsPause;
-        _gameManager.IsPause = !_gameManager.IsPause;
-        return !actualPause;
-    }
-
     protected override void UnloadContent()
     {
         Content.Unload();

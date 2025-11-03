@@ -1,61 +1,30 @@
 #region File Description
-//-----------------------------------------------------------------------------
-// GameManager.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-/*
-Conclusión: 
-Todas las clases necesitan un atributo del tipo Model para cargar el modelo 3D,
-GameManager las carga por una única vez, en vez de un LoadContent() en cada clase.
-*/
+/// La idea de GameManager es delegar la manipulación de objetos
 #endregion
 
 #region Using Statements
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.IO;
 using TGC.MonoGame.TP;
 #endregion
 
-// namespace TGC.MonoGame.TP;
-/// <summary>
-/// This is the main type for your game
-/// </summary>
+public enum GameState
+{
+    Menu, Options, Playing, Pause, Exit
+}
 public class GameManager
 {
     private static GameManager instance;
-    // private const string _rootDirectory = "C:/Users/matil/OneDrive/Documentos/Repos/TGC/Nueva Carpeta/2025-2C-3551-enCasaCompilaba/TGC.MonoGame.TP/Content/";
-    private const string ContentFolder3D = "Models";
-    private const string ContentFolderTextures = "Textures";
-    private const string ContentFolderBushes = "/bushes";
-    private const string ContentFolderHouses = "/houses";
-    private const string ContentFolderLands = "/land";
-    private const string ContentFolderProjectiles = "/projectiles";
-    private const string ContentFolderStones = "/stones";
-    private const string ContentFolderTanks = "/tanks";
-    // private const string ContentFolderHuds = "/hud";
-    private const string ContentFolderTrees = "/trees";
-    private const string ContentFolderWalls = "/walls";
-    private const string ContentFolderEffects = "Effects/";
-    private string _rootDirectory; // = "D:/GitHub_TGC/tgc-monogame-tp/TGC.MonoGame.TP/Content/";
-
-    private Model[] _bushModels;
-    private Model[] _houseModels;
-    private Model[] _landModels;
-    private Model[] _projectileModels;
-    private Model[] _stoneModels;
-    private Texture2D[] _stoneTextures;
-    private Model[] _tankModel;
-    private Texture2D[] _tankTextures;
-    private Model[] _treeModels;
-    private Model[] _wallModels;
+    private GameState _state;
     private List<GameObject> _gameObjects;
-    private bool _isPause;
+    private Hud _hud;
+    private ProjectileManager _projectileManager;
+    private TankManager _tankManager;
     private bool _isPressingPause;
+    private bool _mousePressedLast;
+    private FollowCamera _camera;
     public static GameManager Instance
     {
         get
@@ -67,265 +36,62 @@ public class GameManager
             return instance;
         }
     }
-    public void Initialize()
+    // Inicializa las variables del GameManager
+    public void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
     {
         _gameObjects = new List<GameObject>();
-        _isPause = false;
-        var aux1 = Directory.GetCurrentDirectory();
-        _rootDirectory = Directory.GetParent(aux1).Parent.Parent.FullName;
-        _rootDirectory += "/Content/";
+        _state = GameState.Menu;
+        _projectileManager = new ProjectileManager();
+        _tankManager = new TankManager();
+        _hud = new Hud(contentManager, graphicsDevice);
+        _mousePressedLast = false;
+        InitializeCamera(graphicsDevice);
     }
-    public bool IsPause
+    // Devuelve si el estado del juego es pausa o no
+    public bool IsPause()
     {
-        get => _isPause;
-        set => _isPause = value;
+        return _state == GameState.Pause;
     }
-    public bool IsPressingPause
+    // Devuelve si el estado del juego es jugando o no
+    public bool IsPlaying()
     {
-        get => _isPressingPause;
-        set => _isPressingPause = value;
+        return _state == GameState.Playing;
     }
-    // LoadModels carga los modelos 3D
-    public void LoadModels(ContentManager content)
+    // Devuelve si el estado del juego es exit y se debe cerrar
+    public bool IsExit()
     {
-        // Cargo los modelos de arbustos
-        LoadBushModels(content);
-
-        // Cargo los modelos de casas
-        LoadHouseModels(content);
-
-        // Cargo los modelos de terrenos
-        LoadLandModels(content);
-
-        // Cargo los modelos de los proyectiles
-        LoadProjectileModels(content);
-
-        // Cargo los modelos de piedras
-        LoadStonesTextures(content);
-        LoadStoneModels(content);
-
-        // Cargo los modelos de tanques
-        LoadTankTextures(content);
-        LoadTankModels(content);
-
-        // Cargo los modelos de árboles
-        LoadTreeModels(content);
-
-        // Cargo los modelos de muros
-        LoadWallModels(content);
+        return _state == GameState.Exit;
     }
-
-    public void LoadBushModels(ContentManager content)
+    // Getter y setter de la variable _pressingPause, que indica si se está apretando la tecla de pausa o no
+    public bool GetPressingPause()
     {
-        if (_bushModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderBushes + "/", "*.fbx");
-            _bushModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _bushModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderBushes + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
-                foreach (var mesh in _bushModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }
-        }
+        return _isPressingPause;
     }
-
-    private void LoadHouseModels(ContentManager content)
+    public void SetPressingPause(bool pause)
     {
-        if (_houseModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderHouses + "/", "*.fbx");
-            _houseModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _houseModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderHouses + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
-                foreach (var mesh in _houseModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }
-        }
+        _isPressingPause = pause;
     }
-
-    private void LoadLandModels(ContentManager content)
+    // Devuelve el estado del juego
+    public GameState GetState()
     {
-        if (_landModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderLands + "/", "*.fbx");
-            _landModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _landModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderLands + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "LandShader");
-                foreach (var mesh in _landModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }
-        }
+        return _state;
     }
-
-    private void LoadProjectileModels(ContentManager content)
+    // Setea un estado del juego
+    public void SetState(GameState newGameState)
     {
-        if (_projectileModels == null)
-        {
-            var paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
-            _projectileModels = new Model[paths.Length];
-            for (int i = 0; i < paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(paths[i]);
-                _projectileModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderProjectiles + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
-                foreach (var mesh in _projectileModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }            
-        }
+        _state = newGameState;
     }
-
-    private void LoadStonesTextures(ContentManager content)
+    // Devuelve el valor de la variable _mousePressedLast
+    public bool GetMousePressedLast()
     {
-        _stoneTextures = new Texture2D[1];
-        _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
+        return _mousePressedLast;
     }
-
-
-    private void LoadStoneModels(ContentManager content)
+    // Setea un valor para la variable _mousePressedLast
+    public void SetMousePressedLast(bool pressed)
     {
-        if (_stoneModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderStones + "/", "*.fbx");
-            _stoneModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _stoneModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderStones + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "StoneShader");
-                foreach (var mesh in _stoneModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                    {
-                        meshPart.Effect = effect;
-                        meshPart.Effect.Parameters["Texture"].SetValue(_stoneTextures[0]);
-                    }
-                }
-            }
-        }
+        _mousePressedLast = pressed;
     }
-
-    private void LoadTankModels(ContentManager content)
-    {
-        if (_tankModel == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
-            _tankModel = new Model[_paths.Length];
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                var model = content.Load<Model>(ContentFolder3D + ContentFolderTanks + "/" + pathWithoutExtension);
-                foreach (var mesh in model.Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                    {
-                        meshPart.Effect = effect.Clone();
-                        // (opcional) seleccionar técnica por defecto del shader
-                        meshPart.Effect.CurrentTechnique = meshPart.Effect.Techniques["BasicTechnique"];
-                    }
-                }
-
-                _tankModel[i] = model;
-            }
-        }
-    }
-
-    private void LoadTankTextures(ContentManager content)
-    {
-        _tankTextures = new Texture2D[3];
-        // _tankTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/");
-        _tankTextures[0] = content.Load<Texture2D>("Textures/tanks/T90/hullA");
-        _tankTextures[1] = content.Load<Texture2D>("Textures/tanks/T90/hullB");
-        _tankTextures[2] = content.Load<Texture2D>("Textures/tanks/T90/hullC");
-    }
-
-    private void LoadTreeModels(ContentManager content)
-    {
-        if (_treeModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTrees + "/", "*.fbx");
-            _treeModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _treeModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderTrees + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
-                foreach (var mesh in _treeModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }
-        }
-    }
-
-    private void LoadWallModels(ContentManager content)
-    {
-        if (_wallModels == null)
-        {
-            var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderWalls + "/", "*.fbx");
-            _wallModels = new Model[_paths.Length];
-            for (int i = 0; i < _paths.Length; i++)
-            {
-                var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-                _wallModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderWalls + "/" + pathWithoutExtension);
-                Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
-                foreach (var mesh in _wallModels[i].Meshes)
-                {
-                    foreach (var meshPart in mesh.MeshParts)
-                        meshPart.Effect = effect;
-                }
-            }
-        }
-    }
-
-    public Model GetModel(string modelName, int index)
-    {
-        return modelName switch
-        {
-            "house" => _houseModels[index],
-            "bush" => _bushModels[index],
-            "land" => _landModels[index],
-            "projectile" => _projectileModels[index],
-            "stone" => _stoneModels[index],
-            "tank" => _tankModel[index],
-            "tree" => _treeModels[index],
-            "wall" => _wallModels[index],
-            //_hudModels => _hudModels[index],
-            _ => throw new ArgumentException("Invalid model name"),
-        };
-    }
-    public Texture2D GetTexture(string modelName, int index)
-    {
-        return modelName switch
-        {
-            "tank" => _tankTextures[index],
-            //_hudModels => _hudModels[index],
-            _ => throw new ArgumentException("Invalid texture name"),
-        };
-    }
-
+    // Aplica una textura a un modelo de un objeto
     public void ApplyTextureToModel(Model model, Texture2D texture)
     {
         foreach (var mesh in model.Meshes)
@@ -335,5 +101,59 @@ public class GameManager
                 effect.Parameters["Texture"].SetValue(texture);
             }
         }
+    }
+    // Update de GameManager, se lo aplica a hud, y los managers de objetos
+    public void Update(GameTime gameTime)
+    {
+        _hud.Update(this);
+        _projectileManager.Update(gameTime);
+        _tankManager.Update(gameTime);
+    }
+    public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime)
+    {
+        if (_state == GameState.Playing)
+        {
+            _hud.Draw(player);
+        }
+        elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        player.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        if (_state == GameState.Menu || _state == GameState.Pause)
+        {
+            _hud.DrawMenu();
+        }
+        if (_state == GameState.Options)
+        {
+            _hud.DrawOptions();
+        }
+    }
+    public void UpdateOrbitBehind(Vector3 position, Vector3 bodyForward, int mouseX, int mouseY)
+    {
+        _camera.UpdateOrbitBehind(position, bodyForward, mouseX, mouseY);
+    }
+    public void UpdateOrbitAuto(Vector3 position, float dt, float angularSpeed, float fixedVerticalAngle)
+    {
+        _camera.UpdateOrbitAuto(position, dt, angularSpeed, fixedVerticalAngle);
+    }
+    public void AddToProjectileManager(Projectile projectile)
+    {
+        _projectileManager.AddProjectile(projectile);
+    }
+    public Vector3 GetCameraForward()
+    {
+        return _camera.Forward;
+    }
+    /// <summary>
+    /// todo: deberíamos ver como parametrizar esto
+    /// </summary>
+    /// <param name="graphicsDevice"></param>
+    private void InitializeCamera(GraphicsDevice graphicsDevice)
+    {
+        int centerX = graphicsDevice.Viewport.Width / 2;
+        int centerY = graphicsDevice.Viewport.Height / 2;
+        float radius = 50000;
+        _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
+        _camera.SetLockToGun(false);
     }
 }

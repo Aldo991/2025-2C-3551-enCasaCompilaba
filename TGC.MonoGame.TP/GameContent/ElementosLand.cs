@@ -23,7 +23,6 @@ namespace TGC.MonoGame.TP
         private List<Vector3> _landVertices; // vértices del terreno en world-space para muestreo
 
         public ElementosLand(ContentManager content,
-            string contentFolder3D,
             string contentFolderEffects,
             GameManager gameManager)
         {
@@ -63,15 +62,15 @@ namespace TGC.MonoGame.TP
                 new Vector3(4400, -150, 22330)
             };
 
-            var land = new Land(_gameManager.GetModel("land", 0), new Vector3(0, -990, 0), 9f, 0f);
+            var land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0, -990, 0), 9f, 0f);
             _landElements.Add(land);
             // Precalcular vértices del terreno una sola vez
             _landVertices = GetTransformedVertices(land.Model, land.World);
 
-            var stone1 = new Stone(_gameManager.GetModel("stone", 0), new Vector3(3000, 770, 0));
+            var stone1 = new Stone(ContentLoader.GetModel("stone", 0), new Vector3(3000, 770, 0));
             _stones.Add(stone1);
 
-            var stone2 = new Stone(_gameManager.GetModel("stone", 1), new Vector3(-3000, 690, 0));
+            var stone2 = new Stone(ContentLoader.GetModel("stone", 1), new Vector3(-3000, 690, 0));
             _stones.Add(stone2);
 
             var posicionesWalls1 = new List<Vector3>
@@ -345,67 +344,67 @@ namespace TGC.MonoGame.TP
 
             foreach (var pos in posicionesArboles)
             {
-                var arbol = new Tree(_gameManager.GetModel("tree", 0), pos, 0.3f, 0f);
+                var arbol = new Tree(ContentLoader.GetModel("tree", 0), pos, 0.3f, 0f);
                 _trees.Add(arbol);
             }
 
             foreach (var pos in posicionesArboles2)
             {
-                var arbol = new Tree(_gameManager.GetModel("tree", 1), pos, 0.3f, 0f);
+                var arbol = new Tree(ContentLoader.GetModel("tree", 1), pos, 0.3f, 0f);
                 _trees.Add(arbol);
             }
 
             foreach (var pos in posicionesRocas)
             {
-                var roca = new Stone(_gameManager.GetModel("stone", 0), pos);
+                var roca = new Stone(ContentLoader.GetModel("stone", 0), pos);
                 _stones.Add(roca);
             }
 
             foreach (var pos in posicionesPiedras)
             {
-                var piedra = new Stone(_gameManager.GetModel("stone", 1), pos);
+                var piedra = new Stone(ContentLoader.GetModel("stone", 1), pos);
                 _stones.Add(piedra);
             }
 
             foreach (var pos in posicionesArbustos)
             {
-                var bush = new Bush(_gameManager.GetModel("bush", 0), pos);
+                var bush = new Bush(ContentLoader.GetModel("bush", 0), pos);
                 _bushes.Add(bush);
             }
 
             foreach (var house in posicionesCasasModelo1)
             {
-                var casaModelo1 = new House(_gameManager.GetModel("house", 0), house, 0.3f, 0);
+                var casaModelo1 = new House(ContentLoader.GetModel("house", 0), house, 0.3f, 0);
                 _houses.Add(casaModelo1);
             }
 
             foreach (var house in posicionesCasasModelo3)
             {
-                var casaModelo3 = new House(_gameManager.GetModel("house", 1), house, 1f, 0f);
+                var casaModelo3 = new House(ContentLoader.GetModel("house", 1), house, 1f, 0f);
                 _houses.Add(casaModelo3);
             }
 
             foreach (var wallPos in posicionesWalls1)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 0f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 0f);
                 _walls.Add(wall);
             }
 
             foreach (var wallPos in posicionesWalls1Rotated)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 90f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 90f);
                 _walls.Add(wall);
             }
 
             foreach (var wallsRot in posicionesWalls2Rot)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallsRot, 6f, 90f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallsRot, 6f, 90f);
                 _walls.Add(wall);
             }
 
             foreach (var wallPos in posicionesWalls2)
             {
-                var wall = new Wall(_gameManager.GetModel("wall", 0), wallPos, 6f, 0f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 0f);
                 _walls.Add(wall);
             }
         }

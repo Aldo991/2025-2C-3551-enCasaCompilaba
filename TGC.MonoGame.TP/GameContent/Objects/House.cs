@@ -60,9 +60,11 @@ public class House : GameObject
         _collisionRadius = 30f; // Set collision radius for houses
     }
     public Model Model => _model;
+    /*
     public Vector3 Position => _position;
     public float Scale => _scale;
     public float Rotation => _rotation;
+    */
 
     public override void Update(GameTime gameTime)
     {
