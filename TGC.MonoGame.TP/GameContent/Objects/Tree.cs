@@ -10,7 +10,6 @@ namespace TGC.MonoGame.TP;
 public class Tree : GameObject
 {
     private Effect _effect;
-
     private BoundingBox CreateBoundingBox(Model model, Matrix world)
     {
         Vector3 min = Vector3.One * float.MaxValue;
@@ -43,7 +42,6 @@ public class Tree : GameObject
 
         return new BoundingBox(min, max);
     }
-
     public Tree(
         Model model,
         Vector3 position,
@@ -55,19 +53,16 @@ public class Tree : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        _world = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
         _collisionRadius = 40f; // Set collision radius for trees
     }
-    
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
-    
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
-        // Set the View and Projection matrices, needed to draw every 3D model.
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["DiffuseColor"].SetValue(Color.DarkGreen.ToVector3());

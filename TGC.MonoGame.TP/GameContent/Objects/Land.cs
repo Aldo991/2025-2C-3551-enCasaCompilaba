@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP;
 
-public class Land // : GameObject
+public class Land
 {
     private Model _model;
     private Effect _effect;
@@ -40,7 +40,7 @@ public class Land // : GameObject
         }
     }
 
-    public Model Model => _model;
-    public Matrix World => _world;
+    public Model GetModel() => _model;
+    public Matrix GetWorld() => _world;
 }
 

@@ -10,7 +10,6 @@ namespace TGC.MonoGame.TP;
 public class House : GameObject
 {
     private Effect _effect;
-
     private BoundingBox CreateBoundingBox(Model model, Matrix world)
     {
         Vector3 min = Vector3.One * float.MaxValue;
@@ -43,7 +42,6 @@ public class House : GameObject
 
         return new BoundingBox(min, max);
     }
-
     public House(
         Model model,
         Vector3 position,
@@ -60,20 +58,12 @@ public class House : GameObject
         _collisionRadius = 30f; // Set collision radius for houses
     }
     public Model Model => _model;
-    /*
-    public Vector3 Position => _position;
-    public float Scale => _scale;
-    public float Rotation => _rotation;
-    */
-
     public override void Update(GameTime gameTime)
     {
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
-    
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
-        // Set the View and Projection matrices, needed to draw every 3D model.
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());

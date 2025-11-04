@@ -15,19 +15,21 @@ using Microsoft.Xna.Framework.Media;
 public static class ContentLoader
 {
     // Folders
+    private const string ContentFolderEffects = "Effects/";
+    private const string ContentFolderHuds = "/hud";
     private const string ContentFolder3D = "Models";
-    private const string ContentFolderTextures = "Textures";
     private const string ContentFolderSounds = "Sounds/";
+    private const string ContentFolderTextures = "Textures";
+    public const string ContentFolderMusic = "Music/";
+    public const string ContentFolderSpriteFonts = "SpriteFonts/";
     private const string ContentFolderBushes = "/bushes";
     private const string ContentFolderHouses = "/houses";
     private const string ContentFolderLands = "/land";
     private const string ContentFolderProjectiles = "/projectiles";
     private const string ContentFolderStones = "/stones";
     private const string ContentFolderTanks = "/tanks";
-    private const string ContentFolderHuds = "/hud";
     private const string ContentFolderTrees = "/trees";
     private const string ContentFolderWalls = "/walls";
-    private const string ContentFolderEffects = "Effects/";
 
     private static string _rootDirectory;
     private static Model[] _bushModels;

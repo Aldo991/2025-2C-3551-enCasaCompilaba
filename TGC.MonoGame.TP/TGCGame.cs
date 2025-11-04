@@ -10,23 +10,18 @@ namespace TGC.MonoGame.TP;
 
 public class TGCGame : Game
 {
-    public const string ContentFolderEffects = "Effects/";
-    public const string ContentFolderMusic = "Music/";
-    public const string ContentFolderSounds = "Sounds/";
-    public const string ContentFolderSpriteFonts = "SpriteFonts/";
-    public const string ContentFolderTextures = "Textures/";
     private readonly GraphicsDeviceManager _graphics;
     private Tank _tank;
     private ElementosLand _elementosLand;
     private GameManager _gameManager;
-    private Texture2D _pixel;
+    // private Texture2D _pixel;
     public TGCGame()
     {
         _graphics = new GraphicsDeviceManager(this);
-        Window.Title = "TankWars"; // Título del juego en el nombre del programa
-        // Ancho del programa
+        // Título del juego en la ventana del programa
+        Window.Title = "TankWars";
+        // Ancho y altura de la ventana
         _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-        // Altura del programa
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
         Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
         // Visibilidad del mouse
@@ -37,7 +32,6 @@ public class TGCGame : Game
     {
         // Instancio e inicializo GameManager, donde voy a controlar todos los objetos del juego
         _gameManager = GameManager.Instance;
-        _gameManager.Initialize(Content, GraphicsDevice);
 
         base.Initialize();
     }
@@ -46,12 +40,14 @@ public class TGCGame : Game
     {
         // Cargo todos los elementos del juego, como efectos, modelos, sprites, sonidos y texturas
         ContentLoader.Load(Content);
-        _pixel = new Texture2D(GraphicsDevice, 1, 1);
-        _pixel.SetData(new[] { Color.White });
+        // Este no lo entendí
+        // _pixel = new Texture2D(GraphicsDevice, 1, 1);
+        // _pixel.SetData(new[] { Color.White });
 
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
-        _elementosLand = new ElementosLand(Content, ContentFolderEffects, _gameManager);
+        _gameManager.Initialize(Content, GraphicsDevice);
+        _elementosLand = new ElementosLand(Content);
 
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
@@ -83,6 +79,8 @@ public class TGCGame : Game
         // disparar
         if (_gameManager.IsPlaying())
         {
+            if (kb.IsKeyDown(Keys.Tab)) _gameManager.SetScoreboard(true);
+            if (kb.IsKeyUp(Keys.Tab)) _gameManager.SetScoreboard(false);
             // Acelero el tanque
             if (kb.IsKeyDown(Keys.W)) _tank.MoveForwardTank(gameTime);
             // Desacelero el tanque
@@ -94,13 +92,13 @@ public class TGCGame : Game
             // Giro el tanque hacia la derecha si tiene velocidad
             if (kb.IsKeyDown(Keys.D) && _tank.HasVelocity()) _tank.RotateTankRight(gameTime);
             // Disparo projectiles
-            if (kb.IsKeyDown(Keys.F) && !_tank.IsShooting)
+            if (kb.IsKeyDown(Keys.F) && !_tank.GetIsShooting())
             {
                 Projectile p = _tank.Shoot();
                 _gameManager.AddToProjectileManager(p);
-                _tank.IsShooting = true;
+                _tank.SetIsShooting(true);
             }
-            if (kb.IsKeyUp(Keys.F) && _tank.IsShooting) _tank.IsShooting = false;
+            if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
 
             // De acá para abajo no entendí xd
             // Todo: entender esto
@@ -113,8 +111,8 @@ public class TGCGame : Game
 
 
             _tank.Update(gameTime);
-            var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.Rotation));
-            _gameManager.UpdateOrbitBehind(_tank.Position, bodyForward, mouseX, mouseY);
+            var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.GetRotation()));
+            _gameManager.UpdateOrbitBehind(_tank.GetPosition(), bodyForward, mouseX, mouseY);
 
             // var camFwd = _camera.Forward;
             var camFwd = _gameManager.GetCameraForward();
@@ -123,7 +121,7 @@ public class TGCGame : Game
                 camFwd.Normalize();
                 float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
                                                 : (float)Math.Atan2(camFwd.X, camFwd.Y);
-                float yawRel = MathHelper.WrapAngle(yawAbs - _tank.Rotation + MathHelper.Pi);
+                float yawRel = MathHelper.WrapAngle(yawAbs - _tank.GetRotation() + MathHelper.Pi);
                 _tank.SetTurretYaw(yawRel);
                 if (!_tank.ModelZUp)
                 {
@@ -155,7 +153,7 @@ public class TGCGame : Game
         // Si el juego no está en estado de jugando (está en menú, opciones, etc.)
         // Hago que la cámara orbite sobre el tanque
         if (!_gameManager.IsPlaying())
-        { _gameManager.UpdateOrbitAuto(_tank.Position, dt, 0.35f, 0.25f); IsMouseVisible = true; }
+        { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), dt, 0.35f, 0.25f); IsMouseVisible = true; }
         
         // Actualizo el GameManager para que actualice todos los objetos del juego
         _gameManager.Update(gameTime);
@@ -166,6 +164,7 @@ public class TGCGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
         // En el GameManager están todos los contenidos

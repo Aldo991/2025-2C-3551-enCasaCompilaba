@@ -1,4 +1,8 @@
-﻿#region Using Statements
+﻿#region File Description
+/// HUD se encarga de dibujar el HUD del juego en la pantalla
+#endregion
+
+#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -17,18 +21,18 @@ internal class Hud
     private Texture2D _pixel;
     private Rectangle _btnJugar, _btnOpciones, _btnExit;
     private bool _showScoreboard;
-    private GameManager _gameManager;
+    // private GameManager _gameManager;
     public Hud(ContentManager content, GraphicsDevice graphicsDevice)
     {
-        _font = content.Load<SpriteFont>("hud/DefaultFont");
+        _font = ContentLoader.GetSpriteFont();
         _lifeBarTexture = content.Load<Texture2D>("hud/health");
         _spriteBatch = new SpriteBatch(graphicsDevice);
         _graphicsDevice = graphicsDevice;
         // _gameManager = GameManager.Instance;
-        _gameManager = new GameManager();
+        // _gameManager = new GameManager();
         _pixel = new Texture2D(graphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
-        _showScoreboard = false;
+        // _showScoreboard = false;
 
         var vp = graphicsDevice.Viewport;
         int vw = vp.Width;
@@ -41,6 +45,7 @@ internal class Hud
         _btnOpciones = new Rectangle(cx - bw / 3, cy + 12, bw, bh);
         _btnExit = new Rectangle(cx - bw / 3, cy + 100, bw, bh);
     }
+    public void SetScoreboard(bool mode) => _showScoreboard = mode;
     public void Update(GameManager gameManager)
     {
         if (gameManager.GetState() == GameState.Menu || gameManager.GetState() == GameState.Pause)
@@ -66,10 +71,10 @@ internal class Hud
         _spriteBatch.Begin();
 
         // Score en la esquina superior izquierda
-        _spriteBatch.DrawString(_font, $"Bajas/Muertes: {player.Score}", new Vector2(20, 20), Color.White);
-        _spriteBatch.DrawString(_font, $"X: {player.Position.X}", new Vector2(20, 60), Color.White);
-        _spriteBatch.DrawString(_font, $"Y: {player.Position.Y}", new Vector2(20, 80), Color.White);
-        _spriteBatch.DrawString(_font, $"Z: {player.Position.Z}", new Vector2(20, 100), Color.White);
+        _spriteBatch.DrawString(_font, $"Bajas/Muertes: {player.GetScore()}", new Vector2(20, 20), Color.White);
+        _spriteBatch.DrawString(_font, $"X: {player.GetPosition().X}", new Vector2(20, 60), Color.White);
+        _spriteBatch.DrawString(_font, $"Y: {player.GetPosition().Y}", new Vector2(20, 80), Color.White);
+        _spriteBatch.DrawString(_font, $"Z: {player.GetPosition().Z}", new Vector2(20, 100), Color.White);
 
         float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
         float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla
@@ -83,14 +88,15 @@ internal class Hud
         _spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);
 
         // Barra de vida
+        /*
         _spriteBatch.Draw(
             _lifeBarTexture,
             new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * player.Life), lifeBarHeight),
             Color.Red
         );
+        */
 
         _spriteBatch.End();
-
         if (_showScoreboard)
         {
             var vpSB = _graphicsDevice.Viewport;
@@ -122,10 +128,11 @@ internal class Hud
             row += _font.LineSpacing * 1.2f;
             string playerName = "Tú";
             _spriteBatch.DrawString(_font, playerName, new Vector2(colLeft, row), Color.White);
-            _spriteBatch.DrawString(_font, player.Score.ToString(), new Vector2(colMid, row), Color.White);
+            _spriteBatch.DrawString(_font, player.GetScore().ToString(), new Vector2(colMid, row), Color.White);
 
             _spriteBatch.End();
         }
+        _graphicsDevice.DepthStencilState = DepthStencilState.Default;
     }
     public void DrawMenu()
     {

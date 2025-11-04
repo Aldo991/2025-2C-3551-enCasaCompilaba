@@ -1,4 +1,6 @@
 #region File Description
+/// Projectile Manager: Se encarga del manejo de las entidades proyectiles
+/// que se encuentran en el juego
 #endregion
 
 #region Using Statements
@@ -13,15 +15,18 @@ public class ProjectileManager
     private List<Projectile> _projectiles;
     public ProjectileManager(List<Projectile> projectiles = null)
     {
-        if (_projectiles != null)
+        if (projectiles != null)
             _projectiles = new List<Projectile>(projectiles);
         else
             _projectiles = new List<Projectile>();
     }
+    // Agrega un projectil a la lista de projectiles activos en el juego
     public void AddProjectile(Projectile projectile)
     {
         _projectiles.Add(projectile);
     }
+    // Elimina un projectil de la lista de projectiles activos. Se puede deber a que impactó en un objeto,
+    // enemigo o simplemente desapareció por el tiempo
     public void DeleteProjectile(Projectile projectile)
     {
         _projectiles.Remove(projectile);

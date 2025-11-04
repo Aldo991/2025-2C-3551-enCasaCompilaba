@@ -13,28 +13,13 @@ namespace TGC.MonoGame.TP
 {
     public class ElementosLand
     {
-        private List<Land> _landElements;
-        private List<House> _houses;
-        private List<Tree> _trees;
-        private List<Stone> _stones;
-        private List<Bush> _bushes;
-        private List<Wall> _walls;
-        private GameManager _gameManager;
+        private Land _land;
+        private List<GameObject> _gameElements;
         private List<Vector3> _landVertices; // vértices del terreno en world-space para muestreo
-
-        public ElementosLand(ContentManager content,
-            string contentFolderEffects,
-            GameManager gameManager)
+        public ElementosLand(ContentManager content)
         {
             // Inicializo las variables
-            _gameManager = gameManager;
-            _landElements = new List<Land>();
-            _houses = new List<House>();
-            _trees = new List<Tree>();
-            _stones = new List<Stone>();
-            _bushes = new List<Bush>();
-            _walls = new List<Wall>();
-
+            _gameElements = new List<GameObject>();
             // Terreno
             var posicionesWalls2Rot = new List<Vector3>
             {
@@ -62,16 +47,15 @@ namespace TGC.MonoGame.TP
                 new Vector3(4400, -150, 22330)
             };
 
-            var land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0, -990, 0), 9f, 0f);
-            _landElements.Add(land);
+            _land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0, -990, 0), 9f, 0f);
             // Precalcular vértices del terreno una sola vez
-            _landVertices = GetTransformedVertices(land.Model, land.World);
+            _landVertices = GetTransformedVertices(_land.GetModel(), _land.GetWorld());
 
             var stone1 = new Stone(ContentLoader.GetModel("stone", 0), new Vector3(3000, 770, 0));
-            _stones.Add(stone1);
+            _gameElements.Add(stone1);
 
             var stone2 = new Stone(ContentLoader.GetModel("stone", 1), new Vector3(-3000, 690, 0));
-            _stones.Add(stone2);
+            _gameElements.Add(stone2);
 
             var posicionesWalls1 = new List<Vector3>
             {
@@ -96,7 +80,6 @@ namespace TGC.MonoGame.TP
                 new Vector3(-9260, 1000, -11050), new Vector3(-9630, 1100, -11050),
                 new Vector3(-9800, 1130, -11050), new Vector3(-9800, 560, -1000),
             };
-
             var posicionesWalls1Rotated = new List<Vector3>
             {
                 new Vector3(940, 490, -1200), new Vector3(940, 490, -1570),
@@ -198,7 +181,6 @@ namespace TGC.MonoGame.TP
                 new Vector3(15800, 950, 14800), new Vector3(15800, 420, 8400),
                 new Vector3(16000, 420, 4800), new Vector3(100, 740, -8000),
             };
-
             var posicionesPiedras = new List<Vector3>
             {
                 new Vector3(-1000, 390, 1000), new Vector3(-2000, 300, 5000),
@@ -345,164 +327,120 @@ namespace TGC.MonoGame.TP
             foreach (var pos in posicionesArboles)
             {
                 var arbol = new Tree(ContentLoader.GetModel("tree", 0), pos, 0.3f, 0f);
-                _trees.Add(arbol);
+                _gameElements.Add(arbol);
             }
-
             foreach (var pos in posicionesArboles2)
             {
                 var arbol = new Tree(ContentLoader.GetModel("tree", 1), pos, 0.3f, 0f);
-                _trees.Add(arbol);
+                _gameElements.Add(arbol);
             }
-
             foreach (var pos in posicionesRocas)
             {
                 var roca = new Stone(ContentLoader.GetModel("stone", 0), pos);
-                _stones.Add(roca);
+                _gameElements.Add(roca);
             }
-
             foreach (var pos in posicionesPiedras)
             {
                 var piedra = new Stone(ContentLoader.GetModel("stone", 1), pos);
-                _stones.Add(piedra);
+                _gameElements.Add(piedra);
             }
-
             foreach (var pos in posicionesArbustos)
             {
                 var bush = new Bush(ContentLoader.GetModel("bush", 0), pos);
-                _bushes.Add(bush);
+                _gameElements.Add(bush);
             }
-
             foreach (var house in posicionesCasasModelo1)
             {
                 var casaModelo1 = new House(ContentLoader.GetModel("house", 0), house, 0.3f, 0);
-                _houses.Add(casaModelo1);
+                _gameElements.Add(casaModelo1);
             }
-
             foreach (var house in posicionesCasasModelo3)
             {
                 var casaModelo3 = new House(ContentLoader.GetModel("house", 1), house, 1f, 0f);
-                _houses.Add(casaModelo3);
+                _gameElements.Add(casaModelo3);
             }
-
             foreach (var wallPos in posicionesWalls1)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 0f);
-                _walls.Add(wall);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 3f, 0f);
+                _gameElements.Add(wall);
             }
-
             foreach (var wallPos in posicionesWalls1Rotated)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 90f);
-                _walls.Add(wall);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 3f, 90f);
+                _gameElements.Add(wall);
             }
-
             foreach (var wallsRot in posicionesWalls2Rot)
             {
                 var wall = new Wall(ContentLoader.GetModel("wall", 0), wallsRot, 6f, 90f);
-                _walls.Add(wall);
+                _gameElements.Add(wall);
             }
-
             foreach (var wallPos in posicionesWalls2)
             {
                 var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 0f);
-                _walls.Add(wall);
+                // _walls.Add(wall);
+                _gameElements.Add(wall);
             }
         }
-
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
-            foreach (var land in _landElements)
-                land.Draw(gameTime, view, projection);
-            foreach (var house in _houses)
-                house.Draw(gameTime, view, projection);
-            foreach (var arbol in _trees)
-                arbol.Draw(gameTime, view, projection);
-            foreach (var stone in _stones)
-                stone.Draw(gameTime, view, projection);
-            foreach (var bush in _bushes)
-                bush.Draw(gameTime, view, projection);
-            foreach (var wall in _walls)
-                wall.Draw(gameTime, view, projection);
-            /*
-            */
+            _land.Draw(gameTime, view, projection);
+            foreach (GameObject gameObject in _gameElements)
+                gameObject.Draw(gameTime, view, projection);
         }
-
+        /*
         public bool CheckCollisionMesh(GameObject tank, Vector3 newPosition)
         {
-
             var stonesToRemove = new List<Stone>();
             var bushesToRemove = new List<Bush>();
             if (tank is not Tank t)
                 return false;
-
             // Crear world matrix hipotética del tanque en su nueva posición
-            var newWorld = Matrix.CreateScale(tank.Scale) *
-                           Matrix.CreateRotationY(tank.Rotation) *
+            var newWorld = Matrix.CreateScale(tank.GetScale()) *
+                           Matrix.CreateRotationY(tank.GetRotation()) *
                            Matrix.CreateTranslation(newPosition);
-
             var tankVertices = GetTransformedVertices(t.Model, newWorld);
-
             // Comparar con cada casa
-            foreach (var stone in _stones)
+            foreach (GameObject gameObject in _gameElements)
             {
-                float distance = Vector3.Distance(newPosition, stone.Position);
-                if (distance < tank.CollisionRadius + stone.CollisionRadius)
+                float distance = Vector3.Distance(newPosition, gameObject.GetPosition());
+                if (distance < tank.CollisionRadius + gameObject.CollisionRadius)
                 {
-                    stonesToRemove.Add(stone);
+                    _gameElements.Remove(gameObject);
                 }
             }
-
-            foreach (var s in stonesToRemove)
-                _stones.Remove(s);
-
-            // --- Collisiones con arbustos ---
-            foreach (var bush in _bushes)
-            {
-                float distance = Vector3.Distance(newPosition, bush.Position);
-                if (distance < tank.CollisionRadius + bush.CollisionRadius)
-                {
-                    bushesToRemove.Add(bush);
-                }
-            }
-
-            foreach (var b in bushesToRemove)
-                _bushes.Remove(b);
-
+            /*
             // --- Colisiones con muros ---
             foreach (var wall in _walls)
             {
-                float distance = Vector3.Distance(newPosition, wall.Position);
+                float distance = Vector3.Distance(newPosition, wall.GetPosition());
                 if (distance < tank.CollisionRadius + wall.CollisionRadius)
                     return true; // Detener movimiento
             }
-
             // --- Colisiones con casas ---
             foreach (var house in _houses)
             {
-                float distance = Vector3.Distance(newPosition, house.Position);
+                float distance = Vector3.Distance(newPosition, house.GetPosition());
                 if (distance < tank.CollisionRadius + house.CollisionRadius)
                     return true; // Detener movimiento
             }
-
             // --- Colisiones con árboles ---
             foreach (var tree in _trees)
             {
-                float distance = Vector3.Distance(newPosition, tree.Position);
+                float distance = Vector3.Distance(newPosition, tree.GetPosition());
                 if (distance < tank.CollisionRadius + tree.CollisionRadius)
                     return true; // Detener movimiento
             }
-
             return stonesToRemove.Count > 0 || bushesToRemove.Count > 0;
         }
-
+        */
         // Resuelve la colisión del tanque contra el entorno usando esferas sencillas y empuje (push-out).
 
         // Devuelve una altura de suelo aproximada para (x,z) promediando los vértices más cercanos
-        // Devuelve una altura de suelo aproximada en (x,z) usando un plano de los 3 v�rtices m�s cercanos.
+        // Devuelve una altura de suelo aproximada en (x,z) usando un plano de los 3 vértices más cercanos.
         public float SampleGroundHeight(float x, float z)
         {
             if (_landVertices == null || _landVertices.Count < 3) return 0f;
-            // Buscar 3 m�s cercanos en XZ
+            // Buscar 3 más cercanos en XZ
             int i1 = -1, i2 = -1, i3 = -1;
             float d1 = float.MaxValue, d2 = float.MaxValue, d3 = float.MaxValue;
             for (int i = 0; i < _landVertices.Count; i++)
@@ -561,7 +499,6 @@ namespace TGC.MonoGame.TP
             else if (y > maxY) y = maxY;
             return y;
         }
-
         private List<Vector3> GetTransformedVertices(Model model, Matrix world)
         {
             var vertices = new List<Vector3>();
@@ -590,7 +527,6 @@ namespace TGC.MonoGame.TP
 
             return vertices;
         }
-
         private bool IsPointInsideMesh(Vector3 point, List<Vector3> meshVertices)
         {
             Vector3 min = Vector3.One * float.MaxValue;
@@ -611,5 +547,3 @@ namespace TGC.MonoGame.TP
     }
 
 }
-
-

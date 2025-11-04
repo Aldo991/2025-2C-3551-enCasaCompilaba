@@ -19,45 +19,24 @@ namespace TGC.MonoGame.TP;
 public abstract class GameObject
 {
     protected Model _model;
-    protected Matrix _world { get; set; }
-    protected Vector3 _position { get; set; }
-    protected float _scale { get; set; }
-    protected float _rotation { get; set; }
-    protected Texture2D _texture { get; set; }
-    protected BoundingBox _boundingBox { get; set; }
-    protected float _collisionRadius { get; set; }
+    protected Matrix _world;
+    protected Vector3 _position;
+    protected float _scale;
+    protected float _rotation;
+    protected Texture2D _texture;
+    protected BoundingBox _boundingBox;
+    protected float _collisionRadius;
 
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
-
-    public Vector3 Position
-    {
-        get => _position;
-        set => _position = value;
-    }
-    public float Scale
-    {
-        get => _scale;
-        set => _scale = value;
-    }
-    public float Rotation
-    {
-        get => _rotation;
-        set => _rotation = value;
-    }
-    public Texture2D Texture
-    {
-        get => _texture;
-        set => _texture = value;
-    }
-    public BoundingBox BoundingBox
-    {
-        get => _boundingBox;
-        set => _boundingBox = value;
-    }
-    public float CollisionRadius
-    {
-        get => _collisionRadius;
-        set => _collisionRadius = value;
-    }
+    public Vector3 GetPosition() => _position;
+    public void SetPosition(Vector3 position) => _position = position;
+    public float GetScale() => _scale;
+    public void SetScale(float scale) => _scale = scale;
+    public float GetRotation() => _rotation;
+    public void SetRotation(float rotation) => _rotation = rotation;
+    public Texture2D GetTexture() => _texture;
+    public void SetTexture(Texture2D texture) => _texture = texture;
+    public BoundingBox GetBoundingBox() => _boundingBox;
+    public float CollisionRadius() => _collisionRadius;
 }

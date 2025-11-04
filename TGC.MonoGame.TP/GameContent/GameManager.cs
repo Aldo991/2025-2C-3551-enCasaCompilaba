@@ -48,50 +48,24 @@ public class GameManager
         InitializeCamera(graphicsDevice);
     }
     // Devuelve si el estado del juego es pausa o no
-    public bool IsPause()
-    {
-        return _state == GameState.Pause;
-    }
+    public bool IsPause() => _state == GameState.Pause;
     // Devuelve si el estado del juego es jugando o no
-    public bool IsPlaying()
-    {
-        return _state == GameState.Playing;
-    }
+    public bool IsPlaying() => _state == GameState.Playing;
     // Devuelve si el estado del juego es exit y se debe cerrar
-    public bool IsExit()
-    {
-        return _state == GameState.Exit;
-    }
+    public bool IsExit() => _state == GameState.Exit;
     // Getter y setter de la variable _pressingPause, que indica si se está apretando la tecla de pausa o no
-    public bool GetPressingPause()
-    {
-        return _isPressingPause;
-    }
-    public void SetPressingPause(bool pause)
-    {
-        _isPressingPause = pause;
-    }
+    public bool GetPressingPause() => _isPressingPause;
+    public void SetPressingPause(bool pause) => _isPressingPause = pause;
     // Devuelve el estado del juego
-    public GameState GetState()
-    {
-        return _state;
-    }
+    public GameState GetState() => _state;
     // Setea un estado del juego
-    public void SetState(GameState newGameState)
-    {
-        _state = newGameState;
-    }
+    public void SetState(GameState newGameState) => _state = newGameState;
     // Devuelve el valor de la variable _mousePressedLast
-    public bool GetMousePressedLast()
-    {
-        return _mousePressedLast;
-    }
+    public bool GetMousePressedLast() => _mousePressedLast;
     // Setea un valor para la variable _mousePressedLast
-    public void SetMousePressedLast(bool pressed)
-    {
-        _mousePressedLast = pressed;
-    }
+    public void SetMousePressedLast(bool pressed) => _mousePressedLast = pressed;
     // Aplica una textura a un modelo de un objeto
+    /*
     public void ApplyTextureToModel(Model model, Texture2D texture)
     {
         foreach (var mesh in model.Meshes)
@@ -102,6 +76,8 @@ public class GameManager
             }
         }
     }
+    */
+    public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
@@ -112,21 +88,17 @@ public class GameManager
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime)
     {
         if (_state == GameState.Playing)
-        {
             _hud.Draw(player);
-        }
-        elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         player.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        if (_state == GameState.Playing)
+            _hud.Draw(player);
         if (_state == GameState.Menu || _state == GameState.Pause)
-        {
             _hud.DrawMenu();
-        }
         if (_state == GameState.Options)
-        {
             _hud.DrawOptions();
-        }
     }
     public void UpdateOrbitBehind(Vector3 position, Vector3 bodyForward, int mouseX, int mouseY)
     {
@@ -140,10 +112,7 @@ public class GameManager
     {
         _projectileManager.AddProjectile(projectile);
     }
-    public Vector3 GetCameraForward()
-    {
-        return _camera.Forward;
-    }
+    public Vector3 GetCameraForward() => _camera.Forward;
     /// <summary>
     /// todo: deberíamos ver como parametrizar esto
     /// </summary>

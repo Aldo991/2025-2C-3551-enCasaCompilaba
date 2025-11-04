@@ -46,8 +46,8 @@ PS_INPUT VS_Main(VS_INPUT input)
 	output.Position = mul(worldPosition, View);
 	output.Position = mul(output.Position, Projection);
 
-	// ✅ aplicar desplazamiento de textura
-	output.TexCoord = input.TexCoord + float2(ScrollOffset, 0);
+	// Desplazamiento de textura
+	output.TexCoord = input.TexCoord; // + float2(ScrollOffset, 0);
 
 	return output;
 }
@@ -67,6 +67,7 @@ technique BasicTechnique
 };
 
 // Versión simple sin textura (solo color)
+/*
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
@@ -85,4 +86,5 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	output.Position = mul(viewPosition, Projection);
 	return output;
 }
+*/
 

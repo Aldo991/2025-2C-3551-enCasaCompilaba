@@ -24,23 +24,20 @@ public class Tank : GameObject
     private bool _isShooting;
     private float _life;
     private int _score;
-    private ElementosLand _elementosLand;
+    // private ElementosLand _elementosLand;
     private float _trackRotation = 0f;
     private Vector3 _previousPosition;
     private float _trackRotationFactor = 2.0f;
     private float _groundOffset = 0.0f;
     private Song _shootSound;
-    private readonly int _turretBoneIndex = 31;   // torreta (lo usabas para disparar)
-    private readonly int _gunBoneIndex = 32;   // cañón (el hueso hijo que eleva el cañón)
-
+    // private readonly int _turretBoneIndex = 31;   // torreta (lo usabas para disparar)
+    // private readonly int _gunBoneIndex = 32;   // cañón (el hueso hijo que eleva el cañón)
     // Rotaciones relativas de torreta y cañón
     private float _turretYaw = 0f;                // rotación Y local respecto al casco
     private float _gunPitch = 0f;                // rotación X local del cañón
-
     // Límites de elevación del cañón
     private static readonly float GunPitchMin = MathHelper.ToRadians(-10f);
     private static readonly float GunPitchMax = MathHelper.ToRadians(+20f);
-
     // Transforms originales de cada bone (para no acumular errores)
     private Matrix[] _bindPose;                   // transform local original de cada bone
     private Matrix _gunWorldAbs;                  // último transform absoluto del cañón
@@ -48,8 +45,8 @@ public class Tank : GameObject
     private bool _modelZUp = false;               // si el modelo está en Z-up (en vez de Y-up)
 
     // Cámara “pegada” al cañón
-    public Matrix ViewFromGun { get; private set; }
-    public Vector3 CameraPositionFromGun { get; private set; }
+    public Matrix ViewFromGun;
+    public Vector3 CameraPositionFromGun;
     public Matrix GunWorldAbs => _gunWorldAbs;
     public bool ModelZUp
     {
@@ -115,8 +112,8 @@ public class Tank : GameObject
         Vector3 position,
         float scale = 1f,
         float rotation = 0f,
-        Texture2D texture = null,
-        ElementosLand elementosLand = null
+        Texture2D texture = null//,
+        // ElementosLand elementosLand = null
 
         )
     {
@@ -126,7 +123,7 @@ public class Tank : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _texture = texture;
-        _elementosLand = elementosLand;
+        // _elementosLand = elementosLand;
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
@@ -165,24 +162,13 @@ public class Tank : GameObject
         AddIfValid(FindBoneIndex("coaxial_gun"));
         AddIfValid(FindBoneIndex("periscope"));
         AddIfValid(FindBoneIndex("hatch"));
-
     }
-    public Model Model => _model;
-    public bool IsShooting
-    {
-        get => _isShooting;
-        set => _isShooting = value;
-    }
-    public float Life
-    {
-        get => _life;
-        set => _life = value;
-    }
-    public int Score
-    {
-        get => _score;
-        set => _score = value;
-    }
+    public bool GetIsShooting() => _isShooting;
+    public void SetIsShooting(bool shoot) => _isShooting = shoot;
+    public float GetLife() => _life;
+    public void SetLife(float life) => _life = life;
+    public int GetScore() => _score;
+    public void SetScore(int score) => _score = score;
     // Permite establecer el yaw relativo de la torreta respecto al casco
     public void SetTurretYaw(float yawRelative)
     {
@@ -197,7 +183,7 @@ public class Tank : GameObject
     {
         _turretYaw += deltaX * sensitivity;                 // girar torreta (Y)
         _gunPitch = MathHelper.Clamp(_gunPitch - deltaY * sensitivity, // invertido para “levantarse”
-            GunPitchMin, GunPitchMax);         // limitar elevación
+        GunPitchMin, GunPitchMax);         // limitar elevación
     }
     public void MoveForwardTank(GameTime gameTime)
     {
@@ -227,10 +213,7 @@ public class Tank : GameObject
         else
             DecelerateTank(gameTime);
     }
-    public bool HasVelocity()
-    {
-        return _velocity > 0;
-    }
+    public bool HasVelocity() => _velocity > 0;
     public void DecelerateTank(GameTime gameTime)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -270,32 +253,17 @@ public class Tank : GameObject
         Matrix turretWorldPos = turretWorld * _world;
         Vector3 turretPos = turretWorldPos.Translation;
         Vector3 turretDirection = turretWorldPos.Up;
-        // _shootSound.Play();
-        // _shootSound.
         MediaPlayer.Play(_shootSound);
-        // Console.WriteLine($"{turretDirection} dirección de la torreta");
         return new Projectile(_projectileModel, turretPos, turretDirection);
-    }
-    public Model ProjectileModel
-    {
-        get => _projectileModel;
-        set => _projectileModel = value;
     }
     public void SetGround(ElementosLand elementos)
     {
-        _elementosLand = elementos;
-        if (_elementosLand != null)
-        {
-            float gy = _elementosLand.SampleGroundHeight(_position.X, _position.Z);
-            _groundOffset = _position.Y - gy;
-        }
+        float gy = elementos.SampleGroundHeight(_position.X, _position.Z);
+        _groundOffset = _position.Y - gy;
     }
-    public void SetProjectileModel(Model model)
-    {
-        _projectileModel = model;
-    }
-
+    public void SetProjectileModel(Model model) => _projectileModel = model;
     // Dump de jerarquía: lista bones y meshes para identificar nombres
+    /*
     public void DumpRig(string filePath = "rig_dump.txt")
     {
         try
@@ -322,7 +290,8 @@ public class Tank : GameObject
             System.Diagnostics.Debug.WriteLine($"DumpRig failed: {ex.Message}");
         }
     }
-
+    */
+    /*
     // Mismo dump pero a la consola (Output window del IDE)
     public void DumpRigToConsole()
     {
@@ -348,7 +317,8 @@ public class Tank : GameObject
             Console.WriteLine($"DumpRigToConsole failed: {ex.Message}");
         }
     }
-
+    */
+    /*
     // Permite configurar torreta/cañón por nombre exacto/parcial del mesh
     public bool ConfigureRigByMeshNames(string turretMeshName, string gunMeshName = null)
     {
@@ -376,14 +346,14 @@ public class Tank : GameObject
         _gunBone = (g >= 0 && g < _model.Bones.Count) ? g : -1;
         return true;
     }
+    */
     public override void Update(GameTime gameTime)
     {
-        _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
-        if (_elementosLand != null)
-        {
-            float gy = _elementosLand.SampleGroundHeight(_position.X, _position.Z);
-            _position = new Vector3(_position.X, gy + _groundOffset, _position.Z);
-        }
+        /*
+        float gy = _elementosLand.SampleGroundHeight(_position.X, _position.Z);
+        _position = new Vector3(_position.X, gy + _groundOffset, _position.Z);
+        */
+
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(_model, _world);
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -424,9 +394,7 @@ public class Tank : GameObject
 
         // Recalcular transforms absolutos luego de modificar los locales
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
-
         // Recalcular transforms absolutos luego de aplicar rotaciones locales
-        _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
 
         // 5) Construir la cámara enganchada al cañón: posición “tras y arriba” del mantelete
         var turretAbs = _boneTransforms[_turretBone] * _world;
@@ -454,11 +422,11 @@ public class Tank : GameObject
     {
         var modelTransforms = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelTransforms);
-        // Set the View and Projection matrices, needed to draw every 3D model.
+
         float scroll = _trackRotation;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        // _effect.Parameters["DiffuseColor"].SetValue(Color.GreenYellow.ToVector3());
+        
         var modelMeshesBaseTransform = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransform);
         foreach (var mesh in _model.Meshes)
@@ -487,12 +455,5 @@ public class Tank : GameObject
             mesh.Draw();
         }
     }
-    public void SetShootSound(Song soundEffect)
-    {
-        _shootSound = soundEffect;
-    }
-    public Song GetShootSound()
-    {
-        return _shootSound;
-    }
+    public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
 }

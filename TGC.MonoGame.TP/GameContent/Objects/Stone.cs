@@ -10,7 +10,7 @@ namespace TGC.MonoGame.TP;
 public class Stone : GameObject
 {
     private Effect _effect;
-    public bool IsActive { get; set; } = true;
+    // public bool IsActive;
     private BoundingBox CreateBoundingBox(Model model, Matrix world)
     {
         Vector3 min = Vector3.One * float.MaxValue;
@@ -40,16 +40,15 @@ public class Stone : GameObject
                 }
             }
         }
-
         return new BoundingBox(min, max);
     }
 
     public Stone(
         Model model,
         Vector3 position,
-        float scale = 1f,
+        float scale = 0.3f,
         float rotation = 0f,
-        Texture2D texture = null
+        Texture2D texture = null //todo: aplicar textura
         )
     {
         _model = model;
@@ -57,23 +56,21 @@ public class Stone : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        _world = Matrix.CreateScale(0.3f) * Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
         _collisionRadius = 50f; // Set collision radius for stones
+        // IsActive = true;
     }
-    
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateTranslation(_position);
+        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
     
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
-        if (!IsActive) return;
-        // Set the View and Projection matrices, needed to draw every 3D model.
+        // if (!IsActive) return;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        //_effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

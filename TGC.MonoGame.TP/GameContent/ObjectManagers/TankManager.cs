@@ -1,4 +1,6 @@
 #region FileDescription
+/// Tank manager: Se va a encargar de manejar todos los enemigos activos 
+/// que se encuentren en el mapa.
 #endregion
 
 #region Using Statements
@@ -18,10 +20,12 @@ public class TankManager
         else
             _tanks = new List<Tank>();
     }
+    // Agrega un tanque a la lista de tanques activos
     public void AddTank(Tank tank)
     {
         _tanks.Add(tank);
     }
+    // Elimina un tanque de la lista de tanques activos
     public void DeleteTank(Tank tank)
     {
         _tanks.Remove(tank);
