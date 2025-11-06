@@ -399,7 +399,8 @@ public class Tank : GameObject
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["Texture"]?.SetValue(_texture);
+        _effect.Parameters["Texture"].SetValue(_texture);
+        _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         // _effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3());
         foreach (var mesh in _meshes)
         {
@@ -431,7 +432,6 @@ public class Tank : GameObject
     /// BORRAR
     public void CambiarVida(float cantidad) => _life += cantidad;
     public void CambiarY(float y) => _position.Y += y;
-    public int WheelsTotalListMesh() => _wheels.TotalListMesh();
     public void MeshesTanque()
     {
         foreach (var mesh in _model.Meshes)

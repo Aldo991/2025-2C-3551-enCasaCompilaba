@@ -9,11 +9,11 @@ namespace TGC.MonoGame.TP;
 Meshes del tanque T90
 
 "Hull"
-"Treadmill1"
+
 
 "Turret"
 "Cannon"
-"Treadmill2"
+
 
 */
 public class Wheels
@@ -21,17 +21,20 @@ public class Wheels
     private Model _model;
     private List<string> WheelsNames = new List<string> {
         "Wheel1", "Wheel2", "Wheel8", "Wheel7", "Wheel6", "Wheel5", "Wheel4", "Wheel3",
-        "Wheel9", "Wheel16", "Wheel15", "Wheel14", "Wheel13", "Wheel12", "Wheel11", "Wheel10"
+        "Wheel9", "Wheel16", "Wheel15", "Wheel14", "Wheel13", "Wheel12", "Wheel11", "Wheel10",
     };
-    private string trackName = "track";
+    private List<string> Treadmills = new List<string>
+    {
+        "Treadmill1", "Treadmill2"
+    };
     private Effect _effect;
     private List<ModelMesh> _wheelsMeshes;
     private List<ModelBone> _wheelsBones;
     private List<Matrix> _wheelBonesOriginalTransform;
     private float _wheelRotation;
-    private ModelMesh _trackMesh;
-    private ModelBone _trackBone;
-    private float _trackRotation;
+    private List<ModelMesh> _treadmillsMesh;
+    private List<ModelBone> _treadmillsBone;
+    private float _treadmillsOffset;
     private Matrix[] _boneTransform;
 
     public Wheels(Model model)
@@ -42,7 +45,9 @@ public class Wheels
         _wheelsBones = new List<ModelBone>();
         _wheelBonesOriginalTransform = new List<Matrix>();
         _wheelRotation = 0f;
-        _trackRotation = 0f;
+        _treadmillsMesh = new List<ModelMesh>();
+        _treadmillsBone = new List<ModelBone>();
+        _treadmillsOffset = 0f;
         GetWheelsMeshesAndBonesFromModel();
         GetTrackMeshAndBoneFromModel();
         _boneTransform = new Matrix[_model.Bones.Count];
@@ -51,13 +56,11 @@ public class Wheels
     {
         foreach (var mesh in _model.Meshes)
         {
-            var name = mesh.Name;
-            if (WheelsNames.Contains(name))
+            if (WheelsNames.Contains(mesh.Name))
                 _wheelsMeshes.Add(mesh);
         }
         foreach (var bone in _model.Bones)
         {
-            var name = bone.Name;
             if (WheelsNames.Contains(bone.Name))
             {
                 _wheelsBones.Add(bone);
@@ -69,19 +72,19 @@ public class Wheels
     {
         foreach (var mesh in _model.Meshes)
         {
-            if (mesh.Name == trackName)
-                _trackMesh = mesh;
+            if (Treadmills.Contains(mesh.Name))
+                _treadmillsMesh.Add(mesh);
         }
         foreach (var bone in _model.Bones)
         {
-            if (bone.Name == trackName)
-                _trackBone = bone;
+            if (Treadmills.Contains(bone.Name))
+                _treadmillsBone.Add(bone);
         }
     }
     public void Update(GameTime gameTime, float velocity)
     {
         _wheelRotation += velocity;
-        _trackRotation += velocity;
+        _treadmillsOffset += velocity * 0.2f;
         var wheelRotation = Matrix.CreateRotationX(_wheelRotation);
         for (int i = 0; i < _wheelsBones.Count; i++)
         {
@@ -105,7 +108,15 @@ public class Wheels
             _effect.Parameters["World"].SetValue(boneWorld);
             mesh.Draw();
         }
+        _effect.Parameters["TreadmillsOffset"].SetValue(_treadmillsOffset);
+        for (int i = 0; i < _treadmillsMesh.Count; i++)
+        {
+            ModelMesh mesh = _treadmillsMesh[i];
+            Matrix boneTransform = _boneTransform[_treadmillsBone[i].Index];
+            var boneWorld = boneTransform * world;
+            _effect.Parameters["World"].SetValue(boneWorld);
+            mesh.Draw();
+        }
     }
-    public int TotalListMesh() => _wheelsMeshes.Count;
     public List<string> MeshNames() => WheelsNames;
 }

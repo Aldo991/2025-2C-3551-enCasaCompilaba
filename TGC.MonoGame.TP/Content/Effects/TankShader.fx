@@ -22,7 +22,7 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float3 DiffuseColor;
-float ScrollOffset = 0.0f;
+float TreadmillsOffset = 0.0f;
 
 struct VS_INPUT
 {
@@ -47,7 +47,7 @@ PS_INPUT VS_Main(VS_INPUT input)
 	output.Position = mul(output.Position, Projection);
 
 	// Desplazamiento de textura
-	output.TexCoord = input.TexCoord; // + float2(ScrollOffset, 0);
+	output.TexCoord = input.TexCoord + float2(0, TreadmillsOffset);
 
 	return output;
 }
