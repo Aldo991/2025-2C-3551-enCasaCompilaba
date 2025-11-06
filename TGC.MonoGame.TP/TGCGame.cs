@@ -124,7 +124,7 @@ public class TGCGame : Game
             // UpdateOrbitBehind actualiza la cámara para que esta orbite  el tanque
             _gameManager.UpdateOrbitBehind(_tank.GetPosition(), bodyForward, mouseX, mouseY);
 
-            /**/// Esto hace que la cámara esté fija a la torreta, entonces la torreta siempre apunta hacia adelante.
+            /*// Esto hace que la cámara esté fija a la torreta, entonces la torreta siempre apunta hacia adelante.
             var camFwd = _gameManager.GetCameraForward();
             camFwd.Normalize();
             float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
@@ -162,10 +162,9 @@ public class TGCGame : Game
         // Hago que la cámara orbite sobre el tanque
         if (!_gameManager.IsPlaying())
         { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), dt, 0.35f, 0.25f); IsMouseVisible = true; }
-        
+
         // Actualizo el GameManager para que actualice todos los objetos del juego
         _gameManager.Update(gameTime);
-
         base.Update(gameTime);
     }
 

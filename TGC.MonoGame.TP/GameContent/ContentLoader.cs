@@ -166,7 +166,6 @@ public static class ContentLoader
                 foreach (var meshPart in mesh.MeshParts)
                 {
                     meshPart.Effect = effect;
-                    meshPart.Effect.Parameters["Texture"].SetValue(_stoneTextures[0]);
                 }
             }
         }

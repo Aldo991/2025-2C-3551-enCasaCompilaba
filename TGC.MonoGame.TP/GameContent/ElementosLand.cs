@@ -435,7 +435,7 @@ namespace TGC.MonoGame.TP
             _gameElements.Add(stoneModel5Test);
             /* Piedras de prueba */
 
-            /* Tanques de prueba */
+            /* Tanques de prueba
             Vector3 tankModekl1TestPosition = new Vector3(0f, 30f, 30f);
             Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 0), tankModekl1TestPosition, scaleTankModel1);
             _gameElements.Add(tankModel1Test);

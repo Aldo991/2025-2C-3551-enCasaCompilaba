@@ -1,8 +1,6 @@
 #region Using Statements
-
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -18,6 +16,8 @@ public class Tank : GameObject
     private const float InitialLife = 100f;
     private Effect _effect;
     private Vector3 _tankFrontDirection;
+    private Wheels _wheels;
+    private List<ModelMesh> _meshes;
     private Matrix[] _boneTransforms;
     private bool _isMovingforward;
     private float _velocity;
@@ -26,9 +26,7 @@ public class Tank : GameObject
     private float _life;
     private int _score;
     // private ElementosLand _elementosLand;
-    private float _trackRotation = 0f;
     private Vector3 _previousPosition;
-    private float _trackRotationFactor = 2.0f;
     private float _groundOffset = 0.0f;
     private Song _shootSound;
     // private readonly int _turretBoneIndex = 31;   // torreta (lo usabas para disparar)
@@ -115,7 +113,6 @@ public class Tank : GameObject
         float scale = 1f,
         float rotation = 0f,
         Texture2D texture = null
-
         )
     {
         _model = model;
@@ -125,7 +122,6 @@ public class Tank : GameObject
         _rotation = MathHelper.ToRadians(rotation);
         _texture = texture;
         _life = InitialLife;
-        // _elementosLand = elementosLand;
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
@@ -140,7 +136,10 @@ public class Tank : GameObject
             _bindPose[i] = model.Bones[i].Transform;
         _previousPosition = position;
         _collisionRadius = 60f; // Set collision radius for tank
-
+        _wheels = new Wheels(_model);
+        _meshes = new List<ModelMesh>();
+        MeshesTanque();
+        /*
         // Resolver bones: primero por nombre, si no, usar índices por defecto y validar rangos
         _turretBone = FindBoneIndex("turret", "torreta");
         if (_turretBone < 0 || _turretBone >= _model.Bones.Count)
@@ -166,6 +165,7 @@ public class Tank : GameObject
         AddIfValid(FindBoneIndex("coaxial_gun"));
         AddIfValid(FindBoneIndex("periscope"));
         AddIfValid(FindBoneIndex("hatch"));
+        */
     }
     public bool GetIsShooting() => _isShooting;
     public void SetIsShooting(bool shoot) => _isShooting = shoot;
@@ -297,33 +297,7 @@ public class Tank : GameObject
         }
     }
     */
-    /*
-    // Mismo dump pero a la consola (Output window del IDE)
-    public void DumpRigToConsole()
-    {
-        try
-        {
-            Console.WriteLine("=== BONES ===");
-            for (int i = 0; i < _model.Bones.Count; i++)
-            {
-                var b = _model.Bones[i];
-                var parent = b.Parent;
-                Console.WriteLine($"[{i}] Bone='{b.Name}' Parent={(parent != null ? parent.Index : -1)} ParentName='{parent?.Name}'");
-            }
-            Console.WriteLine();
-            Console.WriteLine("=== MESHES ===");
-            foreach (var mesh in _model.Meshes)
-            {
-                var pb = mesh.ParentBone;
-                Console.WriteLine($"Mesh='{mesh.Name}' ParentBoneIndex={pb.Index} ParentBoneName='{pb.Name}'");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"DumpRigToConsole failed: {ex.Message}");
-        }
-    }
-    */
+
     /*
     // Permite configurar torreta/cañón por nombre exacto/parcial del mesh
     public bool ConfigureRigByMeshNames(string turretMeshName, string gunMeshName = null)
@@ -355,20 +329,9 @@ public class Tank : GameObject
     */
     public override void Update(GameTime gameTime)
     {
-        /*
-        float gy = _elementosLand.SampleGroundHeight(_position.X, _position.Z);
-        _position = new Vector3(_position.X, gy + _groundOffset, _position.Z);
-        */
-
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(_model, _world);
-        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _trackRotation += (_isMovingforward ? +1f : -1f) * _velocity * _trackRotationFactor * dt;
-
-        // Mantener en [0,1) para evitar overflow
-        if (_trackRotation >= 1f) _trackRotation -= 1f;
-        else if (_trackRotation < 0f) _trackRotation += 1f;
-
+        /*
         // Asegurar que _turretBone apunte a la parte superior correcta
         if ((_turretBone < 0 || _turretBone >= _model.Bones.Count) && (_gunBone >= 0 && _gunBone < _model.Bones.Count))
         {
@@ -397,12 +360,14 @@ public class Tank : GameObject
             // Aplicar yaw alrededor del pivote de la torreta
             _model.Bones[idx].Transform = Tpivot * Ryaw * Tinv * baseLocal;
         }
+        */
 
         // Recalcular transforms absolutos luego de modificar los locales
-        _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
+        // _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
         // Recalcular transforms absolutos luego de aplicar rotaciones locales
 
         // 5) Construir la cámara enganchada al cañón: posición “tras y arriba” del mantelete
+        /*
         var turretAbs = _boneTransforms[_turretBone] * _world;
         Matrix gunAbs;
         if (_gunBone >= 0 && _gunBone < _boneTransforms.Length)
@@ -410,6 +375,7 @@ public class Tank : GameObject
         else
             gunAbs = turretAbs;
         _gunWorldAbs = gunAbs;
+
 
         // Ojo: en tu modelo el “forward” de la torreta/cañón podría ser Up/Forward/Right.
         // Usabas 'Up' para disparar; mantenemos esa convención:
@@ -423,17 +389,25 @@ public class Tank : GameObject
         var lookAt = gunOrigin + gunForward * 100f;
 
         ViewFromGun = Matrix.CreateLookAt(CameraPositionFromGun, lookAt, Vector3.Up);
+        */
+        _wheels.Update(gameTime,_velocity);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
         var modelTransforms = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelTransforms);
 
-        float scroll = _trackRotation;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["Texture"].SetValue(_texture);
-
+        _effect.Parameters["Texture"]?.SetValue(_texture);
+        // _effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3());
+        foreach (var mesh in _meshes)
+        {
+            var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
+            _effect.Parameters["World"].SetValue(worldMesh);
+            mesh.Draw();
+        }
+        /*
         foreach (var mesh in _model.Meshes)
         {
             var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
@@ -447,13 +421,23 @@ public class Tank : GameObject
                     fx.Parameters["Texture"].SetValue(_texture);
                 fx.Parameters["ScrollOffset"]?.SetValue(scroll);
             }
-            */
             mesh.Draw();
         }
+            */
+        _wheels.Draw(_world, view, projection);
     }
     public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
 
     /// BORRAR
     public void CambiarVida(float cantidad) => _life += cantidad;
     public void CambiarY(float y) => _position.Y += y;
+    public int WheelsTotalListMesh() => _wheels.TotalListMesh();
+    public void MeshesTanque()
+    {
+        foreach (var mesh in _model.Meshes)
+        {
+            if (!_wheels.MeshNames().Contains(mesh.Name))
+                _meshes.Add(mesh);
+        }
+    }
 }

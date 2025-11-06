@@ -71,11 +71,11 @@ public class Stone : GameObject
         // if (!IsActive) return;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
+        if(_texture != null)
+            _effect.Parameters["Texture"].SetValue(_texture);
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);
-            if (_texture != null)
-                _effect.Parameters["Texture"].SetValue(_texture);
             mesh.Draw();
         }
     }
