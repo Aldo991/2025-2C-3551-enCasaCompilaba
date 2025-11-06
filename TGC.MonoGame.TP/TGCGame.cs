@@ -14,7 +14,7 @@ public class TGCGame : Game
     private Tank _tank;
     private ElementosLand _elementosLand;
     private GameManager _gameManager;
-    // private Texture2D _pixel;
+    private Land _land;
     public TGCGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -41,8 +41,8 @@ public class TGCGame : Game
         // Cargo todos los elementos del juego, como efectos, modelos, sprites, sonidos y texturas
         ContentLoader.Load(Content);
         // Este no lo entendí
-        // _pixel = new Texture2D(GraphicsDevice, 1, 1);
-        // _pixel.SetData(new[] { Color.White });
+        var world = Matrix.CreateScale(20000f, 0f, 20000f);
+        _land = new Land(GraphicsDevice, ContentLoader.GetModel("land", 0), world);
 
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
@@ -52,10 +52,11 @@ public class TGCGame : Game
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
         // Todo: revisar si debería estar en GameManager
-        Model tankModel = ContentLoader.GetModel("tank", 0);
-        Vector3 tankPosition = new Vector3(320, 490, 300);
+        Model tankModel = ContentLoader.GetModel("tank", 1);
+        Vector3 tankPosition = new Vector3(25f, 30f, 30f);
         Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
-        _tank = new Tank(tankModel, tankPosition, 1f, 0f, tankTexture);
+        float tankScale = 0.01f;
+        _tank = new Tank(tankModel, tankPosition, tankScale, 0f, tankTexture);
         _tank.SetGround(_elementosLand);
         Model projectileModel = ContentLoader.GetModel("projectile", 0);
         _tank.SetProjectileModel(projectileModel);
@@ -99,6 +100,14 @@ public class TGCGame : Game
                 _tank.SetIsShooting(true);
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
+            if (kb.IsKeyDown(Keys.Left)) _gameManager.CambiarBrujula(-1, 0);
+            if (kb.IsKeyDown(Keys.Right)) _gameManager.CambiarBrujula(1, 0);
+            if (kb.IsKeyDown(Keys.Up)) _gameManager.CambiarBrujula(0, -1);
+            if (kb.IsKeyDown(Keys.Down)) _gameManager.CambiarBrujula(0, 1);
+            if (kb.IsKeyDown(Keys.OemMinus)) _tank.CambiarVida(-1f);
+            if (kb.IsKeyDown(Keys.OemPlus)) _tank.CambiarVida(1f);
+            if (kb.IsKeyDown(Keys.Space)) _tank.CambiarY(.5f);
+            if (kb.IsKeyDown(Keys.LeftShift)) _tank.CambiarY(-.5f);
 
             // De acá para abajo no entendí xd
             // Todo: entender esto
@@ -112,28 +121,27 @@ public class TGCGame : Game
 
             _tank.Update(gameTime);
             var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.GetRotation()));
+            // UpdateOrbitBehind actualiza la cámara para que esta orbite  el tanque
             _gameManager.UpdateOrbitBehind(_tank.GetPosition(), bodyForward, mouseX, mouseY);
 
-            // var camFwd = _camera.Forward;
+            /**/// Esto hace que la cámara esté fija a la torreta, entonces la torreta siempre apunta hacia adelante.
             var camFwd = _gameManager.GetCameraForward();
-            if (camFwd.LengthSquared() > 1e-6f)
+            camFwd.Normalize();
+            float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
+                                            : (float)Math.Atan2(camFwd.X, camFwd.Y);
+            float yawRel = MathHelper.WrapAngle(yawAbs - _tank.GetRotation() + MathHelper.Pi);
+            _tank.SetTurretYaw(yawRel);
+            if (!_tank.ModelZUp)
             {
-                camFwd.Normalize();
-                float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
-                                                : (float)Math.Atan2(camFwd.X, camFwd.Y);
-                float yawRel = MathHelper.WrapAngle(yawAbs - _tank.GetRotation() + MathHelper.Pi);
-                _tank.SetTurretYaw(yawRel);
-                if (!_tank.ModelZUp)
-                {
-                    float pitch = (float)Math.Atan2(camFwd.Y, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Z * camFwd.Z));
-                    _tank.SetGunPitch(pitch);
-                }
-                else
-                {
-                    float pitch = (float)Math.Atan2(camFwd.Z, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Y * camFwd.Y));
-                    _tank.SetGunPitch(pitch);
-                }
+                float pitch = (float)Math.Atan2(camFwd.Y, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Z * camFwd.Z));
+                _tank.SetGunPitch(pitch);
             }
+            else
+            {
+                float pitch = (float)Math.Atan2(camFwd.Z, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Y * camFwd.Y));
+                _tank.SetGunPitch(pitch);
+            }
+            //*/
             IsMouseVisible = false;
             Mouse.SetPosition(width / 2, height / 2);
         }
@@ -168,7 +176,7 @@ public class TGCGame : Game
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
         // En el GameManager están todos los contenidos
-        _gameManager.Draw(_elementosLand, _tank, gameTime);
+        _gameManager.Draw(_elementosLand, _tank, gameTime, _land);
     }
     protected override void UnloadContent()
     {

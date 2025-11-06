@@ -81,11 +81,11 @@ public class GameManager
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
-        _hud.Update(this);
+        _hud.Update(gameTime, this);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
     }
-    public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime)
+    public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
         if (_state == GameState.Playing)
             _hud.Draw(player);
@@ -93,6 +93,8 @@ public class GameManager
         elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
+        
         if (_state == GameState.Playing)
             _hud.Draw(player);
         if (_state == GameState.Menu || _state == GameState.Pause)
@@ -121,8 +123,21 @@ public class GameManager
     {
         int centerX = graphicsDevice.Viewport.Width / 2;
         int centerY = graphicsDevice.Viewport.Height / 2;
-        float radius = 50000;
+        float radius = 500f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
         _camera.SetLockToGun(false);
     }
+
+
+    /// AUXILIAR, BORRAR
+    public void CambiarBrujula(int x, int y)
+    {
+        _hud.CambiarPosicionBrujula(x, y);
+    }
+    /*
+    public void VectorCamara()
+    {
+        _camera.UpdateLockedToGun
+    }
+    */
 }

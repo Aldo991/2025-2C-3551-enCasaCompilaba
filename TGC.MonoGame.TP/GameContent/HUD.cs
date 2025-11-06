@@ -16,23 +16,29 @@ internal class Hud
 {
     private readonly SpriteFont _font;
     private readonly Texture2D _lifeBarTexture;
+    private Texture2D _compass;
+    private float _compassAngle;
     private SpriteBatch _spriteBatch;
     private GraphicsDevice _graphicsDevice;
     private Texture2D _pixel;
     private Rectangle _btnJugar, _btnOpciones, _btnExit;
+    private int _posicionBrujulaX, _posicionBrujulaY;
     private bool _showScoreboard;
+    private int _fps;
     // private GameManager _gameManager;
     public Hud(ContentManager content, GraphicsDevice graphicsDevice)
     {
         _font = ContentLoader.GetSpriteFont();
-        _lifeBarTexture = content.Load<Texture2D>("hud/health");
+        _lifeBarTexture = ContentLoader.GetTexture("hud", 1);
+        _compass = ContentLoader.GetTexture("hud", 0);
+        _compassAngle = 0f;
         _spriteBatch = new SpriteBatch(graphicsDevice);
         _graphicsDevice = graphicsDevice;
-        // _gameManager = GameManager.Instance;
-        // _gameManager = new GameManager();
         _pixel = new Texture2D(graphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
-        // _showScoreboard = false;
+        _showScoreboard = false;
+        _posicionBrujulaX = 1700;
+        _posicionBrujulaY = 120;
 
         var vp = graphicsDevice.Viewport;
         int vw = vp.Width;
@@ -46,7 +52,7 @@ internal class Hud
         _btnExit = new Rectangle(cx - bw / 3, cy + 100, bw, bh);
     }
     public void SetScoreboard(bool mode) => _showScoreboard = mode;
-    public void Update(GameManager gameManager)
+    public void Update(GameTime gameTime, GameManager gameManager)
     {
         if (gameManager.GetState() == GameState.Menu || gameManager.GetState() == GameState.Pause)
         {
@@ -60,6 +66,23 @@ internal class Hud
                 else if (_btnExit.Contains(pt)) { gameManager.SetState(GameState.Exit); }
             }
             gameManager.SetMousePressedLast(pressed);
+        }
+        if (gameManager.GetState() == GameState.Playing)
+        {
+            var ms = Mouse.GetState();
+            int mouseX = ms.X;
+            // int mouseY = ms.Y;
+            int width = _graphicsDevice.Viewport.Width;
+            // int height = _graphicsDevice.Viewport.Height;
+            int centerX = width / 2;
+            // int centerY = height / 2;
+            int offsetX = mouseX - centerX;
+            // int offsetY = mouseY - centerY;
+            _compassAngle += (float)Math.Sin(offsetX) * 0.1f;
+
+            // Actualizo los fps
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _fps = (int)(1 / dt);
         }
     }
     public void Draw(Tank player)
@@ -75,6 +98,9 @@ internal class Hud
         _spriteBatch.DrawString(_font, $"X: {player.GetPosition().X}", new Vector2(20, 60), Color.White);
         _spriteBatch.DrawString(_font, $"Y: {player.GetPosition().Y}", new Vector2(20, 80), Color.White);
         _spriteBatch.DrawString(_font, $"Z: {player.GetPosition().Z}", new Vector2(20, 100), Color.White);
+        _spriteBatch.DrawString(_font, $"X brujula: {_posicionBrujulaX}", new Vector2(20, 120), Color.White);
+        _spriteBatch.DrawString(_font, $"Y brujula: {_posicionBrujulaY}", new Vector2(20, 140), Color.White);
+        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 160), Color.White);
 
         float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
         float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla
@@ -86,15 +112,30 @@ internal class Hud
 
         // Texto "Salud" encima de la barra
         _spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);
-
         // Barra de vida
-        /*
         _spriteBatch.Draw(
             _lifeBarTexture,
-            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * player.Life), lifeBarHeight),
+            // new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * player.GetLife()), lifeBarHeight),
+            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * player.LifePercent()), lifeBarHeight),
             Color.Red
         );
-        */
+
+        Vector2 direccionBrujula = new Vector2(player.GetTurretDirection().X, player.GetTurretDirection().Z);
+        direccionBrujula.Normalize();
+        float angulosBrujula = MathF.Acos(Vector2.Dot(direccionBrujula, Vector2.UnitX)); // está en radianes
+        if (direccionBrujula.Y > 0) { angulosBrujula = MathF.PI * 2 - angulosBrujula; }
+        Vector2 origin = new Vector2(_compass.Width / 2, _compass.Height / 2);
+        // Dibujo la brújula
+        _spriteBatch.Draw(
+            _compass,
+            new Rectangle(_posicionBrujulaX, _posicionBrujulaY, 200, 200),
+            null,
+            Color.White,
+            _compassAngle,// angulosBrujula,
+            origin,
+            SpriteEffects.None,
+            0f
+        );
 
         _spriteBatch.End();
         if (_showScoreboard)
@@ -126,7 +167,7 @@ internal class Hud
             _spriteBatch.DrawString(_font, "Puntos", new Vector2(colMid, row), Color.LightGray);
 
             row += _font.LineSpacing * 1.2f;
-            string playerName = "Tú";
+            string playerName = "Tu";
             _spriteBatch.DrawString(_font, playerName, new Vector2(colLeft, row), Color.White);
             _spriteBatch.DrawString(_font, player.GetScore().ToString(), new Vector2(colMid, row), Color.White);
 
@@ -173,5 +214,11 @@ internal class Hud
         _spriteBatch.DrawString(_font, "[Enter] Volver", new Vector2(40, vp.Height * 0.75f), Color.LightGray);
 
         _spriteBatch.End();
+    }
+
+    public void CambiarPosicionBrujula(int x, int y)
+    {
+        _posicionBrujulaX += x;
+        _posicionBrujulaY += y;
     }
 }

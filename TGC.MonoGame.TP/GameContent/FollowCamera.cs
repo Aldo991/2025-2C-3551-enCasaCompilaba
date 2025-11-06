@@ -9,7 +9,7 @@ public class FollowCamera
 {
     public const float DefaultFieldOfViewDegrees = MathHelper.PiOver4;
     public const float DefaultNearPlaneDistance = 1f;
-    public const float DefaultFarPlaneDistance = 200000f;
+    public const float DefaultFarPlaneDistance = 2000f;
 
     private Matrix View;
     private Matrix Projection;
@@ -104,7 +104,6 @@ public class FollowCamera
     {
         if (!_lockToGun) return;
 
-        // Según tu modelo, el “forward” del cañón es Up. Si no, cambiá a Forward/Right.
         Vector3 gunForward = useUpAsForward ? gunWorld.Up : gunWorld.Forward;
         gunForward.Normalize();
 

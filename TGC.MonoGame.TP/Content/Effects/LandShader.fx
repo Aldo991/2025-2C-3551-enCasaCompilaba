@@ -17,7 +17,7 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-//float3 DiffuseColor;
+float3 DiffuseColor;
 
 float Time = 0;
 
@@ -51,6 +51,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
+	/*
 	float3 BottomColor = float3(0.4, 0.3, 0.1);; // marrón tierra
 	float3 TopColor    = float3(0.05, 0.3, 0.05); // verde pasto	
 	
@@ -60,7 +61,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	//lerp(a, b, t) a: valor inicial, b: valor final, t factor de interpolacion
 	float3 color = lerp(BottomColor, TopColor, factor);
     return float4(color, 1);
-
+	*/
+	return float4(DiffuseColor, 1.0);
 }
 
 technique BasicColorDrawing

@@ -12,9 +12,10 @@ namespace TGC.MonoGame.TP;
 
 public class Tank : GameObject
 {
-    private const float TankMaxSpeed = 40f; // Unidades por segundo
+    private const float TankMaxSpeed = 4f; // Unidades por segundo
     private const float RotationSpeed = 1.5f; // Radianes por segundo
-    private const float Acceleration = 4f; // Aceleracion del tanque
+    private const float Acceleration = .2f; // Aceleracion del tanque
+    private const float InitialLife = 100f;
     private Effect _effect;
     private Vector3 _tankFrontDirection;
     private Matrix[] _boneTransforms;
@@ -47,6 +48,7 @@ public class Tank : GameObject
     // Cámara “pegada” al cañón
     public Matrix ViewFromGun;
     public Vector3 CameraPositionFromGun;
+    private Vector3 _turretDirection;
     public Matrix GunWorldAbs => _gunWorldAbs;
     public bool ModelZUp
     {
@@ -91,7 +93,7 @@ public class Tank : GameObject
     // Índices resueltos de torreta/cañón y helper para encontrarlos por nombre
     private int _turretBone;  // fallback a _turretBoneIndex si no se resuelve por nombre
     private int _gunBone;     // puede ser -1 si el modelo no tiene cañón separado
-
+    public Vector3 GetTurretDirection() => _turretDirection;
     private int FindBoneIndex(params string[] names)
     {
         if (_model?.Bones == null) return -1;
@@ -112,8 +114,7 @@ public class Tank : GameObject
         Vector3 position,
         float scale = 1f,
         float rotation = 0f,
-        Texture2D texture = null//,
-        // ElementosLand elementosLand = null
+        Texture2D texture = null
 
         )
     {
@@ -123,10 +124,13 @@ public class Tank : GameObject
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _texture = texture;
+        _life = InitialLife;
         // _elementosLand = elementosLand;
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
+        _turretDirection = _tankFrontDirection;
+        _turretDirection.Normalize();
         _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
@@ -167,6 +171,7 @@ public class Tank : GameObject
     public void SetIsShooting(bool shoot) => _isShooting = shoot;
     public float GetLife() => _life;
     public void SetLife(float life) => _life = life;
+    public float LifePercent() => _life / InitialLife;
     public int GetScore() => _score;
     public void SetScore(int score) => _score = score;
     // Permite establecer el yaw relativo de la torreta respecto al casco
@@ -217,7 +222,7 @@ public class Tank : GameObject
     public void DecelerateTank(GameTime gameTime)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _velocity -= Acceleration * deltaTime;
+        _velocity -= Acceleration * deltaTime * 30f;
         if (_velocity < 0)
             _velocity = 0;
         if (_isMovingforward)
@@ -253,6 +258,7 @@ public class Tank : GameObject
         Matrix turretWorldPos = turretWorld * _world;
         Vector3 turretPos = turretWorldPos.Translation;
         Vector3 turretDirection = turretWorldPos.Up;
+        _turretDirection = turretDirection;
         MediaPlayer.Play(_shootSound);
         return new Projectile(_projectileModel, turretPos, turretDirection);
     }
@@ -426,34 +432,28 @@ public class Tank : GameObject
         float scroll = _trackRotation;
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        
-        var modelMeshesBaseTransform = new Matrix[_model.Bones.Count];
-        _model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransform);
+        _effect.Parameters["Texture"].SetValue(_texture);
+
         foreach (var mesh in _model.Meshes)
         {
-            foreach (var part in mesh.MeshParts)
-            {
-                var decl = part.VertexBuffer.VertexDeclaration;
-                /*
-                foreach (var e in decl.GetVertexElements())
-                    if (e.VertexElementUsage == VertexElementUsage.TextureCoordinate && e.UsageIndex == 0)
-                */
-            }
             var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
 
-            var relativeTransform = modelMeshesBaseTransform[mesh.ParentBone.Index];
-            _effect.Parameters["World"].SetValue(relativeTransform * _world);
+            _effect.Parameters["World"].SetValue(worldMesh);
+            /*
             foreach (var fx in mesh.Effects)
             {
                 fx.Parameters["World"]?.SetValue(worldMesh);
-                fx.Parameters["View"]?.SetValue(view);
-                fx.Parameters["Projection"]?.SetValue(projection);
                 if (_texture != null)
                     fx.Parameters["Texture"].SetValue(_texture);
                 fx.Parameters["ScrollOffset"]?.SetValue(scroll);
             }
+            */
             mesh.Draw();
         }
     }
     public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
+
+    /// BORRAR
+    public void CambiarVida(float cantidad) => _life += cantidad;
+    public void CambiarY(float y) => _position.Y += y;
 }

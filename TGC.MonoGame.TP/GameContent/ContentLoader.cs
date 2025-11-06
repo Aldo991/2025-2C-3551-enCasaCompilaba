@@ -16,7 +16,7 @@ public static class ContentLoader
 {
     // Folders
     private const string ContentFolderEffects = "Effects/";
-    private const string ContentFolderHuds = "/hud";
+    private const string ContentFolderHuds = "hud";
     private const string ContentFolder3D = "Models";
     private const string ContentFolderSounds = "Sounds/";
     private const string ContentFolderTextures = "Textures";
@@ -43,6 +43,7 @@ public static class ContentLoader
     private static Model[] _treeModels;
     private static Model[] _wallModels;
 
+    private static Texture2D[] _hudTextures;
     private static SpriteFont _spriteFont;
     private static Song _shootTank;
 
@@ -78,6 +79,7 @@ public static class ContentLoader
         LoadWallModels(content);
 
         LoadSpriteFonts(content);
+        LoadHudTextures(content);
         LoadSounds(content);
     }
 
@@ -182,12 +184,9 @@ public static class ContentLoader
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = effect.Clone();
-                    // (opcional) seleccionar técnica por defecto del shader
-                    meshPart.Effect.CurrentTechnique = meshPart.Effect.Techniques["BasicTechnique"];
+                    meshPart.Effect = effect;
                 }
             }
-
             _tankModel[i] = model;
         }
     }
@@ -235,6 +234,17 @@ public static class ContentLoader
     {
         _spriteFont = content.Load<SpriteFont>("hud/DefaultFont");
     }
+    private static void LoadHudTextures(ContentManager content)
+    {
+        var _paths = Directory.GetFiles(_rootDirectory + ContentFolderHuds + "/", "*.png");
+        _hudTextures = new Texture2D[_paths.Length];
+        for (int i = 0; i < _paths.Length; i++)
+        {
+            var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
+            _hudTextures[i] = content.Load<Texture2D>(ContentFolderHuds + "/" + pathWithoutExtension);
+        }
+        // 0 es brújula, 1 health
+    }
     private static void LoadSounds(ContentManager content)
     {
         string path = ContentFolderSounds + "shoot";
@@ -261,7 +271,7 @@ public static class ContentLoader
         return modelName switch
         {
             "tank" => _tankTextures[index],
-            //_hudModels => _hudModels[index],
+            "hud" => _hudTextures[index],
             _ => throw new ArgumentException("Invalid texture name"),
         };
     }

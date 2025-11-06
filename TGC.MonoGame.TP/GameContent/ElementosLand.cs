@@ -20,6 +20,29 @@ namespace TGC.MonoGame.TP
         {
             // Inicializo las variables
             _gameElements = new List<GameObject>();
+            // Con 0.003f queda bien
+            float scaleBushModel0 = 0.003f;
+            float scaleHouseModel0 = 0.003f;
+            float scaleHouseModel1 = 0.009f;
+            float scaleProjectileModel0 = 0.001f;
+            // Con 0.003f queda como una piedra más chica que la rueda.
+            // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
+            float scaleStoneModel0 = 0.003f;
+            float scaleStoneModel1 = 0.003f;
+            float scaleTankModel1 = 0.01f;
+            // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
+            // Son los 3 el mismo modelo?
+            float scaleTreeModel0 = 0.003f;
+            float scaleTreeModel1 = 0.003f;
+            float scaleTreeModel2 = 0.003f;
+            // Está bien, pero sería más un muro más que una pared
+            float scaleWallModel0 = 0.03f;
+
+
+            // _land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0f, 0f, 0f), 9f, 0f); // escala antes estaba en 9
+            // Precalcular vértices del terreno una sola vez
+            // _landVertices = GetTransformedVertices(_land.GetModel(), _land.GetWorld());
+
             // Terreno
             var posicionesWalls2Rot = new List<Vector3>
             {
@@ -46,39 +69,28 @@ namespace TGC.MonoGame.TP
                 new Vector3(0, -150, 22330), new Vector3(2200, -150, 22330),
                 new Vector3(4400, -150, 22330)
             };
-
-            _land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0, -990, 0), 9f, 0f);
-            // Precalcular vértices del terreno una sola vez
-            _landVertices = GetTransformedVertices(_land.GetModel(), _land.GetWorld());
-
-            var stone1 = new Stone(ContentLoader.GetModel("stone", 0), new Vector3(3000, 770, 0));
-            _gameElements.Add(stone1);
-
-            var stone2 = new Stone(ContentLoader.GetModel("stone", 1), new Vector3(-3000, 690, 0));
-            _gameElements.Add(stone2);
-
             var posicionesWalls1 = new List<Vector3>
             {
-                new Vector3(740, 490, -1000), new Vector3(370, 490, -1000),
-                new Vector3(0, 490, -1000), new Vector3(-370, 490, -1000),
-                new Vector3(740, 850, -11050), new Vector3(370, 850, -11050),
-                new Vector3(0, 850, -11050), new Vector3(-370, 850, -11050),
-                new Vector3(-740, 850, -11050), new Vector3(-8890, 560, -1000),
-                new Vector3(-2960, 850, -11050), new Vector3(-3330, 900, -11050),
-                new Vector3(-3700, 950, -11050), new Vector3(-4070, 950, -11050),
-                new Vector3(-4440, 900, -11050), new Vector3(-4810, 850, -11050),
-                new Vector3(-5180, 850, -11050), new Vector3(-5550, 850, -11050),
-                new Vector3(-5920, 850, -11050), new Vector3(-6290, 850, -11050),
-                new Vector3(-2590, 500, -1000), new Vector3(-9260, 560, -1000),
-                new Vector3(-2960, 500, -1000), new Vector3(-3330, 500, -1000),
-                new Vector3(-3700, 500, -1000), new Vector3(-4070, 500, -1000),
-                new Vector3(-4440, 500, -1000), new Vector3(-4810, 500, -1000),
-                new Vector3(-5180, 500, -1000), new Vector3(-5550, 500, -1000),
-                new Vector3(-5920, 500, -1000), new Vector3(-6290, 500, -1000),
-                new Vector3(-6660, 500, -1000), new Vector3(-9630, 560, -1000),
-                new Vector3(-8540, 850, -11050), new Vector3(-8890, 950, -11050),
-                new Vector3(-9260, 1000, -11050), new Vector3(-9630, 1100, -11050),
-                new Vector3(-9800, 1130, -11050), new Vector3(-9800, 560, -1000),
+                new Vector3(740, 4, -1000), new Vector3(370, 4, -1000),
+                new Vector3(0, 4, -1000), new Vector3(-370, 5, -1000),
+                new Vector3(740, 8, -11050), new Vector3(370, 8, -11050),
+                new Vector3(0, 8, -11050), new Vector3(-370, 9, -11050),
+                new Vector3(-740, 8, -11050), new Vector3(-8890, 5, -1000),
+                new Vector3(-2960, 8, -11050), new Vector3(-3330, 9, -11050),
+                new Vector3(-3700, 9, -11050), new Vector3(-4070, 9, -11050),
+                new Vector3(-4440, 9, -11050), new Vector3(-4810, 8, -11050),
+                new Vector3(-5180, 8, -11050), new Vector3(-5550, 8, -11050),
+                new Vector3(-5920, 8, -11050), new Vector3(-6290, 8, -11050),
+                new Vector3(-2590, 5, -1000), new Vector3(-9260, 5, -1000),
+                new Vector3(-2960, 5, -1000), new Vector3(-3330, 5, -1000),
+                new Vector3(-3700, 5, -1000), new Vector3(-4070, 5, -1000),
+                new Vector3(-4440, 5, -1000), new Vector3(-4810, 5, -1000),
+                new Vector3(-5180, 5, -1000), new Vector3(-5550, 5, -1000),
+                new Vector3(-5920, 5, -1000), new Vector3(-6290, 5, -1000),
+                new Vector3(-6660, 5, -1000), new Vector3(-9630, 5, -1000),
+                new Vector3(-8540, 8, -11050), new Vector3(-8890, 9, -11050),
+                new Vector3(-9260, 10, -11050), new Vector3(-9630, 11, -11050),
+                new Vector3(-9800, 11, -11050), new Vector3(-9800, 5, -1000),
             };
             var posicionesWalls1Rotated = new List<Vector3>
             {
@@ -284,7 +296,7 @@ namespace TGC.MonoGame.TP
                 new Vector3(-3000, 490, -2000), new Vector3(-3000, 700, -6000),
                 new Vector3(-3000, 830, -10500), new Vector3(1050, 490, 550)
             };
-            var posicionesCasasModelo3 = new List<Vector3>
+            var posicionesCasasModelo2 = new List<Vector3>
             {
                 new Vector3(-8000, -400, 17090), new Vector3(100, 490, -2000),
                 new Vector3(100, 490, -6000), new Vector3(100, 900, -10000),
@@ -326,64 +338,131 @@ namespace TGC.MonoGame.TP
 
             foreach (var pos in posicionesArboles)
             {
-                var arbol = new Tree(ContentLoader.GetModel("tree", 0), pos, 0.3f, 0f);
+                var arbol = new Tree(ContentLoader.GetModel("tree", 0), pos, scaleTreeModel0, 0f);
                 _gameElements.Add(arbol);
             }
             foreach (var pos in posicionesArboles2)
             {
-                var arbol = new Tree(ContentLoader.GetModel("tree", 1), pos, 0.3f, 0f);
+                var arbol = new Tree(ContentLoader.GetModel("tree", 1), pos, scaleTreeModel1, 0f);
                 _gameElements.Add(arbol);
             }
             foreach (var pos in posicionesRocas)
             {
-                var roca = new Stone(ContentLoader.GetModel("stone", 0), pos);
+                var roca = new Stone(ContentLoader.GetModel("stone", 0), pos, scaleStoneModel0);
                 _gameElements.Add(roca);
             }
             foreach (var pos in posicionesPiedras)
             {
-                var piedra = new Stone(ContentLoader.GetModel("stone", 1), pos);
+                var piedra = new Stone(ContentLoader.GetModel("stone", 1), pos, scaleStoneModel1);
                 _gameElements.Add(piedra);
             }
             foreach (var pos in posicionesArbustos)
             {
-                var bush = new Bush(ContentLoader.GetModel("bush", 0), pos);
+                var bush = new Bush(ContentLoader.GetModel("bush", 0), pos, scaleBushModel0);
                 _gameElements.Add(bush);
             }
             foreach (var house in posicionesCasasModelo1)
             {
-                var casaModelo1 = new House(ContentLoader.GetModel("house", 0), house, 0.3f, 0);
+                var casaModelo1 = new House(ContentLoader.GetModel("house", 0), house, scaleHouseModel0, 0);
                 _gameElements.Add(casaModelo1);
             }
-            foreach (var house in posicionesCasasModelo3)
+            foreach (var house in posicionesCasasModelo2)
             {
-                var casaModelo3 = new House(ContentLoader.GetModel("house", 1), house, 1f, 0f);
+                var casaModelo3 = new House(ContentLoader.GetModel("house", 1), house, scaleHouseModel1, 0f);
                 _gameElements.Add(casaModelo3);
             }
             foreach (var wallPos in posicionesWalls1)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 3f, 0f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 0f);
                 _gameElements.Add(wall);
             }
             foreach (var wallPos in posicionesWalls1Rotated)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 3f, 90f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 90f);
                 _gameElements.Add(wall);
             }
             foreach (var wallsRot in posicionesWalls2Rot)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallsRot, 6f, 90f);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallsRot, scaleWallModel0, 90f);
                 _gameElements.Add(wall);
             }
             foreach (var wallPos in posicionesWalls2)
             {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, 6f, 0f);
-                // _walls.Add(wall);
+                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 0f);
                 _gameElements.Add(wall);
             }
+
+            /* Arbustos de prueba */
+            Vector3 bushModel0TestPosition = new Vector3(25f, 30f, 30f);
+            Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
+            _gameElements.Add(bushModel0Test);
+            /* Arbustos de prueba */
+
+            /* Casas de prueba */
+            Vector3 houseModel0TestPosition = new Vector3(50f, 30f, 50f);
+            House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
+            _gameElements.Add(houseModel0Test);
+            Vector3 houseModel1TestPosition = new Vector3(50f, 30f, 25f);
+            House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
+            _gameElements.Add(houseModel1Test);
+            /* Casas de prueba */
+
+            /* Projectiles de prueba */
+            Vector3 projectileModel0TestPosition = new Vector3(20f, 30f, 30f);
+            Vector3 direction = Vector3.Up;
+            Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, 0.001f, 500, scaleProjectileModel0);
+            _gameElements.Add(projectileModel0Test);
+            /* Projectiles de prueba */
+            
+            /* Piedras de prueba */
+            Vector3 stoneModel0TestPosition = new Vector3(30f, 30f, 30f);
+            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
+            _gameElements.Add(stoneModel0Test);
+            Vector3 stoneModel1TestPosition = new Vector3(30f, 30f, 35f);
+            Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
+            _gameElements.Add(stoneModel1Test);
+            Vector3 stoneModel2TestPosition = new Vector3(30f, 30f, 40f);
+            Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, scaleStoneModel1);
+            _gameElements.Add(stoneModel2Test);
+            Vector3 stoneModel3TestPosition = new Vector3(30f, 30f, 45f);
+            Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, scaleStoneModel0);
+            _gameElements.Add(stoneModel3Test);
+            Vector3 stoneModel4TestPosition = new Vector3(30f, 30f, 50f);
+            Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, scaleStoneModel1);
+            _gameElements.Add(stoneModel4Test);
+            Vector3 stoneModel5TestPosition = new Vector3(30f, 30f, 55f);
+            Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, scaleStoneModel1);
+            _gameElements.Add(stoneModel5Test);
+            /* Piedras de prueba */
+
+            /* Tanques de prueba */
+            Vector3 tankModekl1TestPosition = new Vector3(0f, 30f, 30f);
+            Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 0), tankModekl1TestPosition, scaleTankModel1);
+            _gameElements.Add(tankModel1Test);
+            /* Tanques de prueba */
+
+            /* Árboles de prueba */
+            Vector3 treeModel0TestPosition = new Vector3(35f, 30f, 30f);
+            Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel0TestPosition, scaleTreeModel0);
+            _gameElements.Add(treeModel0Test);
+            Vector3 treeModel1TestPosition = new Vector3(35f, 30f, 35f);
+            Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel1TestPosition, scaleTreeModel1);
+            _gameElements.Add(treeModel1Test);
+            Vector3 treeModel2TestPosition = new Vector3(35f, 30f, 40f);
+            Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel2TestPosition, scaleTreeModel2);
+            _gameElements.Add(treeModel2Test);
+            /* Árboles de prueba */
+
+            /* Paredes de prueba*/
+            Vector3 wallModel0TestPosition = new Vector3(40f, 30f, 40f);
+            Wall wallModel0Test = new Wall(ContentLoader.GetModel("wall", 0), wallModel0TestPosition, scaleWallModel0);
+            _gameElements.Add(wallModel0Test);
+            /* Paredes de prueba*/
+
         }
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
-            _land.Draw(gameTime, view, projection);
+            // _land.Draw(gameTime, view, projection);
             foreach (GameObject gameObject in _gameElements)
                 gameObject.Draw(gameTime, view, projection);
         }
