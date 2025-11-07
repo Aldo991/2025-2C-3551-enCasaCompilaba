@@ -62,6 +62,7 @@ public class TGCGame : Game
         _tank.SetProjectileModel(projectileModel);
         Song shootTank = ContentLoader.GetSoundEffect();
         _tank.SetShootSound(shootTank);
+        _tank.SetGraphicsDevice(GraphicsDevice);
 
         base.LoadContent();
     }
@@ -118,10 +119,11 @@ public class TGCGame : Game
             int width = GraphicsDevice.Viewport.Width;
             int height = GraphicsDevice.Viewport.Height;
 
-
+            _tank.SetOffsetXY(mouseX, mouseY);
+            _tank.SetCameraHorizontalAngle(_gameManager.GetCameraHorizontalAngle());
             _tank.Update(gameTime);
             var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.GetRotation()));
-            // UpdateOrbitBehind actualiza la cámara para que esta orbite  el tanque
+            // UpdateOrbitBehind actualiza la cámara para que esta orbite el tanque
             _gameManager.UpdateOrbitBehind(_tank.GetPosition(), bodyForward, mouseX, mouseY);
 
             /*// Esto hace que la cámara esté fija a la torreta, entonces la torreta siempre apunta hacia adelante.

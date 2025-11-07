@@ -128,7 +128,6 @@ public class FollowCamera
     // Orbital “desde atrás”: ancla el ángulo horizontal detrás del forward dado
     private bool _behindInitialized;
     public void ResetOrbitBehind() => _behindInitialized = false;
-
     public void UpdateOrbitBehind(Vector3 targetPosition, Vector3 forward, int mouseX, int mouseY)
     {
         if (_lockToGun) return;
@@ -167,13 +166,10 @@ public class FollowCamera
     public Vector3 PositionWorld => Position;
     public Vector3 TargetWorld => TargetPosition;
     public Vector3 Forward => Vector3.Normalize(TargetPosition - Position);
-
+    public float GetHorizontalAngle() => HorizontalAngle;
     // Permite tunear offsets sin recompilar
     public void SetGunCameraOffsets(float back, float up, float ahead)
     {
         _camBack = back; _camUp = up; _camAhead = ahead;
     }
 }
-
-
-

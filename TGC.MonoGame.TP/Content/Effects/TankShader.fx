@@ -55,6 +55,7 @@ PS_INPUT VS_Main(VS_INPUT input)
 float4 PS_Main(PS_INPUT input) : COLOR
 {
 	return tex2D(TextureSampler, input.TexCoord);
+	// return float4(DiffuseColor, 1.0f);
 }
 
 technique BasicTechnique

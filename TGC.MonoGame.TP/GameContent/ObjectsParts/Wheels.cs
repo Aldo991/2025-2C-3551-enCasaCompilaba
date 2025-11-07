@@ -7,18 +7,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace TGC.MonoGame.TP;
 /*
 Meshes del tanque T90
-
 "Hull"
-
-
-"Turret"
-"Cannon"
-
-
 */
 public class Wheels
 {
-    private Model _model;
     private List<string> WheelsNames = new List<string> {
         "Wheel1", "Wheel2", "Wheel8", "Wheel7", "Wheel6", "Wheel5", "Wheel4", "Wheel3",
         "Wheel9", "Wheel16", "Wheel15", "Wheel14", "Wheel13", "Wheel12", "Wheel11", "Wheel10",
@@ -27,6 +19,7 @@ public class Wheels
     {
         "Treadmill1", "Treadmill2"
     };
+    private Model _model;
     private Effect _effect;
     private List<ModelMesh> _wheelsMeshes;
     private List<ModelBone> _wheelsBones;
@@ -83,6 +76,8 @@ public class Wheels
     }
     public void Update(GameTime gameTime, float velocity)
     {
+        /*
+        */
         _wheelRotation += velocity;
         _treadmillsOffset += velocity * 0.2f;
         var wheelRotation = Matrix.CreateRotationX(_wheelRotation);
@@ -98,11 +93,10 @@ public class Wheels
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        // _effect.Parameters["DiffuseColor"].SetValue(Color.Black.ToVector3());
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Black.ToVector3());
         for (int i = 0; i < _wheelsMeshes.Count; i++)
         {
             ModelMesh mesh = _wheelsMeshes[i];
-            // Matrix boneTransform = _wheelsBones[i].Transform;
             Matrix boneTransform = _boneTransform[_wheelsBones[i].Index];
             var boneWorld = boneTransform * world;
             _effect.Parameters["World"].SetValue(boneWorld);

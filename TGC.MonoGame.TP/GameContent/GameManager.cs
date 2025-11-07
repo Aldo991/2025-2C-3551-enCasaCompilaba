@@ -64,19 +64,6 @@ public class GameManager
     public bool GetMousePressedLast() => _mousePressedLast;
     // Setea un valor para la variable _mousePressedLast
     public void SetMousePressedLast(bool pressed) => _mousePressedLast = pressed;
-    // Aplica una textura a un modelo de un objeto
-    /*
-    public void ApplyTextureToModel(Model model, Texture2D texture)
-    {
-        foreach (var mesh in model.Meshes)
-        {
-            foreach (var effect in mesh.Effects)
-            {
-                effect.Parameters["Texture"].SetValue(texture);
-            }
-        }
-    }
-    */
     public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
@@ -115,6 +102,7 @@ public class GameManager
         _projectileManager.AddProjectile(projectile);
     }
     public Vector3 GetCameraForward() => _camera.Forward;
+    public float GetCameraHorizontalAngle() => _camera.GetHorizontalAngle();
     /// <summary>
     /// todo: deberíamos ver como parametrizar esto
     /// </summary>
@@ -127,7 +115,6 @@ public class GameManager
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
         _camera.SetLockToGun(false);
     }
-
 
     /// AUXILIAR, BORRAR
     public void CambiarBrujula(int x, int y)
