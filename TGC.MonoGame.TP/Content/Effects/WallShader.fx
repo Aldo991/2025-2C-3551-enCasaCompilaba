@@ -19,7 +19,6 @@ sampler TextureSampler = sampler_state
 	Texture = <Texture>;
 	MinFilter = Linear;
 	MagFilter = Linear;
-	// MipFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
 };

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using TGC.MonoGame.TP;
+using System;
 #endregion
 
 public enum GameState
@@ -65,6 +66,24 @@ public class GameManager
     // Setea un valor para la variable _mousePressedLast
     public void SetMousePressedLast(bool pressed) => _mousePressedLast = pressed;
     public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
+    public void CreateEnemies(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {    
+            Model tankModel = ContentLoader.GetModel("tank", 1);
+            Random random = new Random();
+            Vector3 enemyPosition = new Vector3(random.NextSingle(), 30f, random.NextSingle());
+            float enemyRotation = random.NextSingle();
+            int textureIndex = (int)random.NextInt64() % 3;
+            textureIndex = (int)MathF.Abs(textureIndex);
+            Texture2D enemyTexture = ContentLoader.GetTexture("tank", textureIndex);
+            Tank enemy = new Tank(tankModel, enemyPosition, Tank.DefaultScale, enemyRotation, enemyTexture);
+            Model enemyProjectileModel = ContentLoader.GetModel("projectile", 0);
+            enemy.SetProjectileModel(enemyProjectileModel);
+            enemy.SetIsPlayer(false);
+            _tankManager.AddTank(enemy);
+        }
+    }
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
@@ -74,8 +93,6 @@ public class GameManager
     }
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
-        if (_state == GameState.Playing)
-            _hud.Draw(player);
         player.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
@@ -93,9 +110,9 @@ public class GameManager
     {
         _camera.UpdateOrbitBehind(position, bodyForward, mouseX, mouseY);
     }
-    public void UpdateOrbitAuto(Vector3 position, float dt, float angularSpeed, float fixedVerticalAngle)
+    public void UpdateOrbitAuto(Vector3 position, GameTime gameTime)
     {
-        _camera.UpdateOrbitAuto(position, dt, angularSpeed, fixedVerticalAngle);
+        _camera.UpdateOrbitAuto(position, gameTime);
     }
     public void AddToProjectileManager(Projectile projectile)
     {
@@ -111,7 +128,7 @@ public class GameManager
     {
         int centerX = graphicsDevice.Viewport.Width / 2;
         int centerY = graphicsDevice.Viewport.Height / 2;
-        float radius = 500f;
+        float radius = 1500f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
         _camera.SetLockToGun(false);
     }

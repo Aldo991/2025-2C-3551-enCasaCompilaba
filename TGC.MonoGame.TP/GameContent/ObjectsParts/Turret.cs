@@ -11,40 +11,24 @@ public class Turret
 {
     private string TurretName = "Turret";
     private string CannonName = "Cannon";
-    /*
-    private List<string> TurretNames = new List<string>
-    {
-        "Turret"
-    };
-    private List<string> CannonNames = new List<string>
-    {
-        "Cannon"
-    };
-    private List<ModelMesh> _turretMeshes;
-    private List<ModelBone> _turretBones;
-    private List<Matrix> _turretBonesOriginalTransform;
-    */
     private Model _model;
     private Effect _effect;
     private ModelMesh _turretMesh;
     private ModelBone _turretBone;
     private Matrix _turretBoneOriginalTransform;
-    private float _turretAngle;
+    // private float _turretAngle;
     private ModelMesh _cannonMesh;
     private ModelBone _cannonBone;
     private Matrix _cannonBoneOriginalTransform;
-    private float _cannonAngle;
+    // private float _cannonAngle;
     private Quaternion _turretRotation;
     private Matrix[] _boneTransform;
     public Turret(Model model)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
-        // _turretMeshes = new List<ModelMesh>();
-        // _turretBones = new List<ModelBone>();
-        // _turretBonesOriginalTransform = new List<Matrix>();
-        _turretAngle = 0f;
-        _cannonAngle = 0f;
+        // _turretAngle = 0f;
+        // _cannonAngle = 0f;
         _turretRotation = Quaternion.Identity;
         _boneTransform = new Matrix[_model.Bones.Count];
         GetTurretMeshesAndBonesFromModel();
@@ -85,12 +69,12 @@ public class Turret
     public ModelBone GetCannonBone() => _cannonBone;
     public void Update(float cameraHorizontalAngle, float tankRotation)
     {
-        float relativeAngle = cameraHorizontalAngle - tankRotation * 0.001f;
+        // float relativeAngle = cameraHorizontalAngle - tankRotation * 0.001f;
 
         // Torreta
         // _turretAngle -= offsetX * 0.001f;
-        var turretRotation = Matrix.CreateRotationZ(-relativeAngle);
-        _turretBone.Transform = turretRotation * _turretBoneOriginalTransform;
+        // var turretRotation = Matrix.CreateRotationZ(-relativeAngle);
+        // _turretBone.Transform = turretRotation * _turretBoneOriginalTransform;
 
         // Cannon
         // _cannonAngle -= offsetY * 0.001f;
@@ -107,6 +91,7 @@ public class Turret
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
+        _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         // Torreta
         Matrix boneTransform = _boneTransform[_turretBone.Index];
         var boneWorld = boneTransform * world;
@@ -118,5 +103,9 @@ public class Turret
         boneWorld = boneTransform * world;
         _effect.Parameters["World"].SetValue(boneWorld);
         _cannonMesh.Draw();
+    }
+    public bool ContainMesh(string meshName)
+    {
+        return meshName == TurretName || meshName == CannonName;
     }
 }

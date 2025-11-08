@@ -14,7 +14,7 @@ public class Projectile : GameObject
     private float _elapsedTime;
     private bool _isActive;
     public Projectile(Model model, Vector3 startPosition, Vector3 direction,
-        float speed = 50f, float lifetime = 5f, float scale = 0.001f, float rotation = 0f)
+        float speed = 50f, float lifetime = 5f, float scale = 0.005f, float rotation = 0f)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;

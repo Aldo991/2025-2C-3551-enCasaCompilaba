@@ -10,6 +10,8 @@ public class FollowCamera
     public const float DefaultFieldOfViewDegrees = MathHelper.PiOver4;
     public const float DefaultNearPlaneDistance = 1f;
     public const float DefaultFarPlaneDistance = 2000f;
+    public const float OrbitAngularSpeed = 0.35f;
+    public const float OrbitVerticalAngle = 0.25f;
 
     private Matrix View;
     private Matrix Projection;
@@ -81,11 +83,17 @@ public class FollowCamera
         return new Vector3(x, y, z);
     }
     // Auto-orbit mode: rotates around target at fixed angular speed, ignoring mouse
-    public void UpdateOrbitAuto(Vector3 targetPosition, float dt, float angularSpeed = 0.5f, float fixedVerticalAngle = 0.3f)
+    public void UpdateOrbitAuto(
+        Vector3 targetPosition,
+        GameTime gameTime,
+        float orbitAngularSpeed = OrbitAngularSpeed,
+        float orbitVerticalAngle = OrbitVerticalAngle
+    )
     {
         if (_lockToGun) return;
-        HorizontalAngle += angularSpeed * dt;
-        VerticalAngle = fixedVerticalAngle;
+        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        HorizontalAngle += orbitAngularSpeed * dt;
+        VerticalAngle = orbitVerticalAngle;
         var offset = CalculateOffsetPosition();
         Position = targetPosition + offset;
         TargetPosition = targetPosition;
@@ -124,26 +132,12 @@ public class FollowCamera
         TargetPosition = origin + forward * ahead;
         BuildView();
     }
-
-    // Orbital “desde atrás”: ancla el ángulo horizontal detrás del forward dado
-    private bool _behindInitialized;
-    public void ResetOrbitBehind() => _behindInitialized = false;
     public void UpdateOrbitBehind(Vector3 targetPosition, Vector3 forward, int mouseX, int mouseY)
     {
         if (_lockToGun) return;
-        var f = new Vector3(forward.X, 0f, forward.Z);
-        if (f.LengthSquared() < 1e-6f) f = Vector3.Forward;
-        f.Normalize();
 
         int offsetX = mouseX - CenterXPosition;
         int offsetY = mouseY - CenterYPosition;
-
-        if (!_behindInitialized)
-        {
-            float baseAngle = (float)Math.Atan2(f.Z, f.X) + MathHelper.Pi;
-            HorizontalAngle = baseAngle;
-            _behindInitialized = true;
-        }
 
         HorizontalAngle += offsetX * Sensitivity;
         VerticalAngle    = MathHelper.Clamp(VerticalAngle + offsetY * Sensitivity, -MathHelper.PiOver2 + 0.1f, MathHelper.PiOver2 - 0.1f);

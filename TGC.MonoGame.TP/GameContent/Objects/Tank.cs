@@ -1,6 +1,7 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -14,6 +15,7 @@ public class Tank : GameObject
     private const float RotationSpeed = 1.5f; // Radianes por segundo
     private const float Acceleration = .2f; // Aceleracion del tanque
     private const float InitialLife = 100f;
+    public static float DefaultScale = 0.01f;
     private Effect _effect;
     private GraphicsDevice _graphicsDevice;
     private Vector3 _tankFrontDirection;
@@ -27,6 +29,8 @@ public class Tank : GameObject
     private bool _isShooting;
     private float _life;
     private int _score;
+    private bool _isPlayer;
+    private EnemyAction _enemyAction;
     // Estos atributos de abajo los seteo antes de hacer Tank.Update(), y es la posición en
     // X e Y del mouse en la pantalla. Lo hago antes de hacer Tank.Update() para no romper
     // la interfaz de Update(GameTime)
@@ -40,8 +44,6 @@ public class Tank : GameObject
     // Límites de elevación del cañón
     private static readonly float GunPitchMin = MathHelper.ToRadians(-10f);
     private static readonly float GunPitchMax = MathHelper.ToRadians(+20f);
-    // Transforms originales de cada bone (para no acumular errores)
-    private Matrix[] _bindPose;                   // transform local original de cada bone
     private bool _modelZUp = false;               // si el modelo está en Z-up (en vez de Y-up)
 
     // Cámara “pegada” al cañón
@@ -91,7 +93,7 @@ public class Tank : GameObject
     public Tank(
         Model model,
         Vector3 position,
-        float scale = 1f,
+        float scale = 0.01f,
         float rotation = 0f,
         Texture2D texture = null
         )
@@ -111,15 +113,18 @@ public class Tank : GameObject
         _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
-        _bindPose = new Matrix[model.Bones.Count];
-        for (int i = 0; i < model.Bones.Count; i++)
-            _bindPose[i] = model.Bones[i].Transform;
         _previousPosition = position;
         _collisionRadius = 60f; // Set collision radius for tank
         _wheels = new Wheels(_model);
         _turret = new Turret(_model);
         _meshes = new List<ModelMesh>();
         MeshesTanque();
+    }
+    public void SetIsPlayer(bool isPlayer)
+    {
+        _isPlayer = isPlayer;
+        if (!isPlayer)
+            _enemyAction = new EnemyAction(this);
     }
     public void SetGraphicsDevice(GraphicsDevice graphicsDevice) => _graphicsDevice = graphicsDevice;
     public bool GetIsShooting() => _isShooting;
@@ -203,7 +208,8 @@ public class Tank : GameObject
         Vector3 turretPos = cannonWorld.Translation;
         Vector3 turretDirection = -cannonWorld.Up;
         _turretDirection = turretDirection;
-        MediaPlayer.Play(_shootSound);
+        if (_shootSound != null)
+            MediaPlayer.Play(_shootSound);
         return new Projectile(_projectileModel, turretPos, turretDirection);
     }
     public void SetGround(ElementosLand elementos)
@@ -278,7 +284,6 @@ public class Tank : GameObject
 
         // Recalcular transforms absolutos luego de modificar los locales
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
-        // Recalcular transforms absolutos luego de aplicar rotaciones locales
 
         // 5) Construir la cámara enganchada al cañón: posición “tras y arriba” del mantelete
         /*
@@ -290,22 +295,14 @@ public class Tank : GameObject
             gunAbs = turretAbs;
         _gunWorldAbs = gunAbs;
 
-
-        // Ojo: en tu modelo el “forward” de la torreta/cañón podría ser Up/Forward/Right.
-        // Usabas 'Up' para disparar; mantenemos esa convención:
-        Vector3 gunForward = Vector3.Normalize(gunAbs.Up);       // dirección donde apunta el cañón
-        Vector3 gunOrigin = gunAbs.Translation;                 // punto del cañón (mantelete)
-
-        float camBack = 120f;   // distancia hacia atrás
-        float camUp = 60f;    // altura sobre el cañón
-
-        CameraPositionFromGun = gunOrigin - gunForward * camBack + Vector3.Up * camUp;
-        var lookAt = gunOrigin + gunForward * 100f;
-
-        ViewFromGun = Matrix.CreateLookAt(CameraPositionFromGun, lookAt, Vector3.Up);
         */
         _wheels.Update(gameTime, _velocity);
         _turret.Update(_cameraHorizontalAngle, _rotation);
+        if (!_isPlayer)
+        {
+            _enemyAction.Update(gameTime,GameManager.Instance);
+        }
+
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
@@ -317,6 +314,14 @@ public class Tank : GameObject
         _effect.Parameters["Texture"]?.SetValue(_texture);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
+        /*
+        foreach (var mesh in _meshes)
+        {
+            var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
+            _effect.Parameters["World"].SetValue(worldMesh);
+            mesh.Draw();
+        }
+        */
         foreach (var mesh in _meshes)
         {
             var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
@@ -327,7 +332,6 @@ public class Tank : GameObject
         _wheels.Draw(_world, view, projection);
     }
     public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
-
     /// BORRAR
     public void CambiarVida(float cantidad) => _life += cantidad;
     public void CambiarY(float y) => _position.Y += y;
@@ -335,7 +339,7 @@ public class Tank : GameObject
     {
         foreach (var mesh in _model.Meshes)
         {
-            if (!_wheels.MeshNames().Contains(mesh.Name))
+            if (!_wheels.ContainMesh(mesh.Name) && !_turret.ContainMesh(mesh.Name))
                 _meshes.Add(mesh);
         }
     }

@@ -416,7 +416,9 @@ namespace TGC.MonoGame.TP
             
             /* Piedras de prueba */
             Vector3 stoneModel0TestPosition = new Vector3(30f, 30f, 30f);
-            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
+            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel0TestPosition, scaleStoneModel0);
+            Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 0);
+            stoneModel0Test.SetTexture(stoneModel0TestTexture);
             _gameElements.Add(stoneModel0Test);
             Vector3 stoneModel1TestPosition = new Vector3(30f, 30f, 35f);
             Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
@@ -438,6 +440,8 @@ namespace TGC.MonoGame.TP
             /* Tanques de prueba */
             Vector3 tankModekl1TestPosition = new Vector3(0f, 30f, 30f);
             Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 1), tankModekl1TestPosition, scaleTankModel1);
+            Texture2D tankModel1TestTexture = ContentLoader.GetTexture("tank", 1);
+            tankModel1Test.SetTexture(tankModel1TestTexture);
             _gameElements.Add(tankModel1Test);
             /* Tanques de prueba */
 
@@ -456,6 +460,8 @@ namespace TGC.MonoGame.TP
             /* Paredes de prueba*/
             Vector3 wallModel0TestPosition = new Vector3(40f, 30f, 40f);
             Wall wallModel0Test = new Wall(ContentLoader.GetModel("wall", 0), wallModel0TestPosition, scaleWallModel0);
+            Texture2D wallModel0TestTexture = ContentLoader.GetTexture("wall", 0);
+            wallModel0Test.SetTexture(wallModel0TestTexture);
             _gameElements.Add(wallModel0Test);
             /* Paredes de prueba*/
 

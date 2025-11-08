@@ -23,6 +23,7 @@ public class TGCGame : Game
         // Ancho y altura de la ventana
         _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+        // _graphics.ToggleFullScreen();
         Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
         // Visibilidad del mouse
         IsMouseVisible = false;
@@ -55,22 +56,22 @@ public class TGCGame : Game
         Model tankModel = ContentLoader.GetModel("tank", 1);
         Vector3 tankPosition = new Vector3(25f, 30f, 30f);
         Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
-        float tankScale = 0.01f;
-        _tank = new Tank(tankModel, tankPosition, tankScale, 0f, tankTexture);
+        _tank = new Tank(tankModel, tankPosition, Tank.DefaultScale, 0f, tankTexture);
         _tank.SetGround(_elementosLand);
         Model projectileModel = ContentLoader.GetModel("projectile", 0);
         _tank.SetProjectileModel(projectileModel);
         Song shootTank = ContentLoader.GetSoundEffect();
         _tank.SetShootSound(shootTank);
         _tank.SetGraphicsDevice(GraphicsDevice);
+        _tank.SetIsPlayer(true);
+
+        _gameManager.CreateEnemies(2);
 
         base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        // Delta t de tiempo entre intervalos de actualización
-        float dt = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
         // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.
         KeyboardState kb = Keyboard.GetState();
         // Si presiono el botón de salir, el estado del juego cambia a salir y se cierra la ventana.
@@ -101,17 +102,17 @@ public class TGCGame : Game
                 _tank.SetIsShooting(true);
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
+            /*
             if (kb.IsKeyDown(Keys.Left)) _gameManager.CambiarBrujula(-1, 0);
             if (kb.IsKeyDown(Keys.Right)) _gameManager.CambiarBrujula(1, 0);
             if (kb.IsKeyDown(Keys.Up)) _gameManager.CambiarBrujula(0, -1);
             if (kb.IsKeyDown(Keys.Down)) _gameManager.CambiarBrujula(0, 1);
-            if (kb.IsKeyDown(Keys.OemMinus)) _tank.CambiarVida(-1f);
-            if (kb.IsKeyDown(Keys.OemPlus)) _tank.CambiarVida(1f);
             if (kb.IsKeyDown(Keys.Space)) _tank.CambiarY(.5f);
             if (kb.IsKeyDown(Keys.LeftShift)) _tank.CambiarY(-.5f);
+            */
+            if (kb.IsKeyDown(Keys.Subtract)) _tank.CambiarVida(-1f);
+            if (kb.IsKeyDown(Keys.Add)) _tank.CambiarVida(1f);
 
-            // De acá para abajo no entendí xd
-            // Todo: entender esto
             // Tank Update
             var ms = Mouse.GetState();
             int mouseX = ms.X;
@@ -158,12 +159,14 @@ public class TGCGame : Game
             // _gameManager.IsPressingPause = true;
             _gameManager.SetPressingPause(true);
         }
-        if (kb.IsKeyUp(Keys.P) && kb.IsKeyUp(Keys.Escape) && _gameManager.GetPressingPause()) _gameManager.SetPressingPause(false);
+        if (kb.IsKeyUp(Keys.P) && kb.IsKeyUp(Keys.Escape) && _gameManager.GetPressingPause())
+            _gameManager.SetPressingPause(false);
 
         // Si el juego no está en estado de jugando (está en menú, opciones, etc.)
         // Hago que la cámara orbite sobre el tanque
         if (!_gameManager.IsPlaying())
-        { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), dt, 0.35f, 0.25f); IsMouseVisible = true; }
+        { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), gameTime); IsMouseVisible = true; }
+        // { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), dt, 0.35f, 0.25f); IsMouseVisible = true; }
 
         // Actualizo el GameManager para que actualice todos los objetos del juego
         _gameManager.Update(gameTime);
@@ -173,8 +176,9 @@ public class TGCGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
-        GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
         GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+        GraphicsDevice.BlendState = BlendState.Opaque;
+        GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
         // En el GameManager están todos los contenidos
         _gameManager.Draw(_elementosLand, _tank, gameTime, _land);

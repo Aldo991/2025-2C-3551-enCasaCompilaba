@@ -4,7 +4,6 @@
 #region Using Statements
 using System;
 using System.IO;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -42,7 +41,7 @@ public static class ContentLoader
     private static Texture2D[] _tankTextures;
     private static Model[] _treeModels;
     private static Model[] _wallModels;
-
+    private static Texture2D[] _wallTextures;
     private static Texture2D[] _hudTextures;
     private static SpriteFont _spriteFont;
     private static Song _shootTank;
@@ -77,6 +76,7 @@ public static class ContentLoader
 
         // Cargo los modelos de muros
         LoadWallModels(content);
+        LoadWallTextures(content);
 
         LoadSpriteFonts(content);
         LoadHudTextures(content);
@@ -149,8 +149,9 @@ public static class ContentLoader
     }
     private static void LoadStonesTextures(ContentManager content)
     {
-        _stoneTextures = new Texture2D[1];
+        _stoneTextures = new Texture2D[2];
         _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
+        _stoneTextures[1] = content.Load<Texture2D>("Textures/stones/stones");
     }
     private static void LoadStoneModels(ContentManager content)
     {
@@ -221,13 +222,18 @@ public static class ContentLoader
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
             _wallModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderWalls + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "WallShader");
             foreach (var mesh in _wallModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
             }
         }
+    }
+    private static void LoadWallTextures(ContentManager content)
+    {
+        _wallTextures = new Texture2D[1];
+        _wallTextures[0] = content.Load<Texture2D>("Textures/walls/brickwall_4");
     }
     private static void LoadSpriteFonts(ContentManager content)
     {
@@ -253,8 +259,8 @@ public static class ContentLoader
     {
         return modelName switch
         {
-            "house" => _houseModels[index],
             "bush" => _bushModels[index],
+            "house" => _houseModels[index],
             "land" => _landModels[index],
             "projectile" => _projectileModels[index],
             "stone" => _stoneModels[index],
@@ -269,8 +275,10 @@ public static class ContentLoader
     {
         return modelName switch
         {
+            "stone" => _stoneTextures[index],
             "tank" => _tankTextures[index],
             "hud" => _hudTextures[index],
+            "wall" => _wallTextures[index],
             _ => throw new ArgumentException("Invalid texture name"),
         };
     }

@@ -1,5 +1,6 @@
 #region Using Statements
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -112,5 +113,8 @@ public class Wheels
             mesh.Draw();
         }
     }
-    public List<string> MeshNames() => WheelsNames;
+    public bool ContainMesh(string meshName)
+    {
+        return WheelsNames.Contains(meshName) || Treadmills.Contains(meshName);
+    }
 }
