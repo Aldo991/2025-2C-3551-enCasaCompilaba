@@ -135,6 +135,8 @@ public class FollowCamera
     public void UpdateOrbitBehind(Vector3 targetPosition, Vector3 forward, int mouseX, int mouseY)
     {
         if (_lockToGun) return;
+        // var mouseX = GameManager.GetMousePositionX();
+        // var mouseX = GameManager.GetMousePositionX();
 
         int offsetX = mouseX - CenterXPosition;
         int offsetY = mouseY - CenterYPosition;

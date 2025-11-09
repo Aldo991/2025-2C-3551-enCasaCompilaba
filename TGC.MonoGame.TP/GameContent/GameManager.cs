@@ -3,29 +3,31 @@
 #endregion
 
 #region Using Statements
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using TGC.MonoGame.TP;
 using System;
+using Microsoft.Xna.Framework.Input;
 #endregion
 
 public enum GameState
 {
-    Menu, Options, Playing, Pause, Exit
+    Menu, Options, Playing, Exit
 }
 public class GameManager
 {
     private static GameManager instance;
     private GameState _state;
-    private List<GameObject> _gameObjects;
     private Hud _hud;
     private ProjectileManager _projectileManager;
     private TankManager _tankManager;
     private bool _isPressingPause;
-    private bool _mousePressedLast;
     private FollowCamera _camera;
+    // Variables globales, posición del mouse, tamaño de pantalla, estado
+    // de los botones del mouse, etc.
+    private static int _mousePositionX, _mousePositionY;
+    private static int _screenWidth, _screenHeight;
+    private static bool _leftButtonMousePressed;
     public static GameManager Instance
     {
         get
@@ -38,18 +40,18 @@ public class GameManager
         }
     }
     // Inicializa las variables del GameManager
-    public void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
+    public void Initialize(GraphicsDevice graphicsDevice, Tank player)
     {
-        _gameObjects = new List<GameObject>();
+        SetScreenInfo(graphicsDevice);
         _state = GameState.Menu;
         _projectileManager = new ProjectileManager();
         _tankManager = new TankManager();
-        _hud = new Hud(contentManager, graphicsDevice);
-        _mousePressedLast = false;
+        _hud = new Hud(graphicsDevice, player);
+        _hud.SetHudState(GameState.Menu);
         InitializeCamera(graphicsDevice);
     }
     // Devuelve si el estado del juego es pausa o no
-    public bool IsPause() => _state == GameState.Pause;
+    public bool IsPause() => _state == GameState.Menu;
     // Devuelve si el estado del juego es jugando o no
     public bool IsPlaying() => _state == GameState.Playing;
     // Devuelve si el estado del juego es exit y se debe cerrar
@@ -60,11 +62,11 @@ public class GameManager
     // Devuelve el estado del juego
     public GameState GetState() => _state;
     // Setea un estado del juego
-    public void SetState(GameState newGameState) => _state = newGameState;
-    // Devuelve el valor de la variable _mousePressedLast
-    public bool GetMousePressedLast() => _mousePressedLast;
-    // Setea un valor para la variable _mousePressedLast
-    public void SetMousePressedLast(bool pressed) => _mousePressedLast = pressed;
+    public void SetState(GameState newGameState)
+    {
+        _state = newGameState;
+        _hud.SetHudState(newGameState);
+    }
     public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
     public void CreateEnemies(int amount)
     {
@@ -87,7 +89,7 @@ public class GameManager
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
-        _hud.Update(gameTime, this);
+        _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
     }
@@ -98,13 +100,7 @@ public class GameManager
         _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
-        
-        if (_state == GameState.Playing)
-            _hud.Draw(player);
-        if (_state == GameState.Menu || _state == GameState.Pause)
-            _hud.DrawMenu();
-        if (_state == GameState.Options)
-            _hud.DrawOptions();
+        _hud.Draw();
     }
     public void UpdateOrbitBehind(Vector3 position, Vector3 bodyForward, int mouseX, int mouseY)
     {
@@ -132,12 +128,26 @@ public class GameManager
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
         _camera.SetLockToGun(false);
     }
-
-    /// AUXILIAR, BORRAR
-    public void CambiarBrujula(int x, int y)
+    public void SetGameInfo(GraphicsDevice graphicsDevice)
     {
-        _hud.CambiarPosicionBrujula(x, y);
+        var ms = Mouse.GetState();
+        _mousePositionX = ms.X;
+        _mousePositionY = ms.Y;
+        _leftButtonMousePressed = ms.LeftButton == ButtonState.Pressed;
     }
+    private void SetScreenInfo(GraphicsDevice graphicsDevice)
+    {
+        _screenWidth = graphicsDevice.Viewport.Width;
+        _screenHeight = graphicsDevice.Viewport.Height;
+    }
+    public static int GetMousePositionX() => _mousePositionX;
+    public static int GetMousePositionY() => _mousePositionY;
+    public static int GetScreenWidth() => _screenWidth;
+    public static int GetScreenHeight() => _screenHeight;
+    public static int GetScreenCenterWidth() => _screenWidth / 2;
+    public static int GetScreenCenterHeight() => _screenHeight / 2;
+    public static bool GetLeftButtonMousePressed() => _leftButtonMousePressed;
+    /// AUXILIAR, BORRAR
     /*
     public void VectorCamara()
     {

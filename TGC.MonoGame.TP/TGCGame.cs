@@ -1,5 +1,4 @@
 ﻿#region Using Statements
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -47,7 +46,6 @@ public class TGCGame : Game
 
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
-        _gameManager.Initialize(Content, GraphicsDevice);
         _elementosLand = new ElementosLand(Content);
 
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
@@ -65,6 +63,7 @@ public class TGCGame : Game
         _tank.SetGraphicsDevice(GraphicsDevice);
         _tank.SetIsPlayer(true);
 
+        _gameManager.Initialize(GraphicsDevice, _tank);
         _gameManager.CreateEnemies(2);
 
         base.LoadContent();
@@ -72,6 +71,7 @@ public class TGCGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        _gameManager.SetGameInfo(GraphicsDevice);
         // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.
         KeyboardState kb = Keyboard.GetState();
         // Si presiono el botón de salir, el estado del juego cambia a salir y se cierra la ventana.
@@ -155,7 +155,7 @@ public class TGCGame : Game
             if (_gameManager.IsPause()) // El juego está en pausa y va a dejar de estarlo
             { _gameManager.SetState(GameState.Playing); IsMouseVisible = false; }
             else // Se está jugando y se desea poner en pausa
-            { _gameManager.SetState(GameState.Pause); IsMouseVisible = true; }
+            { _gameManager.SetState(GameState.Menu); IsMouseVisible = true; }
             // _gameManager.IsPressingPause = true;
             _gameManager.SetPressingPause(true);
         }
