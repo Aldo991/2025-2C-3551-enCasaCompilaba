@@ -17,17 +17,23 @@ public enum GameState
 public class GameManager
 {
     private static GameManager instance;
-    private GameState _state;
-    private Hud _hud;
-    private ProjectileManager _projectileManager;
-    private TankManager _tankManager;
-    private bool _isPressingPause;
-    private FollowCamera _camera;
     // Variables globales, posición del mouse, tamaño de pantalla, estado
     // de los botones del mouse, etc.
     private static int _mousePositionX, _mousePositionY;
     private static int _screenWidth, _screenHeight;
     private static bool _leftButtonMousePressed;
+    // Estado del juego
+    private GameState _state;
+    // Hud y UI
+    private Hud _hud;
+    // ObjectManagers
+    private ProjectileManager _projectileManager;
+    private TankManager _tankManager;
+    // Indica si se está pausa, para evitar que se pause 60 veces por segundo
+    private bool _isPressingPause;
+    // Cámara del juego
+    private FollowCamera _camera;
+    // Da la instancia del GameManager, la idea es usarlo como singleton
     public static GameManager Instance
     {
         get
@@ -67,7 +73,9 @@ public class GameManager
         _state = newGameState;
         _hud.SetHudState(newGameState);
     }
+    // Permite mostrar el scoreboard, no está implementado
     public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
+    // Método auxiliar para crear enemigos
     public void CreateEnemies(int amount)
     {
         for (int i = 0; i < amount; i++)
@@ -102,44 +110,42 @@ public class GameManager
         land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
         _hud.Draw();
     }
-    public void UpdateOrbitBehind(Vector3 position, Vector3 bodyForward, int mouseX, int mouseY)
-    {
-        _camera.UpdateOrbitBehind(position, bodyForward, mouseX, mouseY);
-    }
+    // Orbita a través del tanque cuando está en pausa
     public void UpdateOrbitAuto(Vector3 position, GameTime gameTime)
     {
         _camera.UpdateOrbitAuto(position, gameTime);
     }
+    // Agrega un projectil al manager
     public void AddToProjectileManager(Projectile projectile)
     {
         _projectileManager.AddProjectile(projectile);
     }
-    public Vector3 GetCameraForward() => _camera.Forward;
-    public float GetCameraHorizontalAngle() => _camera.GetHorizontalAngle();
-    /// <summary>
-    /// todo: deberíamos ver como parametrizar esto
-    /// </summary>
-    /// <param name="graphicsDevice"></param>
+    // Setea la cámara detrás del tanque, apuntando al mismo lugar que apunta el cañón
+    public void SetCameraBehindTank(Vector3 target, Vector3 direction)
+    {
+        _camera.SetCameraDirection(target, direction);
+    }
+    // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
     {
-        int centerX = graphicsDevice.Viewport.Width / 2;
-        int centerY = graphicsDevice.Viewport.Height / 2;
         float radius = 1500f;
-        _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, centerX, centerY, radius);
-        _camera.SetLockToGun(false);
+        _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
     }
-    public void SetGameInfo(GraphicsDevice graphicsDevice)
+    // Setea la información del juego, más que nada del mouse
+    public void SetGameInfo()
     {
         var ms = Mouse.GetState();
         _mousePositionX = ms.X;
         _mousePositionY = ms.Y;
         _leftButtonMousePressed = ms.LeftButton == ButtonState.Pressed;
     }
+    // Setea información de la pantalla
     private void SetScreenInfo(GraphicsDevice graphicsDevice)
     {
         _screenWidth = graphicsDevice.Viewport.Width;
         _screenHeight = graphicsDevice.Viewport.Height;
     }
+    // Entrega información de la posición del mouse y de la pantalla.
     public static int GetMousePositionX() => _mousePositionX;
     public static int GetMousePositionY() => _mousePositionY;
     public static int GetScreenWidth() => _screenWidth;
@@ -147,11 +153,4 @@ public class GameManager
     public static int GetScreenCenterWidth() => _screenWidth / 2;
     public static int GetScreenCenterHeight() => _screenHeight / 2;
     public static bool GetLeftButtonMousePressed() => _leftButtonMousePressed;
-    /// AUXILIAR, BORRAR
-    /*
-    public void VectorCamara()
-    {
-        _camera.UpdateLockedToGun
-    }
-    */
 }

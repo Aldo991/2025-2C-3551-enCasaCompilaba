@@ -24,6 +24,7 @@ namespace TGC.MonoGame.TP
             float scaleBushModel0 = 0.003f;
             float scaleHouseModel0 = 0.003f;
             float scaleHouseModel1 = 0.009f;
+            float scaleHouseModel2 = 0.009f;
             float scaleProjectileModel0 = 0.001f;
             // Con 0.003f queda como una piedra más chica que la rueda.
             // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
@@ -122,7 +123,6 @@ namespace TGC.MonoGame.TP
                 new Vector3(-10000, 950, -9340), new Vector3(-10000, 950, -9710),
                 new Vector3(-10000, 980, -10080), new Vector3(-10000, 1050, -10450),
             };
-            //80 arboles de mismo modelo (MAS O MENOS)
             var posicionesArboles = new List<Vector3>
             {
                 new Vector3(1000, 490, 1000), new Vector3(2000, 490, 5000),
@@ -399,12 +399,20 @@ namespace TGC.MonoGame.TP
             /* Arbustos de prueba */
 
             /* Casas de prueba */
+            Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 0);
             Vector3 houseModel0TestPosition = new Vector3(50f, 30f, 50f);
             House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
+            houseModel0Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel0Test);
             Vector3 houseModel1TestPosition = new Vector3(50f, 30f, 25f);
             House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
+            houseModel1Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel1Test);
+            Vector3 houseModel2TestPosition = new Vector3(50f, 30f, 0f);
+            House houseModel2Test = new House(ContentLoader.GetModel("house", 2), houseModel2TestPosition, scaleHouseModel2);
+            // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 0);
+            houseModel2Test.SetTexture(houseModel2TestTexture);
+            _gameElements.Add(houseModel2Test);
             /* Casas de prueba */
 
             /* Projectiles de prueba */
@@ -413,27 +421,43 @@ namespace TGC.MonoGame.TP
             Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, 0.001f, 500, scaleProjectileModel0);
             _gameElements.Add(projectileModel0Test);
             /* Projectiles de prueba */
-            
+
             /* Piedras de prueba */
+            /* Piedra 1 */
             Vector3 stoneModel0TestPosition = new Vector3(30f, 30f, 30f);
-            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel0TestPosition, scaleStoneModel0);
-            Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 0);
+            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
+            Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 2);
             stoneModel0Test.SetTexture(stoneModel0TestTexture);
             _gameElements.Add(stoneModel0Test);
+            /* Piedra 2 */
             Vector3 stoneModel1TestPosition = new Vector3(30f, 30f, 35f);
             Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
+            Texture2D stoneModel1TestTexture = ContentLoader.GetTexture("stone", 2);
+            stoneModel1Test.SetTexture(stoneModel1TestTexture);
             _gameElements.Add(stoneModel1Test);
+            /* Piedra 3 */
             Vector3 stoneModel2TestPosition = new Vector3(30f, 30f, 40f);
             Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, scaleStoneModel1);
+            Texture2D stoneModel2TestTexture = ContentLoader.GetTexture("stone", 2);
+            stoneModel2Test.SetTexture(stoneModel2TestTexture);
             _gameElements.Add(stoneModel2Test);
+            /* Piedra 4 */
             Vector3 stoneModel3TestPosition = new Vector3(30f, 30f, 45f);
             Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, scaleStoneModel0);
+            Texture2D stoneModel3TestTexture = ContentLoader.GetTexture("stone", 2);
+            stoneModel3Test.SetTexture(stoneModel3TestTexture);
             _gameElements.Add(stoneModel3Test);
+            /* Piedra 5 */
             Vector3 stoneModel4TestPosition = new Vector3(30f, 30f, 50f);
             Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, scaleStoneModel1);
+            Texture2D stoneModel4TestTexture = ContentLoader.GetTexture("stone", 2);
+            stoneModel4Test.SetTexture(stoneModel4TestTexture);
             _gameElements.Add(stoneModel4Test);
+            /* Piedra 6 */
             Vector3 stoneModel5TestPosition = new Vector3(30f, 30f, 55f);
             Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, scaleStoneModel1);
+            Texture2D stoneModel5TestTexture = ContentLoader.GetTexture("stone", 2);
+            stoneModel5Test.SetTexture(stoneModel5TestTexture);
             _gameElements.Add(stoneModel5Test);
             /* Piedras de prueba */
 
@@ -442,6 +466,8 @@ namespace TGC.MonoGame.TP
             Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 1), tankModekl1TestPosition, scaleTankModel1);
             Texture2D tankModel1TestTexture = ContentLoader.GetTexture("tank", 1);
             tankModel1Test.SetTexture(tankModel1TestTexture);
+            tankModel1Test.SetIsPlayer(false);
+            tankModel1Test.SetProjectileModel(ContentLoader.GetModel("projectile", 0));
             _gameElements.Add(tankModel1Test);
             /* Tanques de prueba */
 
@@ -465,6 +491,11 @@ namespace TGC.MonoGame.TP
             _gameElements.Add(wallModel0Test);
             /* Paredes de prueba*/
 
+        }
+        public void Update(GameTime gameTime)
+        {
+            foreach (GameObject gameObject in _gameElements)
+                gameObject.Update(gameTime);
         }
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {

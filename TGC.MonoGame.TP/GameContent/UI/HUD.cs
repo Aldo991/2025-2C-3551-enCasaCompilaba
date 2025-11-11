@@ -14,11 +14,9 @@ internal class Hud
 {
     private HudState _hudState;
     private bool _showScoreboard;
-    private GraphicsDevice _graphicsDevice;
     private Dictionary<GameState, HudState> _dictHudStates;
     public Hud(GraphicsDevice graphicsDevice, Tank player)
     {
-        _graphicsDevice = graphicsDevice;
         _dictHudStates = new Dictionary<GameState, HudState>()
         {
             {GameState.Menu, new Menu(graphicsDevice)},

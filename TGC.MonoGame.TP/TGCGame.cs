@@ -32,7 +32,6 @@ public class TGCGame : Game
     {
         // Instancio e inicializo GameManager, donde voy a controlar todos los objetos del juego
         _gameManager = GameManager.Instance;
-
         base.Initialize();
     }
 
@@ -40,7 +39,7 @@ public class TGCGame : Game
     {
         // Cargo todos los elementos del juego, como efectos, modelos, sprites, sonidos y texturas
         ContentLoader.Load(Content);
-        // Este no lo entendí
+
         var world = Matrix.CreateScale(20000f, 0f, 20000f);
         _land = new Land(GraphicsDevice, ContentLoader.GetModel("land", 0), world);
 
@@ -71,7 +70,8 @@ public class TGCGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        _gameManager.SetGameInfo(GraphicsDevice);
+        // Seteo información como la posición del mouse
+        _gameManager.SetGameInfo();
         // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.
         KeyboardState kb = Keyboard.GetState();
         // Si presiono el botón de salir, el estado del juego cambia a salir y se cierra la ventana.
@@ -102,61 +102,32 @@ public class TGCGame : Game
                 _tank.SetIsShooting(true);
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
-            /*
-            if (kb.IsKeyDown(Keys.Left)) _gameManager.CambiarBrujula(-1, 0);
-            if (kb.IsKeyDown(Keys.Right)) _gameManager.CambiarBrujula(1, 0);
-            if (kb.IsKeyDown(Keys.Up)) _gameManager.CambiarBrujula(0, -1);
-            if (kb.IsKeyDown(Keys.Down)) _gameManager.CambiarBrujula(0, 1);
-            if (kb.IsKeyDown(Keys.Space)) _tank.CambiarY(.5f);
-            if (kb.IsKeyDown(Keys.LeftShift)) _tank.CambiarY(-.5f);
-            */
+
             if (kb.IsKeyDown(Keys.Subtract)) _tank.CambiarVida(-1f);
             if (kb.IsKeyDown(Keys.Add)) _tank.CambiarVida(1f);
 
-            // Tank Update
-            var ms = Mouse.GetState();
-            int mouseX = ms.X;
-            int mouseY = ms.Y;
-            int width = GraphicsDevice.Viewport.Width;
-            int height = GraphicsDevice.Viewport.Height;
-
-            _tank.SetOffsetXY(mouseX, mouseY);
-            _tank.SetCameraHorizontalAngle(_gameManager.GetCameraHorizontalAngle());
             _tank.Update(gameTime);
-            var bodyForward = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_tank.GetRotation()));
-            // UpdateOrbitBehind actualiza la cámara para que esta orbite el tanque
-            _gameManager.UpdateOrbitBehind(_tank.GetPosition(), bodyForward, mouseX, mouseY);
 
-            /*// Esto hace que la cámara esté fija a la torreta, entonces la torreta siempre apunta hacia adelante.
-            var camFwd = _gameManager.GetCameraForward();
-            camFwd.Normalize();
-            float yawAbs = !_tank.ModelZUp ? (float)Math.Atan2(camFwd.X, camFwd.Z)
-                                            : (float)Math.Atan2(camFwd.X, camFwd.Y);
-            float yawRel = MathHelper.WrapAngle(yawAbs - _tank.GetRotation() + MathHelper.Pi);
-            _tank.SetTurretYaw(yawRel);
-            if (!_tank.ModelZUp)
-            {
-                float pitch = (float)Math.Atan2(camFwd.Y, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Z * camFwd.Z));
-                _tank.SetGunPitch(pitch);
-            }
-            else
-            {
-                float pitch = (float)Math.Atan2(camFwd.Z, Math.Sqrt(camFwd.X * camFwd.X + camFwd.Y * camFwd.Y));
-                _tank.SetGunPitch(pitch);
-            }
-            //*/
+            var cannonDirection = _tank.GetCannonDirection();
+            var cannonPosition = _tank.GetCannonPosition();
+            _gameManager.SetCameraBehindTank(cannonPosition, cannonDirection);
+
             IsMouseVisible = false;
-            Mouse.SetPosition(width / 2, height / 2);
+            Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
         }
         
         // Si presiono la tecla P o la tecla Escape, pauso el juego
         if ( (kb.IsKeyDown(Keys.P) || kb.IsKeyDown(Keys.Escape)) && !_gameManager.GetPressingPause())
         {
             if (_gameManager.IsPause()) // El juego está en pausa y va a dejar de estarlo
-            { _gameManager.SetState(GameState.Playing); IsMouseVisible = false; }
+            {
+                _gameManager.SetState(GameState.Playing);
+                IsMouseVisible = false;
+                _gameManager.SetCameraBehindTank(_tank.GetCannonPosition(), _tank.GetCannonDirection());
+                Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
+            }
             else // Se está jugando y se desea poner en pausa
             { _gameManager.SetState(GameState.Menu); IsMouseVisible = true; }
-            // _gameManager.IsPressingPause = true;
             _gameManager.SetPressingPause(true);
         }
         if (kb.IsKeyUp(Keys.P) && kb.IsKeyUp(Keys.Escape) && _gameManager.GetPressingPause())
@@ -166,13 +137,12 @@ public class TGCGame : Game
         // Hago que la cámara orbite sobre el tanque
         if (!_gameManager.IsPlaying())
         { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), gameTime); IsMouseVisible = true; }
-        // { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), dt, 0.35f, 0.25f); IsMouseVisible = true; }
 
         // Actualizo el GameManager para que actualice todos los objetos del juego
+        _elementosLand.Update(gameTime);
         _gameManager.Update(gameTime);
         base.Update(gameTime);
     }
-
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);

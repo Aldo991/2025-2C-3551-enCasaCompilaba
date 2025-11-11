@@ -66,7 +66,8 @@ public class House : GameObject
     {
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());
+        _effect.Parameters["Texture"]?.SetValue(_texture);
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

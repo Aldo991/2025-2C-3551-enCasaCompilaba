@@ -33,6 +33,7 @@ public static class ContentLoader
     private static string _rootDirectory;
     private static Model[] _bushModels;
     private static Model[] _houseModels;
+    private static Texture2D[] _houseTextures;
     private static Model[] _landModels;
     private static Model[] _projectileModels;
     private static Model[] _stoneModels;
@@ -56,6 +57,7 @@ public static class ContentLoader
 
         // Cargo los modelos de casas
         LoadHouseModels(content);
+        LoadHouseTextures(content);
 
         // Cargo los modelos de terrenos
         LoadLandModels(content);
@@ -107,13 +109,18 @@ public static class ContentLoader
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
             _houseModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderHouses + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "HouseShader");
             foreach (var mesh in _houseModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
             }
         }
+    }
+    private static void LoadHouseTextures(ContentManager content)
+    {
+        _houseTextures = new Texture2D[1];
+        _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house3");
     }
     private static void LoadLandModels(ContentManager content)
     {
@@ -149,9 +156,13 @@ public static class ContentLoader
     }
     private static void LoadStonesTextures(ContentManager content)
     {
-        _stoneTextures = new Texture2D[2];
-        _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/Rocks011");
-        _stoneTextures[1] = content.Load<Texture2D>("Textures/stones/stones");
+        _stoneTextures = new Texture2D[4];
+        _stoneTextures[0] = content.Load<Texture2D>("Textures/stones/stone0");
+        _stoneTextures[1] = content.Load<Texture2D>("Textures/stones/stone1");
+        _stoneTextures[2] = content.Load<Texture2D>("Textures/stones/stone2");
+        // _stoneTextures[3] = content.Load<Texture2D>("Textures/stones/stone3");
+        // _stoneTextures[4] = content.Load<Texture2D>("Textures/stones/stone4");
+        // _stoneTextures[5] = content.Load<Texture2D>("Textures/stones/stone5");
     }
     private static void LoadStoneModels(ContentManager content)
     {
@@ -275,6 +286,7 @@ public static class ContentLoader
     {
         return modelName switch
         {
+            "house" => _houseTextures[index],
             "stone" => _stoneTextures[index],
             "tank" => _tankTextures[index],
             "hud" => _hudTextures[index],

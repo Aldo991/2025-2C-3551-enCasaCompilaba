@@ -13,12 +13,9 @@ namespace TGC.MonoGame.TP;
 public class TankManager
 {
     private List<Tank> _tanks;
-    public TankManager(List<Tank> tanks = null)
+    public TankManager()
     {
-        if (tanks != null)
-            _tanks = new List<Tank>(tanks);
-        else
-            _tanks = new List<Tank>();
+        _tanks = new List<Tank>();
     }
     // Agrega un tanque a la lista de tanques activos
     public void AddTank(Tank tank)

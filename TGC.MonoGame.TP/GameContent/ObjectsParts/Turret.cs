@@ -1,4 +1,5 @@
 #region Using Statements
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,23 +15,21 @@ public class Turret
     private Model _model;
     private Effect _effect;
     private ModelMesh _turretMesh;
-    private ModelBone _turretBone;
-    private Matrix _turretBoneOriginalTransform;
-    // private float _turretAngle;
+    private float _turretAngle;
+    private Matrix _matrixTurretRotation;
     private ModelMesh _cannonMesh;
-    private ModelBone _cannonBone;
-    private Matrix _cannonBoneOriginalTransform;
-    // private float _cannonAngle;
-    private Quaternion _turretRotation;
+    private float _cannonAngle;
+    private Matrix _matrixCannonRotation;
     private Matrix[] _boneTransform;
     public Turret(Model model)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
-        // _turretAngle = 0f;
-        // _cannonAngle = 0f;
-        _turretRotation = Quaternion.Identity;
+        _turretAngle = 0f;
+        _cannonAngle = 0f;
         _boneTransform = new Matrix[_model.Bones.Count];
+        _matrixTurretRotation = Matrix.CreateRotationZ(-_turretAngle);
+        _matrixCannonRotation = Matrix.CreateRotationX(_cannonAngle);
         GetTurretMeshesAndBonesFromModel();
         GetCAnnonMeshesAndBonesFromModel();
     }
@@ -41,14 +40,6 @@ public class Turret
             if (mesh.Name == TurretName)
                 _turretMesh = mesh;
         }
-        foreach (var bone in _model.Bones)
-        {
-            if (bone.Name == TurretName)
-            {
-                _turretBone = bone;
-                _turretBoneOriginalTransform = bone.Transform;
-            }
-        }
     }
     private void GetCAnnonMeshesAndBonesFromModel()
     {
@@ -57,32 +48,26 @@ public class Turret
             if (mesh.Name == CannonName)
                 _cannonMesh = mesh;
         }
-        foreach (var bone in _model.Bones)
-        {
-            if (bone.Name == CannonName)
-            {
-                _cannonBone = bone;
-                _cannonBoneOriginalTransform = bone.Transform;
-            }
-        }
     }
-    public ModelBone GetCannonBone() => _cannonBone;
-    public void Update(float cameraHorizontalAngle, float tankRotation)
+    public Matrix GetCannonTraslation()
     {
-        // float relativeAngle = cameraHorizontalAngle - tankRotation * 0.001f;
-
-        // Torreta
-        // _turretAngle -= offsetX * 0.001f;
-        // var turretRotation = Matrix.CreateRotationZ(-relativeAngle);
-        // _turretBone.Transform = turretRotation * _turretBoneOriginalTransform;
-
-        // Cannon
-        // _cannonAngle -= offsetY * 0.001f;
-        /*
-        var cannonRotation = Matrix.CreateRotationX(relativeAngle);
         _model.CopyAbsoluteBoneTransformsTo(_boneTransform);
-        _cannonBone.Transform = cannonRotation * _turretBone.Transform;
-        */
+        return _matrixTurretRotation * _boneTransform[_cannonMesh.ParentBone.Index];
+    }
+    public void Update(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            int offsetX = GameManager.GetMousePositionX() - GameManager.GetScreenCenterWidth();
+            int offsetY = GameManager.GetMousePositionY() - GameManager.GetScreenCenterHeight();
+            // Torreta
+            _turretAngle += offsetX * 0.001f;
+            _matrixTurretRotation = Matrix.CreateRotationZ(-_turretAngle);
+            // Cannon
+            _cannonAngle += offsetY * 0.001f;
+            _cannonAngle = (float)Math.Clamp((double)_cannonAngle, -0.12, 0.06);
+            _matrixCannonRotation = Matrix.CreateRotationX(_cannonAngle);
+        }
     }
     public void Draw(Matrix world, Matrix view, Matrix projection)
     {
@@ -93,14 +78,16 @@ public class Turret
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         // Torreta
-        Matrix boneTransform = _boneTransform[_turretBone.Index];
-        var boneWorld = boneTransform * world;
+        Matrix boneTransform = _boneTransform[_turretMesh.ParentBone.Index];
+        var boneWorld = _matrixTurretRotation * boneTransform * world;
         _effect.Parameters["World"].SetValue(boneWorld);
         _turretMesh.Draw();
 
+        _model.CopyAbsoluteBoneTransformsTo(_boneTransform);
+
         // Cannon
-        boneTransform = _boneTransform[_cannonBone.Index];
-        boneWorld = boneTransform * world;
+        boneTransform = _boneTransform[_cannonMesh.ParentBone.Index];
+        boneWorld = _matrixCannonRotation * boneTransform * world;
         _effect.Parameters["World"].SetValue(boneWorld);
         _cannonMesh.Draw();
     }

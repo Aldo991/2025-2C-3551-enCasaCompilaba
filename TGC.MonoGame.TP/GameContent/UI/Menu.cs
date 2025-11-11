@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace TGC.MonoGame.TP;
 public class Menu : HudState
@@ -61,7 +62,10 @@ public class Menu : HudState
 
         if (leftMouseButtonPressed && !_mousePressedLast)
         {
-            if (_playButton.Contains(point)) { _gameManager.SetState(GameState.Playing); }
+            if (_playButton.Contains(point)) {
+                _gameManager.SetState(GameState.Playing);
+                Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
+            }
             else if (_optionButton.Contains(point)) { _gameManager.SetState(GameState.Options); }
             else if (_exitButton.Contains(point)) { _gameManager.SetState(GameState.Exit); }
         }

@@ -19,6 +19,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/BasicShader.fx
 
+#begin Effects/HouseShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/HouseShader.fx
+
 #begin Effects/LandShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -93,7 +99,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/bushes/Bush1.fbx;Models/bushes/Bush1
 
-#begin Models/houses/cottage_fbx.fbx
+#begin Models/houses/house1.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -110,9 +116,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/houses/cottage_fbx.fbx
+/build:Models/houses/house1.fbx;Models/houses/house1
 
-#begin Models/houses/Cottage_FREE.fbx
+#begin Models/houses/house2.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -129,7 +135,26 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/houses/Cottage_FREE.fbx
+/build:Models/houses/house2.fbx;Models/houses/house2
+
+#begin Models/houses/house3.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/houses/house3.fbx;Models/houses/house3
 
 #begin Models/land/walkers-land.fbx
 /importer:FbxImporter
@@ -422,19 +447,7 @@
 /processorParam:Quality=Best
 /build:Sounds/shoot.mp3
 
-#begin Textures/stones/Rocks011.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=True
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=True
-/processorParam:TextureFormat=Color
-/build:Textures/stones/Rocks011.png
-
-#begin Textures/stones/stones.jpg
+#begin Textures/houses/house0.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -444,7 +457,43 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/stones/stones.jpg;Textures/stones/stones
+/build:Textures/houses/house0.jpg;Textures/houses/house0
+
+#begin Textures/stones/stone0.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/stones/stone0.jpg;Textures/stones/stone0
+
+#begin Textures/stones/stone1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/stones/stone1.png;Textures/stones/stone1
+
+#begin Textures/stones/stone2.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/stones/stone2.jpg;Textures/stones/stone2
 
 #begin Textures/tanks/T90/hullA.jpg
 /importer:TextureImporter
@@ -487,10 +536,10 @@
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
+/processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
+/processorParam:MakeSquare=True
 /processorParam:TextureFormat=Color
 /build:Textures/walls/brickwall_4.jpg
 

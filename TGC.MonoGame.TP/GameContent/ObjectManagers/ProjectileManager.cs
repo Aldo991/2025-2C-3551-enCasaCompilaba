@@ -13,12 +13,9 @@ namespace TGC.MonoGame.TP;
 public class ProjectileManager
 {
     private List<Projectile> _projectiles;
-    public ProjectileManager(List<Projectile> projectiles = null)
+    public ProjectileManager()
     {
-        if (projectiles != null)
-            _projectiles = new List<Projectile>(projectiles);
-        else
-            _projectiles = new List<Projectile>();
+        _projectiles = new List<Projectile>();
     }
     // Agrega un projectil a la lista de projectiles activos en el juego
     public void AddProjectile(Projectile projectile)

@@ -27,15 +27,10 @@ public class Playing : HudState
     }
     public override void Update(GameTime gameTime)
     {
-        int mouseX = GameManager.GetMousePositionX();
-        // int mouseY = ms.Y;
-        // int height = _graphicsDevice.Viewport.Height;
-        int centerX = GameManager.GetScreenCenterWidth();
-        // int centerY = height / 2;
-        int offsetX = mouseX - centerX;
-        // int offsetY = mouseY - centerY;
-        _compassAngle += offsetX * 0.001f;
-
+        Vector3 tankFrontDirection = _player.GetTankFrontDirection();
+        // Paso de coordenadas cartesianas (X, Z) a coordenadas polares, donde la función
+        // Atan es arcotangente, y me da los ángulos
+        _compassAngle = MathF.Atan(tankFrontDirection.Z / tankFrontDirection.X);
         // Actualizo los fps
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _fps = (int) (1 / dt);
