@@ -61,9 +61,13 @@ public class TGCGame : Game
         _tank.SetShootSound(shootTank);
         _tank.SetGraphicsDevice(GraphicsDevice);
         _tank.SetIsPlayer(true);
+        Texture2D tankNormal = ContentLoader.GetNormal("tank", 0);
+        _tank.SetNormal(tankNormal);
+        Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
+        _tank.SetProjectileTexture(projectileTexture);
 
         _gameManager.Initialize(GraphicsDevice, _tank);
-        _gameManager.CreateEnemies(2);
+        // _gameManager.CreateEnemies(2);
 
         base.LoadContent();
     }

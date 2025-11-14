@@ -25,6 +25,7 @@ public class Tank : GameObject
     private bool _isMovingforward;
     private float _velocity;
     private Model _projectileModel;
+    private Texture2D _projectileTexture;
     private bool _isShooting;
     private float _life;
     private int _score;
@@ -186,9 +187,10 @@ public class Tank : GameObject
         Matrix cannonWorld = cannonBoneTraslation * _world;
         Vector3 turretPos = cannonWorld.Translation;
         Vector3 turretDirection = cannonWorld.Down;
+        Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
             MediaPlayer.Play(_shootSound);
-        return new Projectile(_projectileModel, turretPos, turretDirection);
+        return new Projectile(_projectileModel, turretPos, turretDirection, _projectileTexture);
     }
     public void SetGround(ElementosLand elementos)
     {
@@ -209,6 +211,7 @@ public class Tank : GameObject
         return cannonWorld.Translation;
     }
     public void SetProjectileModel(Model model) => _projectileModel = model;
+    public void SetProjectileTexture(Texture2D texture) => _projectileTexture = texture;
     public override void Update(GameTime gameTime)
     {
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
@@ -226,14 +229,37 @@ public class Tank : GameObject
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
+        Vector3 ambientColor = Color.Yellow.ToVector3();
+        Vector3 specularColor = Color.White.ToVector3();
+        float kAmbient = 0.2f;
+        float KDiffuse = 0.6f;
+        float KSpecular = 0.2f;
+        float shininess = 15f;
+        Vector3 lightPosition = new Vector3(1000, 100, 1000);
+        Vector3 eyePosition = GameManager.GetCameraPosition();
+        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
+
         var modelTransforms = new Matrix[_model.Bones.Count];
         _model.CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+        _effect.Parameters["EyePosition"].SetValue(eyePosition);
+        _effect.Parameters["InverseTransposeWorld"].SetValue(inverseTransposeWorld);
+        _effect.Parameters["LightPosition"].SetValue(lightPosition);
+        _effect.Parameters["AmbientColor"].SetValue(ambientColor);
+        _effect.Parameters["SpecularColor"].SetValue(specularColor);
+        _effect.Parameters["KAmbient"].SetValue(kAmbient);
+        _effect.Parameters["KDiffuse"].SetValue(KDiffuse);
+        _effect.Parameters["KSpecular"].SetValue(KSpecular);
+        _effect.Parameters["Shininess"].SetValue(shininess);
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["Texture"]?.SetValue(_texture);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
+        
+        if (_textureNormal != null)
+            _effect.Parameters["Normals"]?.SetValue(_textureNormal);
         foreach (var mesh in _meshes)
         {
             var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;

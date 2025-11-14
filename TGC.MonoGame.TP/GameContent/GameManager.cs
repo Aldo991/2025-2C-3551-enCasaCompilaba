@@ -32,7 +32,7 @@ public class GameManager
     // Indica si se está pausa, para evitar que se pause 60 veces por segundo
     private bool _isPressingPause;
     // Cámara del juego
-    private FollowCamera _camera;
+    private static FollowCamera _camera;
     // Da la instancia del GameManager, la idea es usarlo como singleton
     public static GameManager Instance
     {
@@ -153,4 +153,5 @@ public class GameManager
     public static int GetScreenCenterWidth() => _screenWidth / 2;
     public static int GetScreenCenterHeight() => _screenHeight / 2;
     public static bool GetLeftButtonMousePressed() => _leftButtonMousePressed;
+    public static Vector3 GetCameraPosition() => _camera.GetCameraPosition();
 }

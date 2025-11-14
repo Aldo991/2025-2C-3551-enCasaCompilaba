@@ -36,11 +36,14 @@ public static class ContentLoader
     private static Texture2D[] _houseTextures;
     private static Model[] _landModels;
     private static Model[] _projectileModels;
+    private static Texture2D[] _projectileTextures;
     private static Model[] _stoneModels;
     private static Texture2D[] _stoneTextures;
     private static Model[] _tankModel;
     private static Texture2D[] _tankTextures;
+    private static Texture2D[] _tankNormals;
     private static Model[] _treeModels;
+    private static Texture2D[] _treeTextures;
     private static Model[] _wallModels;
     private static Texture2D[] _wallTextures;
     private static Texture2D[] _hudTextures;
@@ -64,6 +67,7 @@ public static class ContentLoader
 
         // Cargo los modelos de los proyectiles
         LoadProjectileModels(content);
+        LoadProjectileTextures(content);
 
         // Cargo los modelos de piedras
         LoadStonesTextures(content);
@@ -72,9 +76,11 @@ public static class ContentLoader
         // Cargo los modelos de tanques
         LoadTankTextures(content);
         LoadTankModels(content);
+        LoadTankNormals(content);
 
         // Cargo los modelos de árboles
         LoadTreeModels(content);
+        LoadTreeTextures(content);
 
         // Cargo los modelos de muros
         LoadWallModels(content);
@@ -93,7 +99,7 @@ public static class ContentLoader
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
             _bushModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderBushes + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "BushShader");
             foreach (var mesh in _bushModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
@@ -119,8 +125,10 @@ public static class ContentLoader
     }
     private static void LoadHouseTextures(ContentManager content)
     {
-        _houseTextures = new Texture2D[1];
-        _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house3");
+        _houseTextures = new Texture2D[3];
+        _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house0");
+        _houseTextures[1] = content.Load<Texture2D>("Textures/houses/house3");
+        _houseTextures[2] = content.Load<Texture2D>("Textures/houses/house3-normal");
     }
     private static void LoadLandModels(ContentManager content)
     {
@@ -146,13 +154,19 @@ public static class ContentLoader
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(paths[i]);
             _projectileModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderProjectiles + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "ProjectileShader");
             foreach (var mesh in _projectileModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
             }
         }
+    }
+    private static void LoadProjectileTextures(ContentManager content)
+    {
+        _projectileTextures = new Texture2D[2];
+        _projectileTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderProjectiles + "/projectile0-base-color");
+        _projectileTextures[1] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderProjectiles + "/projectile1");
     }
     private static void LoadStonesTextures(ContentManager content)
     {
@@ -209,6 +223,11 @@ public static class ContentLoader
         _tankTextures[1] = content.Load<Texture2D>("Textures/tanks/T90/hullB");
         _tankTextures[2] = content.Load<Texture2D>("Textures/tanks/T90/hullC");
     }
+    private static void LoadTankNormals(ContentManager content)
+    {
+        _tankNormals = new Texture2D[1];
+        _tankNormals[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/T90/normal");
+    }
     private static void LoadTreeModels(ContentManager content)
     {
         var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTrees + "/", "*.fbx");
@@ -217,13 +236,18 @@ public static class ContentLoader
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
             _treeModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderTrees + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            Effect effect = content.Load<Effect>(ContentFolderEffects + "TreeShader");
             foreach (var mesh in _treeModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
             }
         }
+    }
+    private static void LoadTreeTextures(ContentManager content)
+    {
+        _treeTextures = new Texture2D[1];
+        _treeTextures[0] = content.Load<Texture2D>("Textures/trees/tree0");
     }
     private static void LoadWallModels(ContentManager content)
     {
@@ -287,11 +311,21 @@ public static class ContentLoader
         return modelName switch
         {
             "house" => _houseTextures[index],
+            "hud" => _hudTextures[index],
+            "projectile" => _projectileTextures[index],
             "stone" => _stoneTextures[index],
             "tank" => _tankTextures[index],
-            "hud" => _hudTextures[index],
+            "tree" => _treeTextures[index],
             "wall" => _wallTextures[index],
             _ => throw new ArgumentException("Invalid texture name"),
+        };
+    }
+    public static Texture2D GetNormal(string modelName, int index)
+    {
+        return modelName switch
+        {
+            "tank" => _tankNormals[index],
+            _ => throw new ArgumentException("Invalid Texture Name"),
         };
     }
     public static SpriteFont GetSpriteFont()

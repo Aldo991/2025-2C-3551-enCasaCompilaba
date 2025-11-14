@@ -19,6 +19,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/BasicShader.fx
 
+#begin Effects/BushShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/BushShader.fx
+
 #begin Effects/HouseShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -31,6 +37,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/LandShader.fx
 
+#begin Effects/ProjectileShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ProjectileShader.fx
+
 #begin Effects/StoneShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -42,6 +54,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/TankShader.fx
+
+#begin Effects/TreeShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/TreeShader.fx
 
 #begin Effects/WallShader.fx
 /importer:EffectImporter
@@ -80,7 +98,7 @@
 /processorParam:TextureFormat=Color
 /build:hud/health.png
 
-#begin Models/bushes/Bush1.fbx
+#begin Models/bushes/bush0.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -97,7 +115,26 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/bushes/Bush1.fbx;Models/bushes/Bush1
+/build:Models/bushes/bush0.fbx;Models/bushes/bush0
+
+#begin Models/bushes/bush1.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/bushes/bush1.fbx;Models/bushes/bush1
 
 #begin Models/houses/house1.fbx
 /importer:FbxImporter
@@ -156,6 +193,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/houses/house3.fbx;Models/houses/house3
 
+#begin Models/houses/house4.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/houses/house4.fbx;Models/houses/house4
+
 #begin Models/land/walkers-land.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -175,7 +231,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/land/walkers-land.fbx
 
-#begin Models/projectiles/Tennis Ball.FBX
+#begin Models/projectiles/projectile0.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -192,7 +248,26 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Models/projectiles/Tennis Ball.FBX;Models/projectiles/Tennis Ball
+/build:Models/projectiles/projectile0.fbx;Models/projectiles/projectile0
+
+#begin Models/projectiles/projectile1.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/projectiles/projectile1.fbx;Models/projectiles/projectile1
 
 #begin Models/stones/SM_LittleRock_01.fbx
 /importer:FbxImporter
@@ -422,6 +497,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/trees/Tree_LL.fbx
 
+#begin Models/trees/tree0.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/trees/tree0.fbx;Models/trees/tree0
+
 #begin Models/walls/Bluestone_wall.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -458,6 +552,54 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/houses/house0.jpg;Textures/houses/house0
+
+#begin Textures/houses/house3-normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/houses/house3-normal.png;Textures/houses/house3-normal
+
+#begin Textures/houses/house3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/houses/house3.png;Textures/houses/house3
+
+#begin Textures/projectiles/projectile0-base-color.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/projectiles/projectile0-base-color.png;Textures/projectiles/projectile0-base-color
+
+#begin Textures/projectiles/projectile1.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/projectiles/projectile1.jpg;Textures/projectiles/projectile1
 
 #begin Textures/stones/stone0.jpg
 /importer:TextureImporter
@@ -530,6 +672,30 @@
 /processorParam:MakeSquare=True
 /processorParam:TextureFormat=Color
 /build:Textures/tanks/T90/hullC.jpg;Textures/tanks/T90/hullC
+
+#begin Textures/tanks/T90/normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/tanks/T90/normal.png;Textures/tanks/T90/normal
+
+#begin Textures/trees/tree0.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Textures/trees/tree0.jpg
 
 #begin Textures/walls/brickwall_4.jpg
 /importer:TextureImporter

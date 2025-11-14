@@ -36,12 +36,14 @@ struct VertexShaderInput
 {
 	float4 Position : POSITION0;
 	float2 TexCoord : TEXCOORD0;
+    float4 Color : COLOR0;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
+    float4 Color : COLOR0;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -55,6 +57,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	// View space to Projection space
     output.Position = mul(viewPosition, Projection);
 	output.TexCoord = input.TexCoord;
+    output.Color = input.Color;
 
     return output;
 }
@@ -62,6 +65,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
     return tex2D(TextureSampler, input.TexCoord);
+    // return input.Color;
+	// return float4(DiffuseColor, 1.0);
 }
 
 technique BasicColorDrawing

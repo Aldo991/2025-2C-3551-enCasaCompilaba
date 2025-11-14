@@ -87,6 +87,7 @@ public class FollowCamera
         TargetPosition = targetPosition;
         BuildView();
     }
+    public Vector3 GetCameraPosition() => Position;
     /// <summary>
     /// Reconstruye la cámara en base al transform absoluto del cañón (gunWorld).
     /// gunWorld: matriz del hueso del cañón * world del tanque.

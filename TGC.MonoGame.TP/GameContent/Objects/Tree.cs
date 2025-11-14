@@ -1,6 +1,7 @@
 #region Using Statements
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -55,6 +56,13 @@ public class Tree : GameObject
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         _boundingBox = CreateBoundingBox(model, _world);
+        List<string> meshName = new List<string>();
+        List<string> boneName = new List<string>();
+        foreach (var mesh in _model.Meshes)
+        {
+            meshName.Add(mesh.Name);
+            boneName.Add(mesh.ParentBone.Name);
+        }
         _collisionRadius = 40f; // Set collision radius for trees
     }
     public override void Update(GameTime gameTime)
@@ -65,7 +73,9 @@ public class Tree : GameObject
     {
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"].SetValue(Color.DarkGreen.ToVector3());
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.DarkGreen.ToVector3());
+        if (_texture != null)
+            _effect.Parameters["Texture"]?.SetValue(_texture);
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

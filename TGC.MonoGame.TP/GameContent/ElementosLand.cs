@@ -30,12 +30,12 @@ namespace TGC.MonoGame.TP
             // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
             float scaleStoneModel0 = 0.003f;
             float scaleStoneModel1 = 0.003f;
-            float scaleTankModel1 = 0.01f;
+            // float scaleTankModel1 = 0.01f;
             // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
             // Son los 3 el mismo modelo?
             float scaleTreeModel0 = 0.003f;
             float scaleTreeModel1 = 0.003f;
-            float scaleTreeModel2 = 0.003f;
+            float scaleTreeModel2 = 0.015f;
             // Está bien, pero sería más un muro más que una pared
             float scaleWallModel0 = 0.03f;
 
@@ -396,10 +396,13 @@ namespace TGC.MonoGame.TP
             Vector3 bushModel0TestPosition = new Vector3(25f, 30f, 30f);
             Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
             _gameElements.Add(bushModel0Test);
+            Vector3 bushModel1TestPosition = new Vector3(20f, 30f, 30f);
+            Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition, scaleBushModel0);
+            _gameElements.Add(bushModel1Test);
             /* Arbustos de prueba */
 
             /* Casas de prueba */
-            Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 0);
+            Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
             Vector3 houseModel0TestPosition = new Vector3(50f, 30f, 50f);
             House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
             houseModel0Test.SetTexture(houseModel2TestTexture);
@@ -409,8 +412,8 @@ namespace TGC.MonoGame.TP
             houseModel1Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel1Test);
             Vector3 houseModel2TestPosition = new Vector3(50f, 30f, 0f);
-            House houseModel2Test = new House(ContentLoader.GetModel("house", 2), houseModel2TestPosition, scaleHouseModel2);
-            // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 0);
+            House houseModel2Test = new House(ContentLoader.GetModel("house", 3), houseModel2TestPosition, scaleHouseModel2);
+            // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
             houseModel2Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel2Test);
             /* Casas de prueba */
@@ -418,7 +421,7 @@ namespace TGC.MonoGame.TP
             /* Projectiles de prueba */
             Vector3 projectileModel0TestPosition = new Vector3(20f, 30f, 30f);
             Vector3 direction = Vector3.Up;
-            Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, 0.001f, 500, scaleProjectileModel0);
+            Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, null, 0.001f, 500, scaleProjectileModel0);
             _gameElements.Add(projectileModel0Test);
             /* Projectiles de prueba */
 
@@ -461,7 +464,7 @@ namespace TGC.MonoGame.TP
             _gameElements.Add(stoneModel5Test);
             /* Piedras de prueba */
 
-            /* Tanques de prueba */
+            /* Tanques de prueba
             Vector3 tankModekl1TestPosition = new Vector3(0f, 30f, 30f);
             Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 1), tankModekl1TestPosition, scaleTankModel1);
             Texture2D tankModel1TestTexture = ContentLoader.GetTexture("tank", 1);
@@ -473,13 +476,15 @@ namespace TGC.MonoGame.TP
 
             /* Árboles de prueba */
             Vector3 treeModel0TestPosition = new Vector3(35f, 30f, 30f);
-            Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel0TestPosition, scaleTreeModel0);
+            Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel0TestPosition, scaleTreeModel0);
             _gameElements.Add(treeModel0Test);
             Vector3 treeModel1TestPosition = new Vector3(35f, 30f, 35f);
-            Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel1TestPosition, scaleTreeModel1);
+            Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel1TestPosition, scaleTreeModel1);
             _gameElements.Add(treeModel1Test);
             Vector3 treeModel2TestPosition = new Vector3(35f, 30f, 40f);
-            Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 0), treeModel2TestPosition, scaleTreeModel2);
+            Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel2TestPosition, scaleTreeModel2);
+            Texture2D treeModel3TestTexture = ContentLoader.GetTexture("tree", 0);
+            treeModel2Test.SetTexture(treeModel3TestTexture);
             _gameElements.Add(treeModel2Test);
             /* Árboles de prueba */
 

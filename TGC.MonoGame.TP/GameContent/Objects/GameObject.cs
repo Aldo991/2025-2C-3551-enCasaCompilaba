@@ -18,6 +18,7 @@ namespace TGC.MonoGame.TP;
 
 public abstract class GameObject
 {
+    protected const float Gravity = 9.81f;
     protected Model _model;
     protected Matrix _world;
     protected Vector3 _position;
@@ -26,10 +27,12 @@ public abstract class GameObject
     protected Texture2D _texture;
     protected BoundingBox _boundingBox;
     protected float _collisionRadius;
+    protected Texture2D _textureNormal;
 
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
     public Vector3 GetPosition() => _position;
+    public void SetNormal(Texture2D normal) => _textureNormal = normal;
     public void SetPosition(Vector3 position) => _position = position;
     public float GetScale() => _scale;
     public void SetScale(float scale) => _scale = scale;
