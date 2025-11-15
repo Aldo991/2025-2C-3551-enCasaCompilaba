@@ -403,15 +403,16 @@ namespace TGC.MonoGame.TP
 
             /* Casas de prueba */
             Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
-            Vector3 houseModel0TestPosition = new Vector3(50f, 30f, 50f);
+            Vector3 houseModel0TestPosition = new Vector3(50f, 28f, 50f);
             House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
             houseModel0Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel0Test);
-            Vector3 houseModel1TestPosition = new Vector3(50f, 30f, 25f);
+            /*
+            Vector3 houseModel1TestPosition = new Vector3(50f, 28f, 25f);
             House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
             houseModel1Test.SetTexture(houseModel2TestTexture);
             _gameElements.Add(houseModel1Test);
-            Vector3 houseModel2TestPosition = new Vector3(50f, 30f, 0f);
+            Vector3 houseModel2TestPosition = new Vector3(50f, 28f, 0f);
             House houseModel2Test = new House(ContentLoader.GetModel("house", 3), houseModel2TestPosition, scaleHouseModel2);
             // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
             houseModel2Test.SetTexture(houseModel2TestTexture);

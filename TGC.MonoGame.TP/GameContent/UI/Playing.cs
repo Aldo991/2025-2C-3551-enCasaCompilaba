@@ -25,6 +25,7 @@ public class Playing : HudState
         _posicionBrujulaY = 120;
         _compassPosition = new Rectangle(1700, 120, 200, 200);
     }
+    public void SetPlayer(Tank player) => _player = player;
     public override void Update(GameTime gameTime)
     {
         Vector3 tankFrontDirection = _player.GetTankFrontDirection();
@@ -32,8 +33,8 @@ public class Playing : HudState
         // Atan es arcotangente, y me da los ángulos
         _compassAngle = MathF.Atan(tankFrontDirection.Z / tankFrontDirection.X);
         // Actualizo los fps
-        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _fps = (int) (1 / dt);
+        float dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+        _fps = (int) (1000 / dt);
     }
     public override void Draw()
     {
@@ -47,9 +48,8 @@ public class Playing : HudState
         _spriteBatch.DrawString(_font, $"X: {_player.GetPosition().X}", new Vector2(20, 60), Color.White);
         _spriteBatch.DrawString(_font, $"Y: {_player.GetPosition().Y}", new Vector2(20, 80), Color.White);
         _spriteBatch.DrawString(_font, $"Z: {_player.GetPosition().Z}", new Vector2(20, 100), Color.White);
-        _spriteBatch.DrawString(_font, $"X brujula: {_posicionBrujulaX}", new Vector2(20, 120), Color.White);
-        _spriteBatch.DrawString(_font, $"Y brujula: {_posicionBrujulaY}", new Vector2(20, 140), Color.White);
-        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 160), Color.White);
+        _spriteBatch.DrawString(_font, $"Alto caja: {_player.GetAltoCaja()}", new Vector2(20, 120), Color.White);
+        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 140), Color.White);
 
         float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
         float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla

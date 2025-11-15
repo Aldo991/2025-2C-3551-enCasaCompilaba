@@ -1,6 +1,6 @@
 #region Using Statements
-
-using System;
+using BepuPhysics;
+using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -10,38 +10,12 @@ namespace TGC.MonoGame.TP;
 public class House : GameObject
 {
     private Effect _effect;
-    private BoundingBox CreateBoundingBox(Model model, Matrix world)
-    {
-        Vector3 min = Vector3.One * float.MaxValue;
-        Vector3 max = Vector3.One * float.MinValue;
-
-        foreach (var mesh in model.Meshes)
-        {
-            foreach (var meshPart in mesh.MeshParts)
-            {
-                var vertexBuffer = meshPart.VertexBuffer;
-                var declaration = vertexBuffer.VertexDeclaration;
-                var vertexSize = declaration.VertexStride;
-                var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
-                vertexBuffer.GetData(vertexData);
-
-                for (int i = 0; i < vertexBuffer.VertexCount; i++)
-                {
-                    var position = new Vector3(
-                        BitConverter.ToSingle(vertexData, i * vertexSize),
-                        BitConverter.ToSingle(vertexData, i * vertexSize + 4),
-                        BitConverter.ToSingle(vertexData, i * vertexSize + 8)
-                    );
-                    position = Vector3.Transform(position, world);
-
-                    min = Vector3.Min(min, position);
-                    max = Vector3.Max(max, position);
-                }
-            }
-        }
-
-        return new BoundingBox(min, max);
-    }
+    // private BoxPrimitive boxPrimitive;
+    // private Matrix boxWorld;
+    private float boxWidht;
+    private float boxHeight;
+    private float boxLength;
+    private GraphicsDevice graphicsDevice;
     public House(
         Model model,
         Vector3 position,
@@ -53,17 +27,60 @@ public class House : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
-        _boundingBox = CreateBoundingBox(model, _world);
-        _collisionRadius = 30f; // Set collision radius for houses
+        graphicsDevice = GameManager.GetGraphicsDevice();
+        boxWidht = 10f;
+        boxHeight = 4.5f;
+        boxLength = 5f;
+        /*
+        Vector3 boxSize = new Vector3(boxWidht, boxHeight, boxLength);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        boxPrimitive = new BoxPrimitive(graphicsDevice, boxSize, boxTexture);
+        */
+        CreateCollisionBox();
     }
-    public Model Model => _model;
+    private void CreateCollisionBox()
+    {
+        Box boxShape = new Box(boxWidht, boxHeight, boxLength);
+        TypedIndex boxIndex = GameManager.AddShapeToSimulation(boxShape);
+        CollidableDescription collidableDescription = new CollidableDescription(boxIndex, 0.1f);
+        BodyActivityDescription bodyActivityDescription = new BodyActivityDescription(0.01f);
+        var position = _position.ToNumerics();
+        // ajustes por desfase del modelo
+        position.Y += 2.25f;
+        position.X -= 1f;
+        var rotationY = MathHelper.ToRadians(3f);
+        Quaternion rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, rotationY);
+
+        var bodyDescription = BodyDescription.CreateKinematic(
+            position,
+            collidableDescription,
+            bodyActivityDescription
+        );
+        var currentOrientation = bodyDescription.Pose.Orientation;
+        bodyDescription.Pose.Orientation = Quaternion.Normalize(rotation * currentOrientation).ToNumerics();
+        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription);
+    }
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        // Creo que esto se puede sacar, hacer en el constructor y listo. Total, no se van a mover
+        Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY,_rotation);
+        Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
+        _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
+        /*
+        var boxPosition = _position + new Vector3(-1f, 2.25f, 0);
+        var boxRotation = _rotation + MathHelper.ToRadians(3f);
+        Quaternion boxQuaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY, boxRotation);
+        Matrix boxRotationMatrix = Matrix.CreateFromQuaternion(boxQuaternion);
+        boxWorld = boxRotationMatrix * Matrix.CreateTranslation(boxPosition);
+
+        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        boxPrimitive = new BoxPrimitive(graphicsDevice, boxSize, boxTexture);
+        */
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
+        // boxPrimitive.Draw(boxWorld, view, projection);
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());

@@ -1,18 +1,21 @@
 #region Using Statements
 using System.Collections.Generic;
+using BepuPhysics;
+using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using TGC.MonoGame.Samples.Collisions;
+// using TGC.MonoGame.Samples.Geometries.Textures;
+using BoundingBox = BepuUtilities.BoundingBox;
 #endregion
 
 namespace TGC.MonoGame.TP;
 
 public class Tank : GameObject
 {
-    private const float TankMaxSpeed = .2f; // Unidades por segundo
+    private const float TankMaxSpeed = 10f; // Unidades por segundo
     private const float RotationSpeed = .5f; // Radianes por segundo
-    private const float Acceleration = .1f; // Aceleracion del tanque
+    private const float Acceleration = 5f; // Aceleracion del tanque
     private const float InitialLife = 100f;
     public static float DefaultScale = 0.005f;
     private Effect _effect;
@@ -32,40 +35,12 @@ public class Tank : GameObject
     private bool _isPlayer;
     private EnemyAction _enemyAction;
     private Song _shootSound;
-    /*
-    // (revertido) sin offset adicional para el heading de la torreta
-    private BoundingBox CreateBoundingBox(Model model, Matrix world)
-    {
-        Vector3 min = Vector3.One * float.MaxValue;
-        Vector3 max = Vector3.One * float.MinValue;
-
-        foreach (var mesh in model.Meshes)
-        {
-            foreach (var meshPart in mesh.MeshParts)
-            {
-                var vertexBuffer = meshPart.VertexBuffer;
-                var declaration = vertexBuffer.VertexDeclaration;
-                var vertexSize = declaration.VertexStride;
-                var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
-                vertexBuffer.GetData(vertexData);
-
-                for (int i = 0; i < vertexBuffer.VertexCount; i++)
-                {
-                    var position = new Vector3(
-                        BitConverter.ToSingle(vertexData, i * vertexSize),
-                        BitConverter.ToSingle(vertexData, i * vertexSize + 4),
-                        BitConverter.ToSingle(vertexData, i * vertexSize + 8)
-                    );
-                    position = Vector3.Transform(position, world);
-
-                    min = Vector3.Min(min, position);
-                    max = Vector3.Max(max, position);
-                }
-            }
-        }
-        return new BoundingBox(min, max);
-    }
-    */
+    private BoxPrimitive boxPrimitive;
+    private Matrix boxWorld;
+    private bool mostrarCaja;
+    private float altoCaja;
+    private float anchoCaja;
+    private float profundidadCaja;
     public Tank(
         Model model,
         Vector3 position,
@@ -74,6 +49,7 @@ public class Tank : GameObject
         Texture2D texture = null
         )
     {
+        _graphicsDevice = GameManager.GetGraphicsDevice();
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _position = position;
@@ -81,25 +57,30 @@ public class Tank : GameObject
         _rotation = MathHelper.ToRadians(rotation);
         _texture = texture;
         _life = InitialLife;
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
-        _boundingBox = BoundingVolumesExtensions.CreateAABBFrom(model);
         _tankFrontDirection = Vector3.Transform(Vector3.Forward, Matrix.CreateRotationY(_rotation));
         _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
-        _collisionRadius = 60f; // Set collision radius for tank
         _wheels = new Wheels(_model);
         _wheels.SetWheelTexture(_texture);
         _wheels.SetTreadmillTexture(_texture);
         _turret = new Turret(_model);
         _meshes = new List<ModelMesh>();
         MeshesTanque();
+        anchoCaja = 2f;
+        altoCaja = 1.5f;
+        profundidadCaja = 3.5f;
+        mostrarCaja = true;
+        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
+        CreateCollisionBox();
     }
     public new void SetTexture(Texture2D texture)
     {
         base.SetTexture(texture);
         _wheels.SetWheelTexture(texture);
-        _wheels.SetTreadmillTexture(_texture);
+        _wheels.SetTreadmillTexture(texture);
     }
     public void SetIsPlayer(bool isPlayer)
     {
@@ -117,13 +98,13 @@ public class Tank : GameObject
     public void SetScore(int score) => _score = score;
     public void MoveForwardTank(GameTime gameTime)
     {
+        GameManager.SetAwakeTrue(_bodyHandle);
         if (_isMovingforward || (!HasVelocity() && !_isMovingforward))
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _velocity += Acceleration * deltaTime;
             if (_velocity > TankMaxSpeed)
                 _velocity = TankMaxSpeed;
-            _position += _tankFrontDirection * _velocity;
             _isMovingforward = true;
         }
         else
@@ -131,13 +112,13 @@ public class Tank : GameObject
     }
     public void MoveBackwardTank(GameTime gameTime)
     {
+        GameManager.SetAwakeTrue(_bodyHandle);
         if (!_isMovingforward || (!HasVelocity() && _isMovingforward))
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _velocity += Acceleration * deltaTime;
             if (_velocity > TankMaxSpeed)
                 _velocity = TankMaxSpeed;
-            _position -= _tankFrontDirection * _velocity;
             _isMovingforward = false;
         }
         else
@@ -146,17 +127,15 @@ public class Tank : GameObject
     public bool HasVelocity() => _velocity > 0;
     public void DecelerateTank(GameTime gameTime)
     {
+        GameManager.SetAwakeTrue(_bodyHandle);
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _velocity -= Acceleration * deltaTime * 30f;
+        _velocity -= Acceleration * deltaTime * 3f;
         if (_velocity < 0)
             _velocity = 0;
-        if (_isMovingforward)
-            _position += _tankFrontDirection * _velocity;
-        else
-            _position -= _tankFrontDirection * _velocity;
     }
     public void RotateTankRight(GameTime gameTime)
     {
+        GameManager.SetAwakeTrue(_bodyHandle);
         if (_isMovingforward)
             RotateTank(gameTime, true);
         else
@@ -164,6 +143,7 @@ public class Tank : GameObject
     }
     public void RotateTankLeft(GameTime gameTime)
     {
+        GameManager.SetAwakeTrue(_bodyHandle);
         if (_isMovingforward)
             RotateTank(gameTime, false);
         else
@@ -214,8 +194,34 @@ public class Tank : GameObject
     public void SetProjectileTexture(Texture2D texture) => _projectileTexture = texture;
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
-        // _boundingBox = CreateBoundingBox(_model, _world);
+        // body de la colisión
+        BodyReference body = GameManager.GetBodyReference(_bodyHandle);
+        // pose del body, donde está la velocidad y la orientación
+        var pose = body.Pose;
+        // obtengo la dirección hacia donde quiere ir el tanque
+        var direction = _tankFrontDirection * _velocity;
+        if (!_isMovingforward)
+            direction = -direction;
+        // aplico la velocidad al cuerpo de la colisión
+        body.Velocity.Linear = direction.ToNumerics();
+        // seteo esa posición nueva a la variable _position, que me sirve para graficar el tanque
+        _position = pose.Position;
+
+        // roto el tanque según el ángulo de _rotation, usando un quaternion
+        Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY, _rotation);
+        // transformo ese quaternion en matriz
+        Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
+        // asigno esa horientación a la colisión
+        pose.Orientation = quaternion.ToNumerics();
+        // construyo la matriz de mundo según la escala, la rotación del cuaternión y la traslación
+        _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
+
+        // BORRAR, ESTO ES PARA VER LA CAJA QUE SIMULA LA COLISIÓN
+        boxWorld = rotationMatrix * Matrix.CreateTranslation(_position);
+
+        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
 
         // Recalcular transforms absolutos luego de modificar los locales
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
@@ -223,12 +229,13 @@ public class Tank : GameObject
         _wheels.Update(gameTime, _velocity);
         _turret.Update(_isPlayer);
         if (!_isPlayer)
-        {
             _enemyAction.Update(gameTime,GameManager.Instance);
-        }
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
+        if (mostrarCaja)
+            boxPrimitive.Draw(boxWorld, view, projection);
+        
         Vector3 ambientColor = Color.Yellow.ToVector3();
         Vector3 specularColor = Color.White.ToVector3();
         float kAmbient = 0.2f;
@@ -238,9 +245,6 @@ public class Tank : GameObject
         Vector3 lightPosition = new Vector3(1000, 100, 1000);
         Vector3 eyePosition = GameManager.GetCameraPosition();
         Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
-
-        var modelTransforms = new Matrix[_model.Bones.Count];
-        _model.CopyAbsoluteBoneTransformsTo(modelTransforms);
 
         _effect.Parameters["EyePosition"].SetValue(eyePosition);
         _effect.Parameters["InverseTransposeWorld"].SetValue(inverseTransposeWorld);
@@ -262,15 +266,17 @@ public class Tank : GameObject
             _effect.Parameters["Normals"]?.SetValue(_textureNormal);
         foreach (var mesh in _meshes)
         {
-            var worldMesh = modelTransforms[mesh.ParentBone.Index] * _world;
+            var worldMesh = _boneTransforms[mesh.ParentBone.Index] * _world;
             _effect.Parameters["World"].SetValue(worldMesh);
             mesh.Draw();
         }
+
         _turret.Draw(_world, view, projection);
         _wheels.Draw(_world, view, projection);
     }
     public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
-    public void MeshesTanque()
+    #region PRIVATE METHODS
+    private void MeshesTanque()
     {
         foreach (var mesh in _model.Meshes)
         {
@@ -278,7 +284,29 @@ public class Tank : GameObject
                 _meshes.Add(mesh);
         }
     }
+    private void CreateCollisionBox()
+    {
+        // Box boxShape = new Box(boxWidht, boxHeight, boxLength);
+        Box boxShape = new Box(anchoCaja, altoCaja, profundidadCaja);
+        var boxInertia = boxShape.ComputeInertia(0.1f);
+        TypedIndex boxIndex = GameManager.AddShapeToSimulation(boxShape);
+        CollidableDescription collidableDescription = new CollidableDescription(boxIndex, 0.1f);
+        BodyActivityDescription bodyActivityDescription = new BodyActivityDescription(0.01f);
+        var position = _position.ToNumerics();
+        var bodyDescription = BodyDescription.CreateDynamic(
+            position,
+            boxInertia,
+            collidableDescription,
+            bodyActivityDescription
+        );
+        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription);
+    }
+    #endregion
+
     /// BORRAR
     public void CambiarVida(float cantidad) => _life += cantidad;
+    public void CambiarCaja() => mostrarCaja = !mostrarCaja;
+    public void CambiarTamanioCaja(float cant) => altoCaja += cant;
     public Vector3 GetTankFrontDirection() => _tankFrontDirection;
+    public float GetAltoCaja() => altoCaja;
 }

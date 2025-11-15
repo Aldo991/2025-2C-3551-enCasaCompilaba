@@ -10,6 +10,7 @@
 #endregion
 
 #region Using Statements
+using BepuPhysics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -28,6 +29,7 @@ public abstract class GameObject
     protected BoundingBox _boundingBox;
     protected float _collisionRadius;
     protected Texture2D _textureNormal;
+    protected BodyHandle _bodyHandle;
 
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
@@ -40,6 +42,6 @@ public abstract class GameObject
     public void SetRotation(float rotation) => _rotation = rotation;
     public Texture2D GetTexture() => _texture;
     public void SetTexture(Texture2D texture) => _texture = texture;
-    public BoundingBox GetBoundingBox() => _boundingBox;
+    // public BoundingBox GetBoundingBox() => _boundingBox;
     public float CollisionRadius() => _collisionRadius;
 }

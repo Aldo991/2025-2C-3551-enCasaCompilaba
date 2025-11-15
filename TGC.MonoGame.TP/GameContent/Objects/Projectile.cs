@@ -1,8 +1,11 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using BepuPhysics;
+using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TGC.MonoGame.Samples.Geometries;
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -16,9 +19,12 @@ public class Projectile : GameObject
     private float _elapsedTime;
     private bool _isActive;
     private Vector3 _initialPosition;
+    private SpherePrimitive spherePrimitive;
+    private float sphereRadius;
+    private Matrix sphereMatrix;
 
     public Projectile(Model model, Vector3 startPosition, Vector3 direction, Texture2D texture = null,
-        float speed = 100f, float lifetime = 3f, float scale = 0.001f, float rotation = 0f)
+        float speed = 100f, float lifetime = 3f, float scale = 0.0005f, float rotation = 0f)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
@@ -30,39 +36,66 @@ public class Projectile : GameObject
         _isActive = true;
         _rotation = rotation;
         _texture = texture;
-        List<string> meshModels = new List<string>();
-        List<string> boneModel = new List<string>();
-        foreach (var mesh in _model.Meshes)
-        {
-            meshModels.Add(mesh.Name);
-            boneModel.Add(mesh.ParentBone.Name);
-        }
         _initialPosition = startPosition;
-        // _initialYPosition = _position.Y * direction.Y;
         _scale = scale;
+        sphereRadius = .4f;
+        spherePrimitive = new SpherePrimitive(GameManager.GetGraphicsDevice());
+        CreateCollisionSphere();
+    }
+    private void CreateCollisionSphere()
+    {
+        Sphere sphereShape = new Sphere(sphereRadius);
+        TypedIndex sphereIndex = GameManager.AddShapeSphereToSimulation(sphereShape);
+        CollidableDescription collidableDescription = new CollidableDescription(sphereIndex, 0.1f);
+        BodyActivityDescription bodyActivityDescription = new BodyActivityDescription(0.01f);
+        var position = _position.ToNumerics();
+        var bodyDescription = BodyDescription.CreateKinematic(
+            position,
+            collidableDescription,
+            bodyActivityDescription
+        );
+        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription);
     }
     public bool IsActive() => _isActive;
-    private Vector3 CalculatePosition()
+    private Vector3 CalculateDirection()
     {
-        Vector2 xz = new Vector2(_direction.X, _direction.Z);
-        xz.Normalize();
-        var deltaX = _initialPosition.X + _speed * _elapsedTime * xz.X;
-        var deltaY = _initialPosition.Y + _direction.Y * _elapsedTime - Gravity * MathF.Pow(_elapsedTime, 2) / 20;
-        var deltaZ = _initialPosition.Z + _speed * _elapsedTime * xz.Y;
-        return new Vector3(deltaX, deltaY, deltaZ);
+        var directionX = _direction.X * _speed;
+        var directionY = _direction.Y * _speed;
+        var directionZ = _direction.Z * _speed;
+        return new Vector3(directionX, directionY, directionZ);
     }
     public override void Update(GameTime gameTime)
     {
+        BodyReference body = GameManager.GetBodyReference(_bodyHandle);
+        body.Awake = true;
+        var pose = body.Pose;
+
+        var direction = CalculateDirection();
+
+        body.Velocity.Linear = direction.ToNumerics();
+
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _position = CalculatePosition();
+        _position = pose.Position;
         _rotation += deltaTime;
         _elapsedTime += deltaTime;
         if (_elapsedTime > _lifeTime)
             _isActive = false;
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationX(_rotation) * Matrix.CreateTranslation(_position);
+        
+        // roto el tanque según el ángulo de _rotation, usando un quaternion
+        Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitX, _rotation);
+        // transformo ese quaternion en matriz
+        Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
+        // asigno esa horientación a la colisión
+        pose.Orientation = quaternion.ToNumerics();
+        // construyo la matriz de mundo según la escala, la rotación del cuaternión y la traslación
+        _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
+        // _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationX(_rotation) * Matrix.CreateTranslation(_position);
+
+        sphereMatrix = Matrix.CreateScale(sphereRadius) * rotationMatrix * Matrix.CreateTranslation(_position);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
+        // spherePrimitive.Draw(sphereMatrix, view, projection);
         if (!_isActive)
             return;
 

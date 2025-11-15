@@ -125,10 +125,11 @@ public static class ContentLoader
     }
     private static void LoadHouseTextures(ContentManager content)
     {
-        _houseTextures = new Texture2D[3];
+        _houseTextures = new Texture2D[4];
         _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house0");
         _houseTextures[1] = content.Load<Texture2D>("Textures/houses/house3");
         _houseTextures[2] = content.Load<Texture2D>("Textures/houses/house3-normal");
+        _houseTextures[3] = content.Load<Texture2D>("Textures/houses/caja-madera-3");
     }
     private static void LoadLandModels(ContentManager content)
     {

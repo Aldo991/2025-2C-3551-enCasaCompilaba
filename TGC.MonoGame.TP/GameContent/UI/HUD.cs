@@ -24,6 +24,11 @@ internal class Hud
             {GameState.Playing, new Playing(graphicsDevice, player)}
         };
     }
+    public void SetPlayer(Tank player)
+    {
+        Playing state = (Playing)_dictHudStates.GetValueOrDefault(GameState.Playing);
+        state.SetPlayer(player);
+    }
     public void SetHudState(GameState gameState)
     {
         if (gameState == GameState.Exit)

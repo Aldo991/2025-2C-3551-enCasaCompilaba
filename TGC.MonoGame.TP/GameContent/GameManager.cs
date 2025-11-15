@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using TGC.MonoGame.TP;
 using System;
 using Microsoft.Xna.Framework.Input;
+using BepuPhysics.Collidables;
+using BepuPhysics;
 #endregion
 
 public enum GameState
@@ -34,20 +36,22 @@ public class GameManager
     // Cámara del juego
     private static FollowCamera _camera;
     // Da la instancia del GameManager, la idea es usarlo como singleton
+    private static PhysicsManager _physicManager;
+    private static GraphicsDevice _graphicsDevice;
     public static GameManager Instance
     {
         get
         {
             if (instance == null)
-            {
                 instance = new GameManager();
-            }
             return instance;
         }
     }
     // Inicializa las variables del GameManager
     public void Initialize(GraphicsDevice graphicsDevice, Tank player)
     {
+        _graphicsDevice = graphicsDevice;
+        _physicManager = PhysicsManager.Instance;
         SetScreenInfo(graphicsDevice);
         _state = GameState.Menu;
         _projectileManager = new ProjectileManager();
@@ -56,6 +60,7 @@ public class GameManager
         _hud.SetHudState(GameState.Menu);
         InitializeCamera(graphicsDevice);
     }
+    public void SetHudPlayer(Tank player) => _hud.SetPlayer(player);
     // Devuelve si el estado del juego es pausa o no
     public bool IsPause() => _state == GameState.Menu;
     // Devuelve si el estado del juego es jugando o no
@@ -100,6 +105,7 @@ public class GameManager
         _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
+        _physicManager.Update();
     }
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
@@ -154,4 +160,16 @@ public class GameManager
     public static int GetScreenCenterHeight() => _screenHeight / 2;
     public static bool GetLeftButtonMousePressed() => _leftButtonMousePressed;
     public static Vector3 GetCameraPosition() => _camera.GetCameraPosition();
+    public static TypedIndex AddShapeToSimulation(Box shape) => _physicManager.AddShape(shape);
+    public static TypedIndex AddShapeSphereToSimulation(Sphere shape) => _physicManager.AddShapeSphere(shape);
+    public static BodyHandle AddBodyToSimulation(BodyDescription body)
+        => _physicManager.AddBody(body);
+    public static BodyReference GetBodyReference(BodyHandle bodyHandle)
+        => _physicManager.GetBodyReference(bodyHandle);
+    public static GraphicsDevice GetGraphicsDevice() => _graphicsDevice;
+    public static void SetAwakeTrue(BodyHandle bodyHandle)
+    {
+        var body = _physicManager.GetBodyReference(bodyHandle);
+        body.Awake = true;
+    }
 }

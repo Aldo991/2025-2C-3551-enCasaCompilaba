@@ -43,6 +43,7 @@ public class TGCGame : Game
         var world = Matrix.CreateScale(20000f, 0f, 20000f);
         _land = new Land(GraphicsDevice, ContentLoader.GetModel("land", 0), world);
 
+        _gameManager.Initialize(GraphicsDevice, _tank);
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
         _elementosLand = new ElementosLand(Content);
@@ -66,7 +67,8 @@ public class TGCGame : Game
         Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
         _tank.SetProjectileTexture(projectileTexture);
 
-        _gameManager.Initialize(GraphicsDevice, _tank);
+        _gameManager.SetHudPlayer(_tank);
+
         // _gameManager.CreateEnemies(2);
 
         base.LoadContent();
@@ -74,6 +76,7 @@ public class TGCGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        // _gameManager.UpdatePhysics();
         // Seteo información como la posición del mouse
         _gameManager.SetGameInfo();
         // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.
@@ -91,7 +94,7 @@ public class TGCGame : Game
             // Acelero el tanque
             if (kb.IsKeyDown(Keys.W)) _tank.MoveForwardTank(gameTime);
             // Desacelero el tanque
-            if (kb.IsKeyUp(Keys.W) && kb.IsKeyUp(Keys.S)) _tank.DecelerateTank(gameTime);
+            if (kb.IsKeyUp(Keys.W) && kb.IsKeyUp(Keys.S) && _tank.HasVelocity()) _tank.DecelerateTank(gameTime);
             // Giro el tanque hacia la izquierda si tiene velocidad
             if (kb.IsKeyDown(Keys.A) && _tank.HasVelocity()) _tank.RotateTankLeft(gameTime);
             // Muevo el tanque en reversa
@@ -109,6 +112,9 @@ public class TGCGame : Game
 
             if (kb.IsKeyDown(Keys.Subtract)) _tank.CambiarVida(-1f);
             if (kb.IsKeyDown(Keys.Add)) _tank.CambiarVida(1f);
+            if (kb.IsKeyDown(Keys.O)) _tank.CambiarCaja();
+            if (kb.IsKeyDown(Keys.Up)) _tank.CambiarTamanioCaja(0.1f);
+            if (kb.IsKeyDown(Keys.Down)) _tank.CambiarTamanioCaja(-0.1f);
 
             _tank.Update(gameTime);
 
