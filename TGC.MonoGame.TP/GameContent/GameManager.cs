@@ -134,7 +134,7 @@ public class GameManager
     // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
     {
-        float radius = 1500f;
+        float radius = 750f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
     }
     // Setea la información del juego, más que nada del mouse

@@ -76,10 +76,12 @@ public class Wheels
                 _treadmillsBone.Add(bone);
         }
     }
-    public void Update(GameTime gameTime, float velocity)
+    public void Update(float velocity, bool isMovingForward)
     {
-        _treadmillsOffset += velocity * 0.2f;
-        _wheelRotation += velocity;
+        if (!isMovingForward)
+            velocity = -velocity;
+        _treadmillsOffset += velocity * 0.02f;
+        _wheelRotation += velocity * 0.1f;
         _matrixWheelRotation = Matrix.CreateRotationX(_wheelRotation);
     }
     public void Draw(Matrix world, Matrix view, Matrix projection)

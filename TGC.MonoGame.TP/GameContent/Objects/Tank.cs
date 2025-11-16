@@ -226,7 +226,7 @@ public class Tank : GameObject
         // Recalcular transforms absolutos luego de modificar los locales
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
 
-        _wheels.Update(gameTime, _velocity);
+        _wheels.Update(_velocity, _isMovingforward);
         _turret.Update(_isPlayer);
         if (!_isPlayer)
             _enemyAction.Update(gameTime,GameManager.Instance);
