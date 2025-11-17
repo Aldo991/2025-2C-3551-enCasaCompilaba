@@ -72,7 +72,7 @@ public class Tank : GameObject
         anchoCaja = 2f;
         altoCaja = 1.5f;
         profundidadCaja = 3.5f;
-        mostrarCaja = true;
+        mostrarCaja = false;
         Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
         Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
         boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
@@ -175,10 +175,6 @@ public class Tank : GameObject
             MediaPlayer.Play(_shootSound);
         return new Projectile(_projectileModel, turretPos, turretDirection, _projectileTexture);
     }
-    public void SetGround(ElementosLand elementos)
-    {
-        float gy = elementos.SampleGroundHeight(_position.X, _position.Z);
-    }
     public Vector3 GetCannonDirection()
     {
         Matrix cannonBoneTraslation = _turret.GetCannonTraslation();
@@ -207,8 +203,11 @@ public class Tank : GameObject
             direction = -direction;
         // aplico la velocidad al cuerpo de la colisión
         body.Velocity.Linear = direction.ToNumerics();
+        var position = pose.Position;
+        position.Y = Land.Height(position.X, position.Z);
+        body.Pose.Position.Y = position.Y + 1f;
         // seteo esa posición nueva a la variable _position, que me sirve para graficar el tanque
-        _position = pose.Position;
+        _position = body.Pose.Position;
 
         // roto el tanque según el ángulo de _rotation, usando un quaternion
         Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY, _rotation);
@@ -218,6 +217,8 @@ public class Tank : GameObject
         pose.Orientation = quaternion.ToNumerics();
         // construyo la matriz de mundo según la escala, la rotación del cuaternión y la traslación
         _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
+
+        UpdateBoundingBoxToDraw();
 
         // BORRAR, ESTO ES PARA VER LA CAJA QUE SIMULA LA COLISIÓN
         boxWorld = rotationMatrix * Matrix.CreateTranslation(_position);

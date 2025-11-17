@@ -49,6 +49,8 @@ public static class ContentLoader
     private static Texture2D[] _hudTextures;
     private static SpriteFont _spriteFont;
     private static Song _shootTank;
+    private static Texture2D[] _heightmapTerrain;
+    private static Effect _terrainEffect;
 
     public static void Load(ContentManager content)
     {
@@ -89,6 +91,8 @@ public static class ContentLoader
         LoadSpriteFonts(content);
         LoadHudTextures(content);
         LoadSounds(content);
+
+        LoadHeightmapTerrain(content);
     }
 
     private static void LoadBushModels(ContentManager content)
@@ -291,6 +295,15 @@ public static class ContentLoader
         string path = ContentFolderSounds + "shoot";
         _shootTank = content.Load<Song>(path);
     }
+    private static void LoadHeightmapTerrain(ContentManager content)
+    {
+        _heightmapTerrain = new Texture2D[4];
+        _heightmapTerrain[0] = content.Load<Texture2D>("Terrain/heightmap-terrain");
+        _heightmapTerrain[1] = content.Load<Texture2D>("Terrain/heightmap-color");
+        _heightmapTerrain[2] = content.Load<Texture2D>("Terrain/ground");
+        _heightmapTerrain[3] = content.Load<Texture2D>("Terrain/grass");
+        _terrainEffect = content.Load<Effect>("Effects/Terrain");
+    }
     public static Model GetModel(string modelName, int index)
     {
         return modelName switch
@@ -336,5 +349,20 @@ public static class ContentLoader
     public static Song GetSoundEffect()
     {
         return _shootTank;
+    }
+    public static Texture2D GetTerrain(string part)
+    {
+        return part switch
+        {
+            "heightmap" => _heightmapTerrain[0],
+            "heightmap-color" => _heightmapTerrain[1],
+            "ground" => _heightmapTerrain[2],
+            "grass" => _heightmapTerrain[3],
+            _ => throw new ArgumentException("Invalid Texture Name"),
+        };
+    }
+    public static Effect GetTerrainEffect()
+    {
+        return _terrainEffect;
     }
 }

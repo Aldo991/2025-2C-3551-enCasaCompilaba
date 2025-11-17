@@ -119,11 +119,14 @@ public class GameManager
     }
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
-        player.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        Matrix view = _camera.ViewMatrix;
+        Matrix projection = _camera.ProjectionMatrix;
+        player.Draw(gameTime, view, projection);
         elementosLand.Draw(gameTime, _camera);
-        _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
+        _projectileManager.Draw(gameTime, view, projection);
+        _tankManager.Draw(gameTime, view, projection);
+        // land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
+        land.Draw(view, projection);
         _hud.Draw();
     }
     // Orbita a través del tanque cuando está en pausa
@@ -144,7 +147,7 @@ public class GameManager
     // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
     {
-        float radius = 750f;
+        float radius = 500f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
     }
     // Setea la información del juego, más que nada del mouse

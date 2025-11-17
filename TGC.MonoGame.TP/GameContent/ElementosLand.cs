@@ -9,668 +9,520 @@ using TGC.MonoGame.TP;
 
 #endregion
 
-namespace TGC.MonoGame.TP
+namespace TGC.MonoGame.TP;
+
+public class ElementosLand
 {
-    public class ElementosLand
+    private List<GameObject> _gameElements;
+    public ElementosLand(ContentManager content)
     {
-        private Land _land;
-        private List<GameObject> _gameElements;
-        private List<Vector3> _landVertices; // vértices del terreno en world-space para muestreo
-        public ElementosLand(ContentManager content)
+        // Inicializo las variables
+        _gameElements = new List<GameObject>();
+        // Con 0.003f queda bien
+        float scaleBushModel0 = 0.003f;
+        float scaleHouseModel0 = 0.003f;
+        float scaleHouseModel1 = 0.009f;
+        // float scaleHouseModel2 = 0.009f;
+        float scaleProjectileModel0 = 0.001f;
+        // Con 0.003f queda como una piedra más chica que la rueda.
+        // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
+        float scaleStoneModel0 = 0.003f;
+        float scaleStoneModel1 = 0.003f;
+        // float scaleTankModel1 = 0.01f;
+        // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
+        // Son los 3 el mismo modelo?
+        float scaleTreeModel0 = 0.003f;
+        float scaleTreeModel1 = 0.003f;
+        float scaleTreeModel2 = 0.015f;
+        // Está bien, pero sería más un muro más que una pared
+        float scaleWallModel0 = 0.03f;
+
+        // Terreno
+        var posicionesWalls2Rot = new List<Vector3>
         {
-            // Inicializo las variables
-            _gameElements = new List<GameObject>();
-            // Con 0.003f queda bien
-            float scaleBushModel0 = 0.003f;
-            float scaleHouseModel0 = 0.003f;
-            float scaleHouseModel1 = 0.009f;
-            float scaleHouseModel2 = 0.009f;
-            float scaleProjectileModel0 = 0.001f;
-            // Con 0.003f queda como una piedra más chica que la rueda.
-            // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
-            float scaleStoneModel0 = 0.003f;
-            float scaleStoneModel1 = 0.003f;
-            // float scaleTankModel1 = 0.01f;
-            // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
-            // Son los 3 el mismo modelo?
-            float scaleTreeModel0 = 0.003f;
-            float scaleTreeModel1 = 0.003f;
-            float scaleTreeModel2 = 0.015f;
-            // Está bien, pero sería más un muro más que una pared
-            float scaleWallModel0 = 0.03f;
-
-
-            // _land = new Land(ContentLoader.GetModel("land", 0), new Vector3(0f, 0f, 0f), 9f, 0f); // escala antes estaba en 9
-            // Precalcular vértices del terreno una sola vez
-            // _landVertices = GetTransformedVertices(_land.GetModel(), _land.GetWorld());
-
-            // Terreno
-            var posicionesWalls2Rot = new List<Vector3>
-            {
-                new Vector3(-22500, 0, 22700), new Vector3(-22500, 0, 20500),
-                new Vector3(-22500, -200, 18300), new Vector3(-22500, 0, 16100),
-                new Vector3(-22500, -250, 13900), new Vector3(-22500, -250, 11700),
-                new Vector3(-22500, -250, 9500), new Vector3(-22500, -250, 7300),
-                new Vector3(-22500, -250, 5100), new Vector3(-22500, 0, 2900),
-                new Vector3(-22500, 0, 700), new Vector3(-22500, 0, -1500),
-                new Vector3(22500, -250, 13900), new Vector3(22500, -250, 11700),
-                new Vector3(22500, -250, 9500), new Vector3(22500, -250, 7300),
-                new Vector3(22500, -250, 5100), new Vector3(22500, 0, 2900),
-                new Vector3(22500, 0, 700), new Vector3(22500, 0, -1500),
-                new Vector3(22500, 0, -3700), new Vector3(22500, 0, -5900),
-                new Vector3(22500, 0, -8100)
-            };
-            var posicionesWalls2 = new List<Vector3>
-            {
-                new Vector3(-22000, 0, 22330), new Vector3(-19800, -150, 22330),
-                new Vector3(-17600, -150, 22330), new Vector3(-15400, -150, 22330),
-                new Vector3(-13200, -150, 22330), new Vector3(-11000, -150, 22330),
-                new Vector3(-8800, -150, 22330), new Vector3(-6600, -150, 22330),
-                new Vector3(-4400, -150, 22330), new Vector3(-2200, -150, 22330),
-                new Vector3(0, -150, 22330), new Vector3(2200, -150, 22330),
-                new Vector3(4400, -150, 22330)
-            };
-            var posicionesWalls1 = new List<Vector3>
-            {
-                new Vector3(740, 4, -1000), new Vector3(370, 4, -1000),
-                new Vector3(0, 4, -1000), new Vector3(-370, 5, -1000),
-                new Vector3(740, 8, -11050), new Vector3(370, 8, -11050),
-                new Vector3(0, 8, -11050), new Vector3(-370, 9, -11050),
-                new Vector3(-740, 8, -11050), new Vector3(-8890, 5, -1000),
-                new Vector3(-2960, 8, -11050), new Vector3(-3330, 9, -11050),
-                new Vector3(-3700, 9, -11050), new Vector3(-4070, 9, -11050),
-                new Vector3(-4440, 9, -11050), new Vector3(-4810, 8, -11050),
-                new Vector3(-5180, 8, -11050), new Vector3(-5550, 8, -11050),
-                new Vector3(-5920, 8, -11050), new Vector3(-6290, 8, -11050),
-                new Vector3(-2590, 5, -1000), new Vector3(-9260, 5, -1000),
-                new Vector3(-2960, 5, -1000), new Vector3(-3330, 5, -1000),
-                new Vector3(-3700, 5, -1000), new Vector3(-4070, 5, -1000),
-                new Vector3(-4440, 5, -1000), new Vector3(-4810, 5, -1000),
-                new Vector3(-5180, 5, -1000), new Vector3(-5550, 5, -1000),
-                new Vector3(-5920, 5, -1000), new Vector3(-6290, 5, -1000),
-                new Vector3(-6660, 5, -1000), new Vector3(-9630, 5, -1000),
-                new Vector3(-8540, 8, -11050), new Vector3(-8890, 9, -11050),
-                new Vector3(-9260, 10, -11050), new Vector3(-9630, 11, -11050),
-                new Vector3(-9800, 11, -11050), new Vector3(-9800, 5, -1000),
-            };
-            var posicionesWalls1Rotated = new List<Vector3>
-            {
-                new Vector3(940, 490, -1200), new Vector3(940, 490, -1570),
-                new Vector3(940, 490, -1940), new Vector3(940, 590, -2310),
-                new Vector3(940, 760, -2680), new Vector3(940, 1050, -3050),
-                new Vector3(940, 1400, -3420), new Vector3(940, 1500, -3790),
-                new Vector3(940, 1400, -4160), new Vector3(940, 1320, -4530),
-                new Vector3(940, 1000, -4900), new Vector3(940, 850, -5270),
-                new Vector3(940, 750, -5640), new Vector3(940, 650, -6010),
-                new Vector3(940, 650, -6380), new Vector3(940, 650, -6750),
-                new Vector3(940, 650, -7120), new Vector3(940, 710, -7490),
-                new Vector3(940, 760, -7860), new Vector3(940, 810, -8230),
-                new Vector3(940, 850, -8600), new Vector3(940, 910, -8970),
-                new Vector3(940, 950, -9340), new Vector3(940, 930, -9710),
-                new Vector3(940, 850, -10080), new Vector3(940, 850, -10450),
-                new Vector3(940, 850, -10820), new Vector3(-10000, 1130, -10820),
-                new Vector3(-10000, 560, -1200), new Vector3(-10000, 615, -1570),
-                new Vector3(-10000, 650, -1940), new Vector3(-10000, 675, -2310),
-                new Vector3(-10000, 750, -2680), new Vector3(-10000, 780, -3050),
-                new Vector3(-10000, 840, -3420), new Vector3(-10000, 880, -3790),
-                new Vector3(-10000, 925, -4160), new Vector3(-10000, 950, -4530),
-                new Vector3(-10000, 1050, -4900), new Vector3(-10000, 1150, -5270),
-                new Vector3(-10000, 1200, -5640), new Vector3(-10000, 1150, -6010),
-                new Vector3(-10000, 1050, -6380), new Vector3(-10000, 950, -6750),
-                new Vector3(-10000, 850, -7120), new Vector3(-10000, 850, -7490),
-                new Vector3(-10000, 850, -7860), new Vector3(-10000, 850, -8230),
-                new Vector3(-10000, 850, -8600), new Vector3(-10000, 850, -8970),
-                new Vector3(-10000, 950, -9340), new Vector3(-10000, 950, -9710),
-                new Vector3(-10000, 980, -10080), new Vector3(-10000, 1050, -10450),
-            };
-            var posicionesArboles = new List<Vector3>
-            {
-                new Vector3(1000, 490, 1000), new Vector3(2000, 490, 5000),
-                new Vector3(2000, 490, 3400), new Vector3(2500, 490, 5400),
-                new Vector3(2500, 490, 9200), new Vector3(3000, 490, 1200),
-                new Vector3(3000, 490, 1800), new Vector3(3000, 490, 9000),
-                new Vector3(4000, 490, 3600), new Vector3(4000, 490, 5200),
-                new Vector3(3800, 490, 7200), new Vector3(4500, 490, 5600),
-                new Vector3(4500, 490, 9500), new Vector3(5000, 490, 1500),
-                new Vector3(5000, 490, 2000), new Vector3(5000, 490, 9200),
-                new Vector3(6000, 490, 3800), new Vector3(6000, 490, 5500),
-                new Vector3(5800, 490, 7400), new Vector3(6500, 490, 5800),
-                new Vector3(6500, 490, 9800), new Vector3(7000, 490, 1800),
-                new Vector3(7000, 490, 2200), new Vector3(7000, 490, 9400),
-                new Vector3(7800, 490, 7600), new Vector3(7800, 490, 13800),
-                new Vector3(8000, 490, 4000), new Vector3(8000, 490, 5800),
-                new Vector3(8500, 490, 6000), new Vector3(8500, 490, 10000),
-                new Vector3(9000, 490, 2000), new Vector3(9000, 490, 2400),
-                new Vector3(9000, 490, 6000), new Vector3(9000, 490, 7800),
-                new Vector3(9800, 490, 14000), new Vector3(9800, 490, 7800),
-                new Vector3(10000, 490, 4200), new Vector3(10000, 490, 6000),
-                new Vector3(10000, 490, 5800), new Vector3(10500, 490, 10200),
-                new Vector3(10500, 490, 6200), new Vector3(30000, 490, 2500),
-                new Vector3(30000, 490, 2600), new Vector3(11800, 490, 8000),
-                new Vector3(11800, 490, 14200), new Vector3(12000, 490, 12000),
-                new Vector3(12000, 490, 6200), new Vector3(12000, 490, 4400),
-                new Vector3(12500, 490, 10500), new Vector3(12500, 490, 6400),
-                new Vector3(13000, 490, 2800), new Vector3(13000, 490, 6600),
-                new Vector3(13800, 490, 14500), new Vector3(13800, 490, 8200),
-                new Vector3(14000, 490, 4600), new Vector3(14000, 490, 6500),
-                new Vector3(14500, 490, 10800), new Vector3(14500, 490, 6600),
-                new Vector3(15000, 490, 3000), new Vector3(15000, 490, 4600),
-                new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
-                new Vector3(16000, 490, 4800), new Vector3(-3200, 490, -2500),
-                new Vector3(-9200, 940, -6500), new Vector3(-2500, 730, -9500),
-                new Vector3(-7500, -400, 12000), new Vector3(-9500, -400, 14000),
-                new Vector3(-14000, -400, 12000), new Vector3(-12000, -400, 14000),
-                new Vector3(-10000, -400, 17000), new Vector3(-13000, -400, 17000)
-            };
-            var posicionesRocas = new List<Vector3>
-            {
-                new Vector3(1000, 580, 1000), new Vector3(2000, 590, 5000),
-                new Vector3(2000, 500, 3400), new Vector3(2500, 590, 5400),
-                new Vector3(2500, 640, 9200), new Vector3(3000, 740, 1200),
-                new Vector3(3000, 690, 1800), new Vector3(3000, 690, 9000),
-                new Vector3(4000, 690, 3600), new Vector3(4000, 690, 5200),
-                new Vector3(3800, 690, 7200), new Vector3(4500, 690, 5600),
-                new Vector3(4500, 690, 9500), new Vector3(5000, 690, 1500),
-                new Vector3(5000, 600, 2000), new Vector3(5000, 690, 9200),
-                new Vector3(6000, 690, 3800), new Vector3(6000, 690, 5500),
-                new Vector3(5800, 700, 7400), new Vector3(6500, 590, 5800),
-                new Vector3(6500, 1290, 9800), new Vector3(7000, 590, 1800),
-                new Vector3(7000, 690, 2200), new Vector3(7000, 800, 9400),
-                new Vector3(7800, 890, 7600), new Vector3(7800, 1890, 13800),
-                new Vector3(8000, 640, 200), new Vector3(8500, 640, 1200),
-                new Vector3(8800, 640, 2500), new Vector3(9100, -100, 400),
-                new Vector3(9400, 640, 5200), new Vector3(9700, -100, 600),
-                new Vector3(10000, 0, 1800), new Vector3(10300, 640, 3500),
-                new Vector3(10600, 590, 4700), new Vector3(10900, 640, 6000),
-                new Vector3(11200, 440, 750), new Vector3(11500, 540, 2200),
-                new Vector3(11800, 580, 3800), new Vector3(12100, 640, 5000),
-                new Vector3(12400, 630, 6700), new Vector3(12700, -200, 1000),
-                new Vector3(13000, 620, 3200), new Vector3(13300, 420, 4600),
-                new Vector3(13600, 620, 6000), new Vector3(13900, 420, 7800),
-                new Vector3(14000, 260, 4600), new Vector3(14000, 420, 6500),
-                new Vector3(14500, 420, 10800), new Vector3(14500, 420, 6600),
-                new Vector3(15000, 420, 3000), new Vector3(15000, 420, 4600),
-                new Vector3(15800, 950, 14800), new Vector3(15800, 420, 8400),
-                new Vector3(16000, 420, 4800), new Vector3(100, 740, -8000),
-            };
-            var posicionesPiedras = new List<Vector3>
-            {
-                new Vector3(-1000, 390, 1000), new Vector3(-2000, 300, 5000),
-                new Vector3(-2000, 390, 3400), new Vector3(-2500, 300, 5400),
-                new Vector3(-2500, 390, 9200), new Vector3(-3000, 390, 1200),
-                new Vector3(-3000, 390, 1800), new Vector3(-3000, 300, 9000),
-                new Vector3(-4000, 190, 3600), new Vector3(-4000, 190, 5200),
-                new Vector3(-3800, 190, 7200), new Vector3(-4500, -190, 5600),
-                new Vector3(-4500, -190, 9500), new Vector3(-5000, -190, 1500),
-                new Vector3(-5000, 290, 2000), new Vector3(-5000, 190, 9200),
-                new Vector3(-6000, 390, 3800), new Vector3(-6000, 190, 5500),
-                new Vector3(-5800, -290, 7400), new Vector3(-6500, -290, 5800),
-                new Vector3(-6500, -190, 9800), new Vector3(-7000, 290, 1800),
-                new Vector3(-7000, -190, 2200), new Vector3(-7000, -290, 9400),
-                //cuadrante x>0 y z<0
-                new Vector3(1450, 570, -900), new Vector3(2450, 670, -4900),
-                new Vector3(2450, 670, -3300), new Vector3(2950, 660, -5300),
-                new Vector3(2950, 900, -9100), new Vector3(3450, 670, -1100),
-                new Vector3(3450, 640, -1700), new Vector3(3450, 870, -8900),
-                new Vector3(4450, 670, -3500), new Vector3(4450, 1250, -5100),
-                new Vector3(4250, 670, -7100), new Vector3(4950, 1250, -5500),
-                new Vector3(4950, 740, -9400), new Vector3(5450, 700, -1400),
-                new Vector3(5450, 610, -1900), new Vector3(5450, 740, -9100),
-                new Vector3(6450, 1550, -3700), new Vector3(6450, 1500, -5400),
-                new Vector3(6250, 1506, -7300), new Vector3(6950, 1580, -5700),
-                new Vector3(6950, 1550, -9700), new Vector3(7450, 940, -1700),
-                new Vector3(7450, 540, -2100), new Vector3(7450, 940, -9300),
-                new Vector3(8250, 780, -7500), new Vector3(8250, 2540, -13700),
-                new Vector3(8450, 740, -3900), new Vector3(8450, 940, -5700),
-                new Vector3(8950, 559, -5900), new Vector3(8950, 2350, -9900),
-                new Vector3(9450, 540, -1900), new Vector3(9450, 940, -2300),
-                new Vector3(9450, 540, -5900), new Vector3(9450, 1640, -7700),
-                new Vector3(10250, 2720, -13900), new Vector3(10250, 1640, -7700),
-                new Vector3(10450, 540, -4100), new Vector3(10450, 940, -5900),
-                new Vector3(10450, 540, -5700), new Vector3(10950, 2500, -10100),
-                new Vector3(10950, 1040, -6100), new Vector3(11450, 940, -2400),
-                new Vector3(11450, 1040, -2500), new Vector3(12250, 2150, -7900),
-                new Vector3(12250, 2650, -14100), new Vector3(12450, 2450, -11900),
-                new Vector3(12450, 1040, -6100), new Vector3(12450, 940, -4300),
-                new Vector3(12950, 2550, -10400), new Vector3(12950, 940, -6300),
-                new Vector3(13450, 1040, -2700), new Vector3(13450, 940, -6500),
-                new Vector3(14250, 3250, -14400), new Vector3(14250, 1950, -8100),
-                new Vector3(14450, 780, -4500), new Vector3(14450, 790, -6400),
-                new Vector3(14950, 2950, -10700), new Vector3(14950, 790, -6500),
-                new Vector3(15450, 640, -2900), new Vector3(15450, 640, -4500),
-                new Vector3(16250, 3250, -14700), new Vector3(16250, 2640, -8300),
-                new Vector3(16450, 540, -4700), new Vector3(-1800, 540, -2000),
-                new Vector3(-1700, 600, -4000), new Vector3(-1900, 540, -5500),
-                new Vector3(-1800, 540, -7000), new Vector3(-800, 540, -6000),
-                new Vector3(-500, 540, -3200), new Vector3(-2800, 730, -2500),
-                new Vector3(-3500, 565, -4500), new Vector3(-4200, 565, -7200),
-                new Vector3(-5000, 565, -2800), new Vector3(-5800, 565, -5000),
-                new Vector3(-6600, 565, -2200), new Vector3(-7200, 565, -8000),
-                new Vector3(-8000, 100, -3000), new Vector3(-8800, 565, -6000),
-                new Vector3(-9500, 940, -2500), new Vector3(-10200, 565, -7000),
-                new Vector3(-3000, 565, -8500), new Vector3(-6000, 565, -9800),
-                new Vector3(-8700, 565, 11000), new Vector3(-10500, 100, 13500)
-            };
-            var posicionesArboles2 = new List<Vector3>
-            {
-                new Vector3(1500, 520, -1500), new Vector3(2000, 620, -5000),
-                new Vector3(2000, 620, -3400), new Vector3(2500, 610, -5400),
-                new Vector3(2500, 850, -9200), new Vector3(3000, 620, -1200),
-                new Vector3(3000, 590, -1800), new Vector3(3000, 820, -9000),
-                new Vector3(4000, 620, -3600), new Vector3(4000, 1200, -5200),
-                new Vector3(3800, 620, -7200), new Vector3(4500, 1200, -5600),
-                new Vector3(4500, 690, -9500), new Vector3(5000, 650, -1500),
-                new Vector3(5000, 560, -2000), new Vector3(5000, 690, -9200),
-                new Vector3(6000, 1500, -3800), new Vector3(6000, 1450, -5500),
-                new Vector3(5800, 1456, -7400), new Vector3(6500, 1530, -5800),
-                new Vector3(6500, 1500, -9800), new Vector3(7000, 890, -1800),
-                new Vector3(7000, 490, -2200), new Vector3(7000, 890, -9400),
-                new Vector3(7800, 730, -7600), new Vector3(7800, 2490, -13800),
-                new Vector3(8000, 690, -4000), new Vector3(8000, 890, -5800),
-                new Vector3(8500, 509, -6000), new Vector3(8500, 2300, -10000),
-                new Vector3(9000, 490, -2000), new Vector3(9000, 890, -2400),
-                new Vector3(9000, 490, -6000), new Vector3(9000, 1590, -7800),
-                new Vector3(9800, 2670, -14000), new Vector3(9800, 1590, -7800),
-                new Vector3(10000, 490, -4200), new Vector3(10000, 890, -6000),
-                new Vector3(10000, 490, -5800), new Vector3(10500, 2450, -10200),
-                new Vector3(10500, 990, -6200), new Vector3(11000, 890, -2500),
-                new Vector3(11000, 990, -2600), new Vector3(11800, 2100, -8000),
-                new Vector3(11800, 2600, -14200), new Vector3(12000, 2400, -12000),
-                new Vector3(12000, 990, -6200), new Vector3(12000, 890, -4400),
-                new Vector3(12500, 2500, -10500), new Vector3(12500, 890, -6400),
-                new Vector3(13000, 990, -2800), new Vector3(13000, 890, -6600),
-                new Vector3(13800, 3200, -14500), new Vector3(13800, 1900, -8200),
-                new Vector3(14000, 730, -4600), new Vector3(14000, 740, -6500),
-                new Vector3(14500, 2900, -10800), new Vector3(14500, 740, -6600),
-                new Vector3(15000, 590, -3000), new Vector3(15000, 590, -4600),
-                new Vector3(15800, 3200, -14800), new Vector3(15800, 2590, -8400),
-                new Vector3(16000, 490, -4800), new Vector3(-3500, 490, -3000),
-                new Vector3(-6200, 490, -3000), new Vector3(-9700, 940, -7000),
-                new Vector3(-2800, 730, -9800), new Vector3(-7800, -130, 11800),
-                new Vector3(-9800, -400, 13700)
-            };
-            var posicionesCasasModelo1 = new List<Vector3>
-            {
-                new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
-                new Vector3(-8100, -480, 14390), new Vector3(-10100, -550, 16390),
-                new Vector3(-3000, 490, -2000), new Vector3(-3000, 700, -6000),
-                new Vector3(-3000, 830, -10500), new Vector3(1050, 490, 550)
-            };
-            var posicionesCasasModelo2 = new List<Vector3>
-            {
-                new Vector3(-8000, -400, 17090), new Vector3(100, 490, -2000),
-                new Vector3(100, 490, -6000), new Vector3(100, 900, -10000),
-                new Vector3(-6000, 600, -2000), new Vector3(-9000, 940, -10000),
-                new Vector3(-14100, -580, 14390)
-
-            };
-            var posicionesArbustos = new List<Vector3>
-            {
-                new Vector3(-1000, 490, -1000), new Vector3(-2000, 490, -5000),
-                new Vector3(-2000, 490, -3400), new Vector3(-2500, 490, -5400),
-                new Vector3(-2500, 730, -9200), new Vector3(-3000, 490, -1200),
-                new Vector3(-3000, 490, -1800), new Vector3(-3000, 490, -9000),
-                new Vector3(-4000, 490, -3600), new Vector3(-4000, 490, -5200),
-                new Vector3(-3800, 490, -7200), new Vector3(-4500, 490, -5600),
-                new Vector3(-4500, 490, -9500), new Vector3(-5000, 490, -1500),
-                new Vector3(-5000, 490, -2000), new Vector3(-5000, 490, -9200),
-                new Vector3(-6000, 490, -3800), new Vector3(-7800, 490, -13800),
-                new Vector3(-6500, 590, -9800), new Vector3(-7000, 490, -1800),
-                new Vector3(-7000, 490, -2200), new Vector3(-7000, 490, -9400),
-                new Vector3(-8000, 490, -4000), new Vector3(-8500, 940, -10000),
-                new Vector3(-9000, 940, -2000), new Vector3(-9000, 940, -2400),
-                new Vector3(-9800, 1190, -14000), new Vector3(-9800, 990, -7800),
-                new Vector3(-10000, 490, -4200), new Vector3(-10000, 590, -6000),
-                new Vector3(-10000, 490, -5800), new Vector3(-10500, 1090, -10200),
-                new Vector3(-10500, 490, -6200), new Vector3(-11000, 490, -2500),
-                new Vector3(-11000, 490, -2600), new Vector3(-11800, 490, -8000),
-                new Vector3(-11800, 1190, -14200), new Vector3(-12000, 1090, -12000),
-                new Vector3(-12000, 490, -6200), new Vector3(-12000, 490, -4400),
-                new Vector3(-12500, 1190, -10500), new Vector3(-12500, 490, -6400),
-                new Vector3(-13000, 490, -2800), new Vector3(-13000, 690, -6600),
-                new Vector3(-13800, 1090, -14500), new Vector3(-13800, 990, -8200),
-                new Vector3(-14000, 490, -4600), new Vector3(-14000, 490, -6500),
-                new Vector3(-14500, 1190, -10800), new Vector3(-14500, 490, -6600),
-                new Vector3(-15000, 490, -3000), new Vector3(-15000, 990, -4600),
-                new Vector3(-15800, 1000, -14800), new Vector3(-15800, 990, -8400),
-                new Vector3(-16000, 1090, -4800)
-            };
-
-            foreach (var pos in posicionesArboles)
-            {
-                var arbol = new Tree(ContentLoader.GetModel("tree", 0), pos, scaleTreeModel0, 0f);
-                _gameElements.Add(arbol);
-            }
-            foreach (var pos in posicionesArboles2)
-            {
-                var arbol = new Tree(ContentLoader.GetModel("tree", 1), pos, scaleTreeModel1, 0f);
-                _gameElements.Add(arbol);
-            }
-            foreach (var pos in posicionesRocas)
-            {
-                var roca = new Stone(ContentLoader.GetModel("stone", 0), pos, scaleStoneModel0);
-                _gameElements.Add(roca);
-            }
-            foreach (var pos in posicionesPiedras)
-            {
-                var piedra = new Stone(ContentLoader.GetModel("stone", 1), pos, scaleStoneModel1);
-                _gameElements.Add(piedra);
-            }
-            foreach (var pos in posicionesArbustos)
-            {
-                var bush = new Bush(ContentLoader.GetModel("bush", 0), pos, scaleBushModel0);
-                _gameElements.Add(bush);
-            }
-            foreach (var house in posicionesCasasModelo1)
-            {
-                var casaModelo1 = new House(ContentLoader.GetModel("house", 0), house, scaleHouseModel0, 0);
-                _gameElements.Add(casaModelo1);
-            }
-            foreach (var house in posicionesCasasModelo2)
-            {
-                var casaModelo3 = new House(ContentLoader.GetModel("house", 1), house, scaleHouseModel1, 0f);
-                _gameElements.Add(casaModelo3);
-            }
-            foreach (var wallPos in posicionesWalls1)
-            {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 0f);
-                _gameElements.Add(wall);
-            }
-            foreach (var wallPos in posicionesWalls1Rotated)
-            {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 90f);
-                _gameElements.Add(wall);
-            }
-            foreach (var wallsRot in posicionesWalls2Rot)
-            {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallsRot, scaleWallModel0, 90f);
-                _gameElements.Add(wall);
-            }
-            foreach (var wallPos in posicionesWalls2)
-            {
-                var wall = new Wall(ContentLoader.GetModel("wall", 0), wallPos, scaleWallModel0, 0f);
-                _gameElements.Add(wall);
-            }
-
-            /* Arbustos de prueba */
-            Vector3 bushModel0TestPosition = new Vector3(25f, 30f, 30f);
-            Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
-            _gameElements.Add(bushModel0Test);
-            Vector3 bushModel1TestPosition = new Vector3(20f, 30f, 30f);
-            Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition, scaleBushModel0);
-            _gameElements.Add(bushModel1Test);
-            /* Arbustos de prueba */
-
-            /* Casas de prueba */
-            Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
-            Vector3 houseModel0TestPosition = new Vector3(50f, 28f, 50f);
-            House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
-            houseModel0Test.SetTexture(houseModel2TestTexture);
-            _gameElements.Add(houseModel0Test);
-            /*
-            Vector3 houseModel1TestPosition = new Vector3(50f, 28f, 25f);
-            House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
-            houseModel1Test.SetTexture(houseModel2TestTexture);
-            _gameElements.Add(houseModel1Test);
-            Vector3 houseModel2TestPosition = new Vector3(50f, 28f, 0f);
-            House houseModel2Test = new House(ContentLoader.GetModel("house", 3), houseModel2TestPosition, scaleHouseModel2);
-            // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
-            houseModel2Test.SetTexture(houseModel2TestTexture);
-            _gameElements.Add(houseModel2Test);
-            /* Casas de prueba */
-
-            /* Projectiles de prueba */
-            Vector3 projectileModel0TestPosition = new Vector3(20f, 30f, 30f);
-            Vector3 direction = Vector3.Up;
-            Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, null, 0.001f, 500, scaleProjectileModel0);
-            _gameElements.Add(projectileModel0Test);
-            /* Projectiles de prueba */
-
-            /* Piedras de prueba */
-            /* Piedra 1 */
-            Vector3 stoneModel0TestPosition = new Vector3(30f, 30f, 30f);
-            Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
-            Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel0Test.SetTexture(stoneModel0TestTexture);
-            _gameElements.Add(stoneModel0Test);
-            /* Piedra 2 */
-            Vector3 stoneModel1TestPosition = new Vector3(30f, 30f, 35f);
-            Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
-            Texture2D stoneModel1TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel1Test.SetTexture(stoneModel1TestTexture);
-            _gameElements.Add(stoneModel1Test);
-            /* Piedra 3 */
-            Vector3 stoneModel2TestPosition = new Vector3(30f, 30f, 40f);
-            Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, scaleStoneModel1);
-            Texture2D stoneModel2TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel2Test.SetTexture(stoneModel2TestTexture);
-            _gameElements.Add(stoneModel2Test);
-            /* Piedra 4 */
-            Vector3 stoneModel3TestPosition = new Vector3(30f, 30f, 45f);
-            Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, scaleStoneModel0);
-            Texture2D stoneModel3TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel3Test.SetTexture(stoneModel3TestTexture);
-            _gameElements.Add(stoneModel3Test);
-            /* Piedra 5 */
-            Vector3 stoneModel4TestPosition = new Vector3(30f, 30f, 50f);
-            Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, scaleStoneModel1);
-            Texture2D stoneModel4TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel4Test.SetTexture(stoneModel4TestTexture);
-            _gameElements.Add(stoneModel4Test);
-            /* Piedra 6 */
-            Vector3 stoneModel5TestPosition = new Vector3(30f, 30f, 55f);
-            Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, scaleStoneModel1);
-            Texture2D stoneModel5TestTexture = ContentLoader.GetTexture("stone", 2);
-            stoneModel5Test.SetTexture(stoneModel5TestTexture);
-            _gameElements.Add(stoneModel5Test);
-            /* Piedras de prueba */
-
-            /* Tanques de prueba
-            Vector3 tankModekl1TestPosition = new Vector3(0f, 30f, 30f);
-            Tank tankModel1Test = new Tank(ContentLoader.GetModel("tank", 1), tankModekl1TestPosition, scaleTankModel1);
-            Texture2D tankModel1TestTexture = ContentLoader.GetTexture("tank", 1);
-            tankModel1Test.SetTexture(tankModel1TestTexture);
-            tankModel1Test.SetIsPlayer(false);
-            tankModel1Test.SetProjectileModel(ContentLoader.GetModel("projectile", 0));
-            _gameElements.Add(tankModel1Test);
-            /* Tanques de prueba */
-
-            /* Árboles de prueba */
-            Vector3 treeModel0TestPosition = new Vector3(35f, 30f, 30f);
-            Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel0TestPosition, scaleTreeModel0);
-            _gameElements.Add(treeModel0Test);
-            Vector3 treeModel1TestPosition = new Vector3(35f, 30f, 35f);
-            Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel1TestPosition, scaleTreeModel1);
-            _gameElements.Add(treeModel1Test);
-            Vector3 treeModel2TestPosition = new Vector3(35f, 30f, 40f);
-            Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel2TestPosition, scaleTreeModel2);
-            Texture2D treeModel3TestTexture = ContentLoader.GetTexture("tree", 0);
-            treeModel2Test.SetTexture(treeModel3TestTexture);
-            _gameElements.Add(treeModel2Test);
-            /* Árboles de prueba */
-
-            /* Paredes de prueba*/
-            Vector3 wallModel0TestPosition = new Vector3(40f, 30f, 40f);
-            Wall wallModel0Test = new Wall(ContentLoader.GetModel("wall", 0), wallModel0TestPosition, scaleWallModel0);
-            Texture2D wallModel0TestTexture = ContentLoader.GetTexture("wall", 0);
-            wallModel0Test.SetTexture(wallModel0TestTexture);
-            _gameElements.Add(wallModel0Test);
-            /* Paredes de prueba*/
-
-        }
-        public void Update(GameTime gameTime)
+            new Vector3(-22500, 0, 22700), new Vector3(-22500, 0, 20500),
+            new Vector3(-22500, -200, 18300), new Vector3(-22500, 0, 16100),
+            new Vector3(-22500, -250, 13900), new Vector3(-22500, -250, 11700),
+            new Vector3(-22500, -250, 9500), new Vector3(-22500, -250, 7300),
+            new Vector3(-22500, -250, 5100), new Vector3(-22500, 0, 2900),
+            new Vector3(-22500, 0, 700), new Vector3(-22500, 0, -1500),
+            new Vector3(22500, -250, 13900), new Vector3(22500, -250, 11700),
+            new Vector3(22500, -250, 9500), new Vector3(22500, -250, 7300),
+            new Vector3(22500, -250, 5100), new Vector3(22500, 0, 2900),
+            new Vector3(22500, 0, 700), new Vector3(22500, 0, -1500),
+            new Vector3(22500, 0, -3700), new Vector3(22500, 0, -5900),
+            new Vector3(22500, 0, -8100)
+        };
+        var posicionesWalls2 = new List<Vector3>
         {
-            foreach (GameObject gameObject in _gameElements)
-                gameObject.Update(gameTime);
-        }
-        // public void Draw(GameTime gameTime, Matrix view, Matrix projection)
-        public void Draw(GameTime gameTime, FollowCamera camera)
+            new Vector3(-22000, 0, 22330), new Vector3(-19800, -150, 22330),
+            new Vector3(-17600, -150, 22330), new Vector3(-15400, -150, 22330),
+            new Vector3(-13200, -150, 22330), new Vector3(-11000, -150, 22330),
+            new Vector3(-8800, -150, 22330), new Vector3(-6600, -150, 22330),
+            new Vector3(-4400, -150, 22330), new Vector3(-2200, -150, 22330),
+            new Vector3(0, -150, 22330), new Vector3(2200, -150, 22330),
+            new Vector3(4400, -150, 22330)
+        };
+        var posicionesWalls1 = new List<Vector3>
         {
-            foreach (GameObject gameObject in _gameElements)
-            {
-                if (camera.IsOnCamera(gameObject.GetBoundingBoxToDraw()))
-                    gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
-            }
-            // foreach(GameObject gameObject in _gameElements)
-                // gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
+            new Vector3(740, 4, -1000), new Vector3(370, 4, -1000),
+            new Vector3(0, 4, -1000), new Vector3(-370, 5, -1000),
+            new Vector3(740, 8, -11050), new Vector3(370, 8, -11050),
+            new Vector3(0, 8, -11050), new Vector3(-370, 9, -11050),
+            new Vector3(-740, 8, -11050), new Vector3(-8890, 5, -1000),
+            new Vector3(-2960, 8, -11050), new Vector3(-3330, 9, -11050),
+            new Vector3(-3700, 9, -11050), new Vector3(-4070, 9, -11050),
+            new Vector3(-4440, 9, -11050), new Vector3(-4810, 8, -11050),
+            new Vector3(-5180, 8, -11050), new Vector3(-5550, 8, -11050),
+            new Vector3(-5920, 8, -11050), new Vector3(-6290, 8, -11050),
+            new Vector3(-2590, 5, -1000), new Vector3(-9260, 5, -1000),
+            new Vector3(-2960, 5, -1000), new Vector3(-3330, 5, -1000),
+            new Vector3(-3700, 5, -1000), new Vector3(-4070, 5, -1000),
+            new Vector3(-4440, 5, -1000), new Vector3(-4810, 5, -1000),
+            new Vector3(-5180, 5, -1000), new Vector3(-5550, 5, -1000),
+            new Vector3(-5920, 5, -1000), new Vector3(-6290, 5, -1000),
+            new Vector3(-6660, 5, -1000), new Vector3(-9630, 5, -1000),
+            new Vector3(-8540, 8, -11050), new Vector3(-8890, 9, -11050),
+            new Vector3(-9260, 10, -11050), new Vector3(-9630, 11, -11050),
+            new Vector3(-9800, 11, -11050), new Vector3(-9800, 5, -1000),
+        };
+        var posicionesWalls1Rotated = new List<Vector3>
+        {
+            new Vector3(940, 490, -1200), new Vector3(940, 490, -1570),
+            new Vector3(940, 490, -1940), new Vector3(940, 590, -2310),
+            new Vector3(940, 760, -2680), new Vector3(940, 1050, -3050),
+            new Vector3(940, 1400, -3420), new Vector3(940, 1500, -3790),
+            new Vector3(940, 1400, -4160), new Vector3(940, 1320, -4530),
+            new Vector3(940, 1000, -4900), new Vector3(940, 850, -5270),
+            new Vector3(940, 750, -5640), new Vector3(940, 650, -6010),
+            new Vector3(940, 650, -6380), new Vector3(940, 650, -6750),
+            new Vector3(940, 650, -7120), new Vector3(940, 710, -7490),
+            new Vector3(940, 760, -7860), new Vector3(940, 810, -8230),
+            new Vector3(940, 850, -8600), new Vector3(940, 910, -8970),
+            new Vector3(940, 950, -9340), new Vector3(940, 930, -9710),
+            new Vector3(940, 850, -10080), new Vector3(940, 850, -10450),
+            new Vector3(940, 850, -10820), new Vector3(-10000, 1130, -10820),
+            new Vector3(-10000, 560, -1200), new Vector3(-10000, 615, -1570),
+            new Vector3(-10000, 650, -1940), new Vector3(-10000, 675, -2310),
+            new Vector3(-10000, 750, -2680), new Vector3(-10000, 780, -3050),
+            new Vector3(-10000, 840, -3420), new Vector3(-10000, 880, -3790),
+            new Vector3(-10000, 925, -4160), new Vector3(-10000, 950, -4530),
+            new Vector3(-10000, 1050, -4900), new Vector3(-10000, 1150, -5270),
+            new Vector3(-10000, 1200, -5640), new Vector3(-10000, 1150, -6010),
+            new Vector3(-10000, 1050, -6380), new Vector3(-10000, 950, -6750),
+            new Vector3(-10000, 850, -7120), new Vector3(-10000, 850, -7490),
+            new Vector3(-10000, 850, -7860), new Vector3(-10000, 850, -8230),
+            new Vector3(-10000, 850, -8600), new Vector3(-10000, 850, -8970),
+            new Vector3(-10000, 950, -9340), new Vector3(-10000, 950, -9710),
+            new Vector3(-10000, 980, -10080), new Vector3(-10000, 1050, -10450),
+        };
+        var posicionesArboles = new List<Vector3>
+        {
+            new Vector3(1000, 490, 1000), new Vector3(2000, 490, 5000),
+            new Vector3(2000, 490, 3400), new Vector3(2500, 490, 5400),
+            new Vector3(2500, 490, 9200), new Vector3(3000, 490, 1200),
+            new Vector3(3000, 490, 1800), new Vector3(3000, 490, 9000),
+            new Vector3(4000, 490, 3600), new Vector3(4000, 490, 5200),
+            new Vector3(3800, 490, 7200), new Vector3(4500, 490, 5600),
+            new Vector3(4500, 490, 9500), new Vector3(5000, 490, 1500),
+            new Vector3(5000, 490, 2000), new Vector3(5000, 490, 9200),
+            new Vector3(6000, 490, 3800), new Vector3(6000, 490, 5500),
+            new Vector3(5800, 490, 7400), new Vector3(6500, 490, 5800),
+            new Vector3(6500, 490, 9800), new Vector3(7000, 490, 1800),
+            new Vector3(7000, 490, 2200), new Vector3(7000, 490, 9400),
+            new Vector3(7800, 490, 7600), new Vector3(7800, 490, 13800),
+            new Vector3(8000, 490, 4000), new Vector3(8000, 490, 5800),
+            new Vector3(8500, 490, 6000), new Vector3(8500, 490, 10000),
+            new Vector3(9000, 490, 2000), new Vector3(9000, 490, 2400),
+            new Vector3(9000, 490, 6000), new Vector3(9000, 490, 7800),
+            new Vector3(9800, 490, 14000), new Vector3(9800, 490, 7800),
+            new Vector3(10000, 490, 4200), new Vector3(10000, 490, 6000),
+            new Vector3(10000, 490, 5800), new Vector3(10500, 490, 10200),
+            new Vector3(10500, 490, 6200), new Vector3(30000, 490, 2500),
+            new Vector3(30000, 490, 2600), new Vector3(11800, 490, 8000),
+            new Vector3(11800, 490, 14200), new Vector3(12000, 490, 12000),
+            new Vector3(12000, 490, 6200), new Vector3(12000, 490, 4400),
+            new Vector3(12500, 490, 10500), new Vector3(12500, 490, 6400),
+            new Vector3(13000, 490, 2800), new Vector3(13000, 490, 6600),
+            new Vector3(13800, 490, 14500), new Vector3(13800, 490, 8200),
+            new Vector3(14000, 490, 4600), new Vector3(14000, 490, 6500),
+            new Vector3(14500, 490, 10800), new Vector3(14500, 490, 6600),
+            new Vector3(15000, 490, 3000), new Vector3(15000, 490, 4600),
+            new Vector3(15800, 490, 14800), new Vector3(15800, 490, 8400),
+            new Vector3(16000, 490, 4800), new Vector3(-3200, 490, -2500),
+            new Vector3(-9200, 940, -6500), new Vector3(-2500, 730, -9500),
+            new Vector3(-7500, -400, 12000), new Vector3(-9500, -400, 14000),
+            new Vector3(-14000, -400, 12000), new Vector3(-12000, -400, 14000),
+            new Vector3(-10000, -400, 17000), new Vector3(-13000, -400, 17000)
+        };
+        var posicionesRocas = new List<Vector3>
+        {
+            new Vector3(1000, 580, 1000), new Vector3(2000, 590, 5000),
+            new Vector3(2000, 500, 3400), new Vector3(2500, 590, 5400),
+            new Vector3(2500, 640, 9200), new Vector3(3000, 740, 1200),
+            new Vector3(3000, 690, 1800), new Vector3(3000, 690, 9000),
+            new Vector3(4000, 690, 3600), new Vector3(4000, 690, 5200),
+            new Vector3(3800, 690, 7200), new Vector3(4500, 690, 5600),
+            new Vector3(4500, 690, 9500), new Vector3(5000, 690, 1500),
+            new Vector3(5000, 600, 2000), new Vector3(5000, 690, 9200),
+            new Vector3(6000, 690, 3800), new Vector3(6000, 690, 5500),
+            new Vector3(5800, 700, 7400), new Vector3(6500, 590, 5800),
+            new Vector3(6500, 1290, 9800), new Vector3(7000, 590, 1800),
+            new Vector3(7000, 690, 2200), new Vector3(7000, 800, 9400),
+            new Vector3(7800, 890, 7600), new Vector3(7800, 1890, 13800),
+            new Vector3(8000, 640, 200), new Vector3(8500, 640, 1200),
+            new Vector3(8800, 640, 2500), new Vector3(9100, -100, 400),
+            new Vector3(9400, 640, 5200), new Vector3(9700, -100, 600),
+            new Vector3(10000, 0, 1800), new Vector3(10300, 640, 3500),
+            new Vector3(10600, 590, 4700), new Vector3(10900, 640, 6000),
+            new Vector3(11200, 440, 750), new Vector3(11500, 540, 2200),
+            new Vector3(11800, 580, 3800), new Vector3(12100, 640, 5000),
+            new Vector3(12400, 630, 6700), new Vector3(12700, -200, 1000),
+            new Vector3(13000, 620, 3200), new Vector3(13300, 420, 4600),
+            new Vector3(13600, 620, 6000), new Vector3(13900, 420, 7800),
+            new Vector3(14000, 260, 4600), new Vector3(14000, 420, 6500),
+            new Vector3(14500, 420, 10800), new Vector3(14500, 420, 6600),
+            new Vector3(15000, 420, 3000), new Vector3(15000, 420, 4600),
+            new Vector3(15800, 950, 14800), new Vector3(15800, 420, 8400),
+            new Vector3(16000, 420, 4800), new Vector3(100, 740, -8000),
+        };
+        var posicionesPiedras = new List<Vector3>
+        {
+            new Vector3(-1000, 390, 1000), new Vector3(-2000, 300, 5000),
+            new Vector3(-2000, 390, 3400), new Vector3(-2500, 300, 5400),
+            new Vector3(-2500, 390, 9200), new Vector3(-3000, 390, 1200),
+            new Vector3(-3000, 390, 1800), new Vector3(-3000, 300, 9000),
+            new Vector3(-4000, 190, 3600), new Vector3(-4000, 190, 5200),
+            new Vector3(-3800, 190, 7200), new Vector3(-4500, -190, 5600),
+            new Vector3(-4500, -190, 9500), new Vector3(-5000, -190, 1500),
+            new Vector3(-5000, 290, 2000), new Vector3(-5000, 190, 9200),
+            new Vector3(-6000, 390, 3800), new Vector3(-6000, 190, 5500),
+            new Vector3(-5800, -290, 7400), new Vector3(-6500, -290, 5800),
+            new Vector3(-6500, -190, 9800), new Vector3(-7000, 290, 1800),
+            new Vector3(-7000, -190, 2200), new Vector3(-7000, -290, 9400),
+            //cuadrante x>0 y z<0
+            new Vector3(1450, 570, -900), new Vector3(2450, 670, -4900),
+            new Vector3(2450, 670, -3300), new Vector3(2950, 660, -5300),
+            new Vector3(2950, 900, -9100), new Vector3(3450, 670, -1100),
+            new Vector3(3450, 640, -1700), new Vector3(3450, 870, -8900),
+            new Vector3(4450, 670, -3500), new Vector3(4450, 1250, -5100),
+            new Vector3(4250, 670, -7100), new Vector3(4950, 1250, -5500),
+            new Vector3(4950, 740, -9400), new Vector3(5450, 700, -1400),
+            new Vector3(5450, 610, -1900), new Vector3(5450, 740, -9100),
+            new Vector3(6450, 1550, -3700), new Vector3(6450, 1500, -5400),
+            new Vector3(6250, 1506, -7300), new Vector3(6950, 1580, -5700),
+            new Vector3(6950, 1550, -9700), new Vector3(7450, 940, -1700),
+            new Vector3(7450, 540, -2100), new Vector3(7450, 940, -9300),
+            new Vector3(8250, 780, -7500), new Vector3(8250, 2540, -13700),
+            new Vector3(8450, 740, -3900), new Vector3(8450, 940, -5700),
+            new Vector3(8950, 559, -5900), new Vector3(8950, 2350, -9900),
+            new Vector3(9450, 540, -1900), new Vector3(9450, 940, -2300),
+            new Vector3(9450, 540, -5900), new Vector3(9450, 1640, -7700),
+            new Vector3(10250, 2720, -13900), new Vector3(10250, 1640, -7700),
+            new Vector3(10450, 540, -4100), new Vector3(10450, 940, -5900),
+            new Vector3(10450, 540, -5700), new Vector3(10950, 2500, -10100),
+            new Vector3(10950, 1040, -6100), new Vector3(11450, 940, -2400),
+            new Vector3(11450, 1040, -2500), new Vector3(12250, 2150, -7900),
+            new Vector3(12250, 2650, -14100), new Vector3(12450, 2450, -11900),
+            new Vector3(12450, 1040, -6100), new Vector3(12450, 940, -4300),
+            new Vector3(12950, 2550, -10400), new Vector3(12950, 940, -6300),
+            new Vector3(13450, 1040, -2700), new Vector3(13450, 940, -6500),
+            new Vector3(14250, 3250, -14400), new Vector3(14250, 1950, -8100),
+            new Vector3(14450, 780, -4500), new Vector3(14450, 790, -6400),
+            new Vector3(14950, 2950, -10700), new Vector3(14950, 790, -6500),
+            new Vector3(15450, 640, -2900), new Vector3(15450, 640, -4500),
+            new Vector3(16250, 3250, -14700), new Vector3(16250, 2640, -8300),
+            new Vector3(16450, 540, -4700), new Vector3(-1800, 540, -2000),
+            new Vector3(-1700, 600, -4000), new Vector3(-1900, 540, -5500),
+            new Vector3(-1800, 540, -7000), new Vector3(-800, 540, -6000),
+            new Vector3(-500, 540, -3200), new Vector3(-2800, 730, -2500),
+            new Vector3(-3500, 565, -4500), new Vector3(-4200, 565, -7200),
+            new Vector3(-5000, 565, -2800), new Vector3(-5800, 565, -5000),
+            new Vector3(-6600, 565, -2200), new Vector3(-7200, 565, -8000),
+            new Vector3(-8000, 100, -3000), new Vector3(-8800, 565, -6000),
+            new Vector3(-9500, 940, -2500), new Vector3(-10200, 565, -7000),
+            new Vector3(-3000, 565, -8500), new Vector3(-6000, 565, -9800),
+            new Vector3(-8700, 565, 11000), new Vector3(-10500, 100, 13500)
+        };
+        var posicionesArboles2 = new List<Vector3>
+        {
+            new Vector3(1500, 520, -1500), new Vector3(2000, 620, -5000),
+            new Vector3(2000, 620, -3400), new Vector3(2500, 610, -5400),
+            new Vector3(2500, 850, -9200), new Vector3(3000, 620, -1200),
+            new Vector3(3000, 590, -1800), new Vector3(3000, 820, -9000),
+            new Vector3(4000, 620, -3600), new Vector3(4000, 1200, -5200),
+            new Vector3(3800, 620, -7200), new Vector3(4500, 1200, -5600),
+            new Vector3(4500, 690, -9500), new Vector3(5000, 650, -1500),
+            new Vector3(5000, 560, -2000), new Vector3(5000, 690, -9200),
+            new Vector3(6000, 1500, -3800), new Vector3(6000, 1450, -5500),
+            new Vector3(5800, 1456, -7400), new Vector3(6500, 1530, -5800),
+            new Vector3(6500, 1500, -9800), new Vector3(7000, 890, -1800),
+            new Vector3(7000, 490, -2200), new Vector3(7000, 890, -9400),
+            new Vector3(7800, 730, -7600), new Vector3(7800, 2490, -13800),
+            new Vector3(8000, 690, -4000), new Vector3(8000, 890, -5800),
+            new Vector3(8500, 509, -6000), new Vector3(8500, 2300, -10000),
+            new Vector3(9000, 490, -2000), new Vector3(9000, 890, -2400),
+            new Vector3(9000, 490, -6000), new Vector3(9000, 1590, -7800),
+            new Vector3(9800, 2670, -14000), new Vector3(9800, 1590, -7800),
+            new Vector3(10000, 490, -4200), new Vector3(10000, 890, -6000),
+            new Vector3(10000, 490, -5800), new Vector3(10500, 2450, -10200),
+            new Vector3(10500, 990, -6200), new Vector3(11000, 890, -2500),
+            new Vector3(11000, 990, -2600), new Vector3(11800, 2100, -8000),
+            new Vector3(11800, 2600, -14200), new Vector3(12000, 2400, -12000),
+            new Vector3(12000, 990, -6200), new Vector3(12000, 890, -4400),
+            new Vector3(12500, 2500, -10500), new Vector3(12500, 890, -6400),
+            new Vector3(13000, 990, -2800), new Vector3(13000, 890, -6600),
+            new Vector3(13800, 3200, -14500), new Vector3(13800, 1900, -8200),
+            new Vector3(14000, 730, -4600), new Vector3(14000, 740, -6500),
+            new Vector3(14500, 2900, -10800), new Vector3(14500, 740, -6600),
+            new Vector3(15000, 590, -3000), new Vector3(15000, 590, -4600),
+            new Vector3(15800, 3200, -14800), new Vector3(15800, 2590, -8400),
+            new Vector3(16000, 490, -4800), new Vector3(-3500, 490, -3000),
+            new Vector3(-6200, 490, -3000), new Vector3(-9700, 940, -7000),
+            new Vector3(-2800, 730, -9800), new Vector3(-7800, -130, 11800),
+            new Vector3(-9800, -400, 13700)
+        };
+        var posicionesCasasModelo1 = new List<Vector3>
+        {
+            new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
+            new Vector3(-8100, -480, 14390), new Vector3(-10100, -550, 16390),
+            new Vector3(-3000, 490, -2000), new Vector3(-3000, 700, -6000),
+            new Vector3(-3000, 830, -10500), new Vector3(1050, 490, 550)
+        };
+        var posicionesCasasModelo2 = new List<Vector3>
+        {
+            new Vector3(-8000, -400, 17090), new Vector3(100, 490, -2000),
+            new Vector3(100, 490, -6000), new Vector3(100, 900, -10000),
+            new Vector3(-6000, 600, -2000), new Vector3(-9000, 940, -10000),
+            new Vector3(-14100, -580, 14390)
+
+        };
+        var posicionesArbustos = new List<Vector3>
+        {
+            new Vector3(-1000, 490, -1000), new Vector3(-2000, 490, -5000),
+            new Vector3(-2000, 490, -3400), new Vector3(-2500, 490, -5400),
+            new Vector3(-2500, 730, -9200), new Vector3(-3000, 490, -1200),
+            new Vector3(-3000, 490, -1800), new Vector3(-3000, 490, -9000),
+            new Vector3(-4000, 490, -3600), new Vector3(-4000, 490, -5200),
+            new Vector3(-3800, 490, -7200), new Vector3(-4500, 490, -5600),
+            new Vector3(-4500, 490, -9500), new Vector3(-5000, 490, -1500),
+            new Vector3(-5000, 490, -2000), new Vector3(-5000, 490, -9200),
+            new Vector3(-6000, 490, -3800), new Vector3(-7800, 490, -13800),
+            new Vector3(-6500, 590, -9800), new Vector3(-7000, 490, -1800),
+            new Vector3(-7000, 490, -2200), new Vector3(-7000, 490, -9400),
+            new Vector3(-8000, 490, -4000), new Vector3(-8500, 940, -10000),
+            new Vector3(-9000, 940, -2000), new Vector3(-9000, 940, -2400),
+            new Vector3(-9800, 1190, -14000), new Vector3(-9800, 990, -7800),
+            new Vector3(-10000, 490, -4200), new Vector3(-10000, 590, -6000),
+            new Vector3(-10000, 490, -5800), new Vector3(-10500, 1090, -10200),
+            new Vector3(-10500, 490, -6200), new Vector3(-11000, 490, -2500),
+            new Vector3(-11000, 490, -2600), new Vector3(-11800, 490, -8000),
+            new Vector3(-11800, 1190, -14200), new Vector3(-12000, 1090, -12000),
+            new Vector3(-12000, 490, -6200), new Vector3(-12000, 490, -4400),
+            new Vector3(-12500, 1190, -10500), new Vector3(-12500, 490, -6400),
+            new Vector3(-13000, 490, -2800), new Vector3(-13000, 690, -6600),
+            new Vector3(-13800, 1090, -14500), new Vector3(-13800, 990, -8200),
+            new Vector3(-14000, 490, -4600), new Vector3(-14000, 490, -6500),
+            new Vector3(-14500, 1190, -10800), new Vector3(-14500, 490, -6600),
+            new Vector3(-15000, 490, -3000), new Vector3(-15000, 990, -4600),
+            new Vector3(-15800, 1000, -14800), new Vector3(-15800, 990, -8400),
+            new Vector3(-16000, 1090, -4800)
+        };
+
+        foreach (var pos in posicionesArboles)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var arbol = new Tree(ContentLoader.GetModel("tree", 0), finalPos, scaleTreeModel0, 0f);
+            _gameElements.Add(arbol);
         }
+        foreach (var pos in posicionesArboles2)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var arbol = new Tree(ContentLoader.GetModel("tree", 1), finalPos, scaleTreeModel1, 0f);
+            _gameElements.Add(arbol);
+        }
+        foreach (var pos in posicionesRocas)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var roca = new Stone(ContentLoader.GetModel("stone", 0), finalPos, scaleStoneModel0);
+            _gameElements.Add(roca);
+        }
+        foreach (var pos in posicionesPiedras)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var piedra = new Stone(ContentLoader.GetModel("stone", 1), finalPos, scaleStoneModel1);
+            _gameElements.Add(piedra);
+        }
+        foreach (var pos in posicionesArbustos)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var bush = new Bush(ContentLoader.GetModel("bush", 0), finalPos, scaleBushModel0);
+            _gameElements.Add(bush);
+        }
+        foreach (var pos in posicionesCasasModelo1)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, scaleHouseModel0, 0);
+            _gameElements.Add(casaModelo1);
+        }
+        foreach (var pos in posicionesCasasModelo2)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var casaModelo3 = new House(ContentLoader.GetModel("house", 1), finalPos, scaleHouseModel1, 0f);
+            _gameElements.Add(casaModelo3);
+        }
+        foreach (var pos in posicionesWalls1)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var wall = new Wall(ContentLoader.GetModel("wall", 0), finalPos, scaleWallModel0, 0f);
+            _gameElements.Add(wall);
+        }
+        foreach (var pos in posicionesWalls1Rotated)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var wall = new Wall(ContentLoader.GetModel("wall", 0), finalPos, scaleWallModel0, 90f);
+            _gameElements.Add(wall);
+        }
+        foreach (var pos in posicionesWalls2Rot)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var wall = new Wall(ContentLoader.GetModel("wall", 0), finalPos, scaleWallModel0, 90f);
+            _gameElements.Add(wall);
+        }
+        foreach (var pos in posicionesWalls2)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            var wall = new Wall(ContentLoader.GetModel("wall", 0), finalPos, scaleWallModel0, 0f);
+            _gameElements.Add(wall);
+        }
+
+        /* Arbustos de prueba */
+        var bushModel0TestHeight = Land.Height(25,30);
+        Vector3 bushModel0TestPosition = new Vector3(25f, bushModel0TestHeight, 30f);
+        Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
+        _gameElements.Add(bushModel0Test);
+        var bushModel1TestHeight = Land.Height(20,30);
+        Vector3 bushModel1TestPosition = new Vector3(20f, bushModel1TestHeight, 30f);
+        Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition, scaleBushModel0);
+        _gameElements.Add(bushModel1Test);
+        /* Arbustos de prueba */
+
+        /* Casas de prueba */
+        var houseModel0TestHeight = Land.Height(50,50);
+        Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
+        Vector3 houseModel0TestPosition = new Vector3(50f, houseModel0TestHeight, 50f);
+        House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
+        houseModel0Test.SetTexture(houseModel2TestTexture);
+        _gameElements.Add(houseModel0Test);
         /*
-        public bool CheckCollisionMesh(GameObject tank, Vector3 newPosition)
-        {
-            var stonesToRemove = new List<Stone>();
-            var bushesToRemove = new List<Bush>();
-            if (tank is not Tank t)
-                return false;
-            // Crear world matrix hipotética del tanque en su nueva posición
-            var newWorld = Matrix.CreateScale(tank.GetScale()) *
-                           Matrix.CreateRotationY(tank.GetRotation()) *
-                           Matrix.CreateTranslation(newPosition);
-            var tankVertices = GetTransformedVertices(t.Model, newWorld);
-            // Comparar con cada casa
-            foreach (GameObject gameObject in _gameElements)
-            {
-                float distance = Vector3.Distance(newPosition, gameObject.GetPosition());
-                if (distance < tank.CollisionRadius + gameObject.CollisionRadius)
-                {
-                    _gameElements.Remove(gameObject);
-                }
-            }
-            /*
-            // --- Colisiones con muros ---
-            foreach (var wall in _walls)
-            {
-                float distance = Vector3.Distance(newPosition, wall.GetPosition());
-                if (distance < tank.CollisionRadius + wall.CollisionRadius)
-                    return true; // Detener movimiento
-            }
-            // --- Colisiones con casas ---
-            foreach (var house in _houses)
-            {
-                float distance = Vector3.Distance(newPosition, house.GetPosition());
-                if (distance < tank.CollisionRadius + house.CollisionRadius)
-                    return true; // Detener movimiento
-            }
-            // --- Colisiones con árboles ---
-            foreach (var tree in _trees)
-            {
-                float distance = Vector3.Distance(newPosition, tree.GetPosition());
-                if (distance < tank.CollisionRadius + tree.CollisionRadius)
-                    return true; // Detener movimiento
-            }
-            return stonesToRemove.Count > 0 || bushesToRemove.Count > 0;
-        }
-        */
-        // Resuelve la colisión del tanque contra el entorno usando esferas sencillas y empuje (push-out).
+        Vector3 houseModel1TestPosition = new Vector3(50f, 28f, 25f);
+        House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
+        houseModel1Test.SetTexture(houseModel2TestTexture);
+        _gameElements.Add(houseModel1Test);
+        Vector3 houseModel2TestPosition = new Vector3(50f, 28f, 0f);
+        House houseModel2Test = new House(ContentLoader.GetModel("house", 3), houseModel2TestPosition, scaleHouseModel2);
+        // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
+        houseModel2Test.SetTexture(houseModel2TestTexture);
+        _gameElements.Add(houseModel2Test);
+        /* Casas de prueba */
 
-        // Devuelve una altura de suelo aproximada para (x,z) promediando los vértices más cercanos
-        // Devuelve una altura de suelo aproximada en (x,z) usando un plano de los 3 vértices más cercanos.
-        public float SampleGroundHeight(float x, float z)
-        {
-            if (_landVertices == null || _landVertices.Count < 3) return 0f;
-            // Buscar 3 más cercanos en XZ
-            int i1 = -1, i2 = -1, i3 = -1;
-            float d1 = float.MaxValue, d2 = float.MaxValue, d3 = float.MaxValue;
-            for (int i = 0; i < _landVertices.Count; i++)
-            {
-                var v = _landVertices[i];
-                float dx = v.X - x;
-                float dz = v.Z - z;
-                float d2i = dx * dx + dz * dz;
-                if (d2i < d1)
-                {
-                    d3 = d2;
-                    i3 = i2;
-                    d2 = d1;
-                    i2 = i1;
-                    d1 = d2i;
-                    i1 = i;
-                }
-                else if (d2i < d2)
-                {
-                    d3 = d2;
-                    i3 = i2;
-                    d2 = d2i;
-                    i2 = i;
-                }
-                else if (d2i < d3)
-                {
-                    d3 = d2i;
-                    i3 = i;
-                }
-            }
+        /* Projectiles de prueba */
+        var projectileModel0TestHeight = Land.Height(20,30);
+        Vector3 projectileModel0TestPosition = new Vector3(20f, projectileModel0TestHeight, 30f);
+        Vector3 direction = Vector3.Up;
+        Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, null, 0.001f, 500, scaleProjectileModel0);
+        _gameElements.Add(projectileModel0Test);
+        /* Projectiles de prueba */
 
-            if (i1 < 0 || i2 < 0 || i3 < 0) return 0f;
-            var p1 = _landVertices[i1];
-            var p2 = _landVertices[i2];
-            var p3 = _landVertices[i3];
-            // Plano por p1,p2,p3: n = (p2-p1) x (p3-p1)
-            var u = p2 - p1;
-            var v3 = p3 - p1;
-            var n = Vector3.Cross(u, v3);
-            if (Math.Abs(n.Y) < 1e-5f)
-            {
-                // Plano casi vertical: usar promedio ponderado de Y de los 3 cercanos
-                float w1 = 1f / (d1 + 1e-4f);
-                float w2 = 1f / (d2 + 1e-4f);
-                float w3 = 1f / (d3 + 1e-4f);
-                return (p1.Y * w1 + p2.Y * w2 + p3.Y * w3) / (w1 + w2 + w3);
-            }
+        /* Piedras de prueba */
+        /* Piedra 1 */
+        var stoneModel0TestHeight = Land.Height(30,30);
+        Vector3 stoneModel0TestPosition = new Vector3(30f, stoneModel0TestHeight, 30f);
+        Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
+        Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel0Test.SetTexture(stoneModel0TestTexture);
+        _gameElements.Add(stoneModel0Test);
+        /* Piedra 2 */
+        var stoneModel1TestHeight = Land.Height(30,35);
+        Vector3 stoneModel1TestPosition = new Vector3(30f, stoneModel1TestHeight, 35f);
+        Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
+        Texture2D stoneModel1TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel1Test.SetTexture(stoneModel1TestTexture);
+        _gameElements.Add(stoneModel1Test);
+        /* Piedra 3 */
+        var stoneModel2TestHeight = Land.Height(30,40);
+        Vector3 stoneModel2TestPosition = new Vector3(30f, stoneModel2TestHeight, 40f);
+        Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, scaleStoneModel1);
+        Texture2D stoneModel2TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel2Test.SetTexture(stoneModel2TestTexture);
+        _gameElements.Add(stoneModel2Test);
+        /* Piedra 4 */
+        var stoneModel3TestHeight = Land.Height(30,45);
+        Vector3 stoneModel3TestPosition = new Vector3(30f, stoneModel3TestHeight, 45f);
+        Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, scaleStoneModel0);
+        Texture2D stoneModel3TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel3Test.SetTexture(stoneModel3TestTexture);
+        _gameElements.Add(stoneModel3Test);
+        /* Piedra 5 */
+        var stoneModel4TestHeight = Land.Height(30,50);
+        Vector3 stoneModel4TestPosition = new Vector3(30f, stoneModel4TestHeight, 50f);
+        Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, scaleStoneModel1);
+        Texture2D stoneModel4TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel4Test.SetTexture(stoneModel4TestTexture);
+        _gameElements.Add(stoneModel4Test);
+        /* Piedra 6 */
+        var stoneModel5TestHeight = Land.Height(30,55);
+        Vector3 stoneModel5TestPosition = new Vector3(30f, stoneModel5TestHeight, 55f);
+        Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, scaleStoneModel1);
+        Texture2D stoneModel5TestTexture = ContentLoader.GetTexture("stone", 2);
+        stoneModel5Test.SetTexture(stoneModel5TestTexture);
+        _gameElements.Add(stoneModel5Test);
+        /* Piedras de prueba */
 
-            // Ecuaci�n del plano: A(x-x1)+B(y-y1)+C(z-z1)=0, con n=(A,B,C)
-            float A = n.X, B = n.Y, C = n.Z;
-            float y = (-A * (x - p1.X) - C * (z - p1.Z)) / B + p1.Y;
-            // Clamp a rango de los 3 v�rtices para evitar extrapolar demasiado
-            float minY = Math.Min(p1.Y, Math.Min(p2.Y, p3.Y));
-            float maxY = Math.Max(p1.Y, Math.Max(p2.Y, p3.Y));
-            if (y < minY) y = minY;
-            else if (y > maxY) y = maxY;
-            return y;
-        }
-        private List<Vector3> GetTransformedVertices(Model model, Matrix world)
-        {
-            var vertices = new List<Vector3>();
+        /* Árboles de prueba */
+        /* Árbol 1 */
+        var treeModel0TestHeight = Land.Height(35,30);
+        Vector3 treeModel0TestPosition = new Vector3(35f, treeModel0TestHeight, 30f);
+        Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel0TestPosition, scaleTreeModel0);
+        _gameElements.Add(treeModel0Test);
+        /* Árbol 2 */
+        var treeModel1TestHeight = Land.Height(35,35);
+        Vector3 treeModel1TestPosition = new Vector3(35f, treeModel1TestHeight, 35f);
+        Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel1TestPosition, scaleTreeModel1);
+        _gameElements.Add(treeModel1Test);
+        /* Árbol 3 */
+        var treeModel2TestHeight = Land.Height(35,40);
+        Vector3 treeModel2TestPosition = new Vector3(35f, treeModel2TestHeight, 40f);
+        Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel2TestPosition, scaleTreeModel2);
+        Texture2D treeModel3TestTexture = ContentLoader.GetTexture("tree", 0);
+        treeModel2Test.SetTexture(treeModel3TestTexture);
+        _gameElements.Add(treeModel2Test);
+        /* Árboles de prueba */
 
-            foreach (var mesh in model.Meshes)
-            {
-                foreach (var part in mesh.MeshParts)
-                {
-                    var vertexBuffer = part.VertexBuffer;
-                    var vertexSize = vertexBuffer.VertexDeclaration.VertexStride;
-                    var vertexData = new byte[vertexBuffer.VertexCount * vertexSize];
-                    vertexBuffer.GetData(vertexData);
-
-                    for (int i = 0; i < vertexBuffer.VertexCount; i++)
-                    {
-                        var position = new Vector3(
-                            BitConverter.ToSingle(vertexData, i * vertexSize),
-                            BitConverter.ToSingle(vertexData, i * vertexSize + 4),
-                            BitConverter.ToSingle(vertexData, i * vertexSize + 8)
-                        );
-                        position = Vector3.Transform(position, world);
-                        vertices.Add(position);
-                    }
-                }
-            }
-
-            return vertices;
-        }
-        private bool IsPointInsideMesh(Vector3 point, List<Vector3> meshVertices)
-        {
-            Vector3 min = Vector3.One * float.MaxValue;
-            Vector3 max = Vector3.One * float.MinValue;
-
-            foreach (var v in meshVertices)
-            {
-                min = Vector3.Min(min, v);
-                max = Vector3.Max(max, v);
-            }
-
-            // Si el punto está dentro de los límites del modelo (en los tres ejes)
-            return (point.X >= min.X && point.X <= max.X &&
-                    point.Y >= min.Y && point.Y <= max.Y &&
-                    point.Z >= min.Z && point.Z <= max.Z);
-        }
+        /* Paredes de prueba*/
+        var wallModel0TestHeight = Land.Height(40,40);
+        Vector3 wallModel0TestPosition = new Vector3(40f, wallModel0TestHeight, 40f);
+        Wall wallModel0Test = new Wall(ContentLoader.GetModel("wall", 0), wallModel0TestPosition, scaleWallModel0);
+        Texture2D wallModel0TestTexture = ContentLoader.GetTexture("wall", 0);
+        wallModel0Test.SetTexture(wallModel0TestTexture);
+        _gameElements.Add(wallModel0Test);
+        /* Paredes de prueba*/
 
     }
-
+    public void Update(GameTime gameTime)
+    {
+        foreach (GameObject gameObject in _gameElements)
+            gameObject.Update(gameTime);
+    }
+    // public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+    public void Draw(GameTime gameTime, FollowCamera camera)
+    {
+        foreach (GameObject gameObject in _gameElements)
+        {
+            if (camera.IsOnCamera(gameObject.GetBoundingBoxToDraw()))
+                gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
+        }
+        // foreach(GameObject gameObject in _gameElements)
+            // gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
+    }
 }

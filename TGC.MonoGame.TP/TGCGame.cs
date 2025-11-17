@@ -14,6 +14,7 @@ public class TGCGame : Game
     private ElementosLand _elementosLand;
     private GameManager _gameManager;
     private Land _land;
+    private Land _landHeightmap;
     public TGCGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -43,7 +44,10 @@ public class TGCGame : Game
         var world = Matrix.CreateScale(20000f, 0f, 20000f);
         _land = new Land(GraphicsDevice, ContentLoader.GetModel("land", 0), world);
 
+        // Inicializo el Game Manager
         _gameManager.Initialize(GraphicsDevice, _tank);
+        // Creo el terreno
+        _landHeightmap = new Land();
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
         _elementosLand = new ElementosLand(Content);
@@ -52,10 +56,10 @@ public class TGCGame : Game
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
         // Todo: revisar si debería estar en GameManager
         Model tankModel = ContentLoader.GetModel("tank", 1);
-        Vector3 tankPosition = new Vector3(25f, 30f, 30f);
+        var height = Land.Height(25f, 30f);
+        Vector3 tankPosition = new Vector3(25f, height, 30f);
         Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
         _tank = new Tank(tankModel, tankPosition, Tank.DefaultScale, 0f, tankTexture);
-        _tank.SetGround(_elementosLand);
         Model projectileModel = ContentLoader.GetModel("projectile", 0);
         _tank.SetProjectileModel(projectileModel);
         Song shootTank = ContentLoader.GetSoundEffect();
@@ -160,7 +164,7 @@ public class TGCGame : Game
         GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
         // En el GameManager están todos los contenidos
-        _gameManager.Draw(_elementosLand, _tank, gameTime, _land);
+        _gameManager.Draw(_elementosLand, _tank, gameTime, _landHeightmap);
     }
     protected override void UnloadContent()
     {

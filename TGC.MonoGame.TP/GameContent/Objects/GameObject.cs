@@ -40,6 +40,14 @@ public abstract class GameObject
     {
         var boundingBox = BoundingVolumesExtensions.CreateAABBFrom(_model);
         _boundingBoxToDraw = BoundingVolumesExtensions.Scale(boundingBox, _scale);
+        // _position.Y += BoundingVolumesExtensions.GetExtents(_boundingBoxToDraw).Y;
+        var actualMin = _boundingBoxToDraw.Min;
+        var actualMax = _boundingBoxToDraw.Max;
+        _boundingBoxToDraw.Min = _position - (actualMax - actualMin) / 2;
+        _boundingBoxToDraw.Max = _position + (actualMax - actualMin) / 2;
+    }
+    protected void UpdateBoundingBoxToDraw()
+    {
         var actualMin = _boundingBoxToDraw.Min;
         var actualMax = _boundingBoxToDraw.Max;
         _boundingBoxToDraw.Min = _position - (actualMax - actualMin) / 2;
