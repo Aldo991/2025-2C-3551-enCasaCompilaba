@@ -508,7 +508,7 @@ namespace TGC.MonoGame.TP
         {
             foreach (GameObject gameObject in _gameElements)
             {
-                if (camera.IsOnCamera(gameObject.GetBounding()))
+                if (camera.IsOnCamera(gameObject.GetBoundingBoxToDraw()))
                     gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
             }
             // foreach(GameObject gameObject in _gameElements)

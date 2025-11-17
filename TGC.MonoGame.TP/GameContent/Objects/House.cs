@@ -36,6 +36,7 @@ public class House : GameObject
         Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
         boxPrimitive = new BoxPrimitive(graphicsDevice, boxSize, boxTexture);
         */
+        CreateBoundingBoxToDraw();
         CreateCollisionBox();
     }
     private void CreateCollisionBox()
@@ -58,7 +59,7 @@ public class House : GameObject
         );
         var currentOrientation = bodyDescription.Pose.Orientation;
         bodyDescription.Pose.Orientation = Quaternion.Normalize(rotation * currentOrientation).ToNumerics();
-        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription);
+        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription, this);
     }
     public override void Update(GameTime gameTime)
     {

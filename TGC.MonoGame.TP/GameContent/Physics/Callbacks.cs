@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using BepuPhysics;
@@ -122,8 +123,17 @@ public struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
     }
 }
 
+public struct CollisionEvent
+{
+    public BodyHandle A;
+    public BodyHandle B;
+    public Vector3 contactPoint;
+    public Vector3 contactNormal;
+}
+
 public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
 {
+    public readonly ConcurrentQueue<CollisionEvent> CollisionQueue = new ConcurrentQueue<CollisionEvent>();
     private SpringSettings ContactSpringiness { get; set; }
     private float MaximumRecoveryVelocity { get; set; }
     private float FrictionCoefficient { get; set; }
@@ -174,6 +184,12 @@ public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
         pairMaterial.FrictionCoefficient = FrictionCoefficient;
         pairMaterial.MaximumRecoveryVelocity = MaximumRecoveryVelocity;
         pairMaterial.SpringSettings = ContactSpringiness;
+        if (pair.A.Mobility == CollidableMobility.Dynamic || pair.B.Mobility == CollidableMobility.Dynamic)
+        {
+            var evt  =new CollisionEvent { A = pair.A.BodyHandle, B = pair.B.BodyHandle };
+
+            CollisionQueue.Enqueue(evt);
+        }
         return true;
     }
 
@@ -181,6 +197,11 @@ public struct NarrowPhaseCallbacks : INarrowPhaseCallbacks
     public bool ConfigureContactManifold(int workerIndex, CollidablePair pair, int childIndexA, int childIndexB,
         ref ConvexContactManifold manifold)
     {
+        if (manifold.Count > 0)
+        {
+            var evt = new CollisionEvent { A = pair.A.BodyHandle, B = pair.B.BodyHandle };
+            CollisionQueue.Enqueue(evt);
+        }
         return true;
     }
 

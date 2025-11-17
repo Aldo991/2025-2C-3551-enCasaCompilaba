@@ -29,8 +29,8 @@ public class GameManager
     // Hud y UI
     private Hud _hud;
     // ObjectManagers
-    private ProjectileManager _projectileManager;
-    private TankManager _tankManager;
+    private static ProjectileManager _projectileManager;
+    private static TankManager _tankManager;
     // Indica si se está pausa, para evitar que se pause 60 veces por segundo
     private bool _isPressingPause;
     // Cámara del juego
@@ -172,8 +172,8 @@ public class GameManager
     public static Vector3 GetCameraPosition() => _camera.GetCameraPosition();
     public static TypedIndex AddShapeToSimulation(Box shape) => _physicManager.AddShape(shape);
     public static TypedIndex AddShapeSphereToSimulation(Sphere shape) => _physicManager.AddShapeSphere(shape);
-    public static BodyHandle AddBodyToSimulation(BodyDescription body)
-        => _physicManager.AddBody(body);
+    public static BodyHandle AddBodyToSimulation(BodyDescription body, GameObject gameObject)
+        => _physicManager.AddBody(body, gameObject);
     public static BodyReference GetBodyReference(BodyHandle bodyHandle)
         => _physicManager.GetBodyReference(bodyHandle);
     public static GraphicsDevice GetGraphicsDevice() => _graphicsDevice;
@@ -182,4 +182,8 @@ public class GameManager
         var body = _physicManager.GetBodyReference(bodyHandle);
         body.Awake = true;
     }
+    public static void RemoveProjectileFromProjectileManager(Projectile projectile)
+        => _projectileManager.DeleteProjectile(projectile);
+    public static void RemoveTankFromTankManager(Tank tank)
+        => _tankManager.DeleteTank(tank);
 }

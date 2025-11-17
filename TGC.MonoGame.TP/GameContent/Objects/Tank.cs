@@ -5,6 +5,8 @@ using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using TGC.MonoGame.Samples.Collisions;
+
 // using TGC.MonoGame.Samples.Geometries.Textures;
 using BoundingBox = BepuUtilities.BoundingBox;
 #endregion
@@ -74,6 +76,7 @@ public class Tank : GameObject
         Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
         Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
         boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
+        CreateBoundingBoxToDraw();
         CreateCollisionBox();
     }
     public new void SetTexture(Texture2D texture)
@@ -299,7 +302,7 @@ public class Tank : GameObject
             collidableDescription,
             bodyActivityDescription
         );
-        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription);
+        _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription, this);
     }
     #endregion
 
