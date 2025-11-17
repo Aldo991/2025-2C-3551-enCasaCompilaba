@@ -13,7 +13,6 @@ public class Playing : HudState
     private Rectangle _compassPosition;
     private float _compassAngle;
     private bool _showScoreboard;
-    private int _posicionBrujulaX, _posicionBrujulaY;
     private int _fps;
     public Playing(GraphicsDevice graphicsDevice, Tank player) : base(graphicsDevice)
     {
@@ -21,8 +20,6 @@ public class Playing : HudState
         _lifeBarTexture = ContentLoader.GetTexture("hud", 1);
         _compass = ContentLoader.GetTexture("hud", 0);
         _showScoreboard = false;
-        _posicionBrujulaX = 1700;
-        _posicionBrujulaY = 120;
         _compassPosition = new Rectangle(1700, 120, 200, 200);
     }
     public void SetPlayer(Tank player) => _player = player;
@@ -31,7 +28,9 @@ public class Playing : HudState
         Vector3 tankFrontDirection = _player.GetTankFrontDirection();
         // Paso de coordenadas cartesianas (X, Z) a coordenadas polares, donde la función
         // Atan es arcotangente, y me da los ángulos
-        _compassAngle = MathF.Atan(tankFrontDirection.Z / tankFrontDirection.X);
+        _compassAngle = MathF.Atan2(tankFrontDirection.Z, tankFrontDirection.X);
+        // if (_compassAngle < 0)
+            // _compassAngle += MathF.PI;
         // Actualizo los fps
         float dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         _fps = (int) (1000 / dt);
