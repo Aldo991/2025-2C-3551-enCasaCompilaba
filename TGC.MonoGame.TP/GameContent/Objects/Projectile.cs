@@ -24,12 +24,12 @@ public class Projectile : GameObject
     private Matrix sphereMatrix;
 
     public Projectile(Model model, Vector3 startPosition, Vector3 direction, Texture2D texture = null,
-        float speed = 100f, float lifetime = 3f, float scale = 0.0005f, float rotation = 0f)
+        float speed = 100f, float lifetime = 3f, float scale = 0.00025f, float rotation = 0f)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
-        _position = startPosition;
         _direction = Vector3.Normalize(direction);
+        _position = startPosition + (new Vector3(1f, 1f, 1f) * _direction);
         _speed = speed;
         _lifeTime = lifetime;
         _elapsedTime = 0;
@@ -38,19 +38,22 @@ public class Projectile : GameObject
         _texture = texture;
         _initialPosition = startPosition;
         _scale = scale;
-        sphereRadius = .4f;
+        sphereRadius = .2f;
         spherePrimitive = new SpherePrimitive(GameManager.GetGraphicsDevice());
         CreateCollisionSphere();
     }
     private void CreateCollisionSphere()
     {
         Sphere sphereShape = new Sphere(sphereRadius);
+        var sphereInertia = sphereShape.ComputeInertia(0.1f);
         TypedIndex sphereIndex = GameManager.AddShapeSphereToSimulation(sphereShape);
         CollidableDescription collidableDescription = new CollidableDescription(sphereIndex, 0.1f);
         BodyActivityDescription bodyActivityDescription = new BodyActivityDescription(0.01f);
         var position = _position.ToNumerics();
-        var bodyDescription = BodyDescription.CreateKinematic(
+
+        var bodyDescription = BodyDescription.CreateDynamic(
             position,
+            sphereInertia,
             collidableDescription,
             bodyActivityDescription
         );

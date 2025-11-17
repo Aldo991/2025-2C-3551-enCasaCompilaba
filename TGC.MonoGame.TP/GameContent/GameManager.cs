@@ -87,8 +87,14 @@ public class GameManager
         {    
             Model tankModel = ContentLoader.GetModel("tank", 1);
             Random random = new Random();
-            Vector3 enemyPosition = new Vector3(random.NextSingle(), 30f, random.NextSingle());
-            float enemyRotation = random.NextSingle();
+            Vector3 enemyPosition;
+            if (i == 0)
+                enemyPosition = new Vector3(0, 30, 0);
+            else
+                enemyPosition = new Vector3(-10, 30, 10);
+            // Vector3 enemyPosition = new Vector3(random.NextSingle()*100, 30f, random.NextSingle() * 100);
+            // float enemyRotation = random.NextSingle();
+            float enemyRotation = 0f;
             int textureIndex = (int)random.NextInt64() % 3;
             textureIndex = (int)MathF.Abs(textureIndex);
             Texture2D enemyTexture = ContentLoader.GetTexture("tank", textureIndex);
@@ -96,6 +102,10 @@ public class GameManager
             Model enemyProjectileModel = ContentLoader.GetModel("projectile", 0);
             enemy.SetProjectileModel(enemyProjectileModel);
             enemy.SetIsPlayer(false);
+            Texture2D tankNormal = ContentLoader.GetNormal("tank", 0);
+            enemy.SetNormal(tankNormal);
+            Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
+            enemy.SetProjectileTexture(projectileTexture);
             _tankManager.AddTank(enemy);
         }
     }
@@ -110,7 +120,7 @@ public class GameManager
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
         player.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
-        elementosLand.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
+        elementosLand.Draw(gameTime, _camera);
         _projectileManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         _tankManager.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix);
         land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);

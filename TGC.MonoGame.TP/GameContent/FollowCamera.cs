@@ -21,6 +21,8 @@ public class FollowCamera
     private Vector3 Position;
     private Vector3 TargetPosition;
     private Vector3 UpDirection = Vector3.Up;
+    // Para optimización
+    private BoundingFrustum _boundingFrustum;
 
     private float Radius;
     private float VerticalAngle;
@@ -39,6 +41,7 @@ public class FollowCamera
         VerticalAngle = 0.3f;
         Sensitivity = sensitivity;
         BuildProjection(aspectRatio, nearPlaneDistance, farPlaneDistance, fieldOfViewDegrees);
+        _boundingFrustum = new BoundingFrustum(View * Projection);
     }
     // Construye la proyección de la cámara
     public void BuildProjection(float aspectRatio, float nearPlaneDistance, float farPlaneDistance,
@@ -64,14 +67,18 @@ public class FollowCamera
         direction.Y += 200f;
         return direction;
     }
+    // Este método setea la cámara detrás el tanque cuando se está jugando. Sería como el "Update"
+    // de la cámara cuando el modo de juego es "Playing"
     public void SetCameraDirection(Vector3 target, Vector3 direction)
     {
         Vector3 offset = CalculateOffsetPosition(direction);
         Position =  target + offset;
         TargetPosition = target;
         BuildView();
+        _boundingFrustum.Matrix = View * Projection;
     }
-    // Auto-orbit mode: rotates around target at fixed angular speed, ignoring mouse
+    // Este método hace que la cámara orbite el tanque cuando el juego está en pausa. Sería como
+    // el "Update" de la cámara cuando el modo de juego no es "Playing"
     public void UpdateOrbitAuto(
         Vector3 targetPosition,
         GameTime gameTime,
@@ -86,14 +93,11 @@ public class FollowCamera
         Position = targetPosition + offset;
         TargetPosition = targetPosition;
         BuildView();
+        _boundingFrustum.Matrix = View * Projection;
     }
+    public bool IsOnCamera(BoundingBox box) => _boundingFrustum.Intersects(box);
+    public bool IsOnCamera(BoundingSphere sphere) => _boundingFrustum.Intersects(sphere);
     public Vector3 GetCameraPosition() => Position;
-    /// <summary>
-    /// Reconstruye la cámara en base al transform absoluto del cañón (gunWorld).
-    /// gunWorld: matriz del hueso del cañón * world del tanque.
-    /// </summary>
-    /// <param name="gunWorld">Transform absoluto del cañón</param>
-    /// <param name="useUpAsForward">En tu rig usabas Up como “forward” del cañón</param>
     public Matrix ViewMatrix => View;
     public Matrix ProjectionMatrix => Projection;
 }

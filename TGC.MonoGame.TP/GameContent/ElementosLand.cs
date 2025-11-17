@@ -503,11 +503,16 @@ namespace TGC.MonoGame.TP
             foreach (GameObject gameObject in _gameElements)
                 gameObject.Update(gameTime);
         }
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        // public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, FollowCamera camera)
         {
-            // _land.Draw(gameTime, view, projection);
             foreach (GameObject gameObject in _gameElements)
-                gameObject.Draw(gameTime, view, projection);
+            {
+                if (camera.IsOnCamera(gameObject.GetBounding()))
+                    gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
+            }
+            // foreach(GameObject gameObject in _gameElements)
+                // gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
         }
         /*
         public bool CheckCollisionMesh(GameObject tank, Vector3 newPosition)

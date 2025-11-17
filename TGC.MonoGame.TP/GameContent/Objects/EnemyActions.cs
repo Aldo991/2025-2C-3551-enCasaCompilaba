@@ -22,16 +22,24 @@ public class EnemyAction
     private float _probabilityMove;
     private float _probabilityRotate;
     private float _probabilityShoot;
+    private bool _canShoot;
     private Tank _tank;
     public EnemyAction(Tank tank)
     {
         _tank = tank;
+        _totalTime = 3; // O sea, son 3 segundo hasta que se empiezan a mover
+        _elapsedTime = 0f;
+        _probabilityMove = 1f;
+        _probabilityRotate = 1f;
+        _probabilityShoot = 1;
+        _canShoot = true;
     }
     public void Update(GameTime gameTime, GameManager gameManager)
     {
         // Reviso si el tiempo acumulado es mayor al tiempo total.
         if (_elapsedTime > _totalTime)
         {
+            _canShoot = true;
             _elapsedTime = 0;
             Random random = new Random();
             _probabilityMove = random.NextSingle();
@@ -51,10 +59,11 @@ public class EnemyAction
             _tank.RotateTankRight(gameTime);
         else if (_probabilityRotate < .6)
             _tank.RotateTankLeft(gameTime);
-        if (_probabilityShoot < .1)
+        if (_probabilityShoot < .5 && _canShoot)
         {
             Projectile p = _tank.Shoot();
             gameManager.AddToProjectileManager(p);
+            _canShoot = false;
         }
         _elapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
     }

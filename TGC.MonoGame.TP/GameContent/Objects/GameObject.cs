@@ -33,6 +33,15 @@ public abstract class GameObject
 
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
+    public BoundingBox GetBounding()
+    {
+        BodyReference body = GameManager.GetBodyReference(_bodyHandle);
+        BoundingBox box = new BoundingBox(
+            body.BoundingBox.Min,
+            body.BoundingBox.Max
+        );
+        return box;
+    }
     public Vector3 GetPosition() => _position;
     public void SetNormal(Texture2D normal) => _textureNormal = normal;
     public void SetPosition(Vector3 position) => _position = position;
@@ -42,6 +51,5 @@ public abstract class GameObject
     public void SetRotation(float rotation) => _rotation = rotation;
     public Texture2D GetTexture() => _texture;
     public void SetTexture(Texture2D texture) => _texture = texture;
-    // public BoundingBox GetBoundingBox() => _boundingBox;
     public float CollisionRadius() => _collisionRadius;
 }
