@@ -426,7 +426,7 @@ public class ElementosLand
         _gameElements.Add(houseModel2Test);
         /* Casas de prueba */
 
-        /* Projectiles de prueba */
+        /* Projectiles de prueba
         var projectileModel0TestHeight = Land.Height(20,30);
         Vector3 projectileModel0TestPosition = new Vector3(20f, projectileModel0TestHeight, 30f);
         Vector3 direction = Vector3.Up;

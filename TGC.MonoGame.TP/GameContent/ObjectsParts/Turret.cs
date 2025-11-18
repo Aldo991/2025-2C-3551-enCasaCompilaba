@@ -85,18 +85,12 @@ public class Turret
         _turretMesh.Draw();
 
         // Cannon
-        Matrix boneTransformCannon = _boneTransform[_cannonMesh.ParentBone.Index];
-        var _1 = boneTransformTurret;
-        var _2 = boneTransformCannon;
-        var _3 = _matrixTurretRotation;
-        var _4 = _matrixCannonRotation;
-        var boneWorldCannon1 = _matrixCannonRotation * boneTransformCannon * world;
-        var boneWorldCannon2 = _matrixCannonRotation * boneTransformCannon * boneWorldTurret;
-        var boneWorldCannon3 = _matrixCannonRotation * _matrixTurretRotation * boneTransformCannon * world;
-        _cannonDirection = boneWorldCannon3.Down;
+        // Matrix boneTransformCannon = _boneTransform[_cannonMesh.ParentBone.Index];
+        // var boneWorldCannon = _matrixCannonRotation * boneWorldTurret;
+        var boneWorldCannon = boneWorldTurret;
+        _cannonDirection = boneWorldTurret.Down;
 
-
-        _effect.Parameters["World"].SetValue(boneWorldCannon3);
+        _effect.Parameters["World"].SetValue(boneWorldCannon);
         _cannonMesh.Draw();
     }
     public bool ContainMesh(string meshName)

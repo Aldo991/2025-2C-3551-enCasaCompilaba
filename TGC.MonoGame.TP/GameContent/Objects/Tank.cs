@@ -169,12 +169,12 @@ public class Tank : GameObject
     {
         Matrix cannonBoneTraslation = _turret.GetCannonTraslation();
         Matrix cannonWorld = cannonBoneTraslation * _world;
-        Vector3 turretPos = cannonWorld.Translation;
+        Vector3 cannonPos = cannonWorld.Translation;
         Vector3 turretDirection = cannonWorld.Down;
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
             MediaPlayer.Play(_shootSound);
-        return new Projectile(_projectileModel, turretPos, turretDirection, _projectileTexture);
+        return new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture);
     }
     public Vector3 GetCannonDirection()
     {

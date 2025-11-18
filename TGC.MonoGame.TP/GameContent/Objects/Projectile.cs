@@ -1,4 +1,5 @@
 #region Using Statements
+using System;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
@@ -27,7 +28,8 @@ public class Projectile : GameObject
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _direction = Vector3.Normalize(direction);
-        _position = startPosition + (new Vector3(2f, 2f, 2f) * _direction);
+        // _position = startPosition + (3 * _direction);
+        _position = startPosition + Offset();
         _speed = speed;
         _lifeTime = lifetime;
         _elapsedTime = 0;
@@ -40,6 +42,21 @@ public class Projectile : GameObject
         spherePrimitive = new SpherePrimitive(GameManager.GetGraphicsDevice());
         CreateBoundingBoxToDraw();
         CreateCollisionSphere();
+    }
+    private Vector3 Offset()
+    {
+        /*
+        Vector2 test = new Vector2(_direction.X, _direction.Z);
+        test.Normalize();
+        var angle = MathF.Atan2(test.Y, test.X);
+        var radius = 1;
+        Vector3 offset;
+        offset.X = radius * MathF.Sin(angle);
+        offset.Y = .5f;
+        offset.Z = radius * MathF.Cos(angle);
+        return offset;
+        */
+        return new Vector3(2,2,2) * _direction;
     }
     private void CreateCollisionSphere()
     {
