@@ -92,7 +92,7 @@ public class PhysicsManager
         _bodyToEntity.Remove(projectile.GetBodyHandle());
         projectile.Desactivate();
         GameManager.RemoveProjectileFromProjectileManager(projectile);
-        if (tank.GetLife() <= 0)
+        if (tank.GetLife() <= 0 && !tank.GetIsPlayer())
             GameManager.RemoveTankFromTankManager(tank);
     }
 }

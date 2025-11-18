@@ -91,6 +91,7 @@ public class Tank : GameObject
         if (!isPlayer)
             _enemyAction = new EnemyAction(this);
     }
+    public bool GetIsPlayer() => _isPlayer;
     public void SetGraphicsDevice(GraphicsDevice graphicsDevice) => _graphicsDevice = graphicsDevice;
     public bool GetIsShooting() => _isShooting;
     public void SetIsShooting(bool shoot) => _isShooting = shoot;
