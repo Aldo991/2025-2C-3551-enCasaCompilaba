@@ -7,20 +7,54 @@ using Microsoft.Xna.Framework.Graphics;
 namespace TGC.MonoGame.TP;
 public class Playing : HudState
 {
+        
+    private const float CompassScaleXPosition = .95f;
+    private const float CompassScaleYPosition = .1f;
+    private const float CompassWidth = .18f;
+    private const float CompassHeight = .18f;
+    private const float LifeBarScaleXPosition = 0.05f;
+    private const float LifeBarScaleYPosition = 0.95f;
+    private const float LifeBarWidth = 0.25f;
+    private const float LifeBarHeight = 0.04f;
     private Tank _player;
     private Texture2D _lifeBarTexture;
-    private Texture2D _compass;
+    private Rectangle _lifeBarPosition;
+    private int _originalWidthLifeBar;
+    private Texture2D _compassTexture;
     private Rectangle _compassPosition;
     private float _compassAngle;
     private bool _showScoreboard;
     private int _fps;
     public Playing(GraphicsDevice graphicsDevice, Tank player) : base(graphicsDevice)
     {
+        
         _player = player;
         _lifeBarTexture = ContentLoader.GetTexture("hud", 1);
-        _compass = ContentLoader.GetTexture("hud", 0);
+        _compassTexture = ContentLoader.GetTexture("hud", 0);
         _showScoreboard = false;
-        _compassPosition = new Rectangle(1700, 120, 200, 200);
+        CalculateCompassPosition(); // instancia la variable _compassPosition
+        CalculateLifeBarPosition(); // instancia la variable _lifeBarPosition
+    }
+    private void CalculateCompassPosition()
+    {
+        var screenWidth = GameManager.GetScreenWidth();
+        var screenHeight = GameManager.GetScreenHeight();
+        var compassX = (int)Math.Round(screenWidth * CompassScaleXPosition);
+        var compassY = (int)Math.Round(screenHeight * CompassScaleYPosition);
+        var compassWidth = (int)Math.Round(screenHeight * CompassWidth);
+        var compassHeight = (int)Math.Round(screenHeight * CompassHeight);
+        _compassPosition = new Rectangle(compassX, compassY, compassWidth, compassHeight);
+    }
+    private void CalculateLifeBarPosition()
+    {
+        var screenWidth = GameManager.GetScreenWidth();
+        var screenHeight = GameManager.GetScreenHeight();
+        var lifeBarX = (int)Math.Round(screenWidth * LifeBarScaleXPosition);
+        var lifeBarY = (int)Math.Round(screenHeight * LifeBarScaleYPosition);
+        var lifeBarWidth = (int)Math.Round(screenWidth * LifeBarWidth);
+        var lifeBarHeight = (int)Math.Round(screenHeight * LifeBarHeight);
+        _lifeBarPosition = new Rectangle(lifeBarX, lifeBarY, lifeBarWidth, lifeBarHeight);
+        _originalWidthLifeBar = lifeBarWidth;
     }
     public void SetPlayer(Tank player) => _player = player;
     public override void Update(GameTime gameTime)
@@ -29,16 +63,13 @@ public class Playing : HudState
         // Paso de coordenadas cartesianas (X, Z) a coordenadas polares, donde la función
         // Atan es arcotangente, y me da los ángulos
         _compassAngle = MathF.Atan2(tankFrontDirection.Z, tankFrontDirection.X);
-        // if (_compassAngle < 0)
-            // _compassAngle += MathF.PI;
-        // Actualizo los fps
         float dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         _fps = (int) (1000 / dt);
+        var playerLife = _player.LifePercent();
+        _lifeBarPosition.Width = (int)(_originalWidthLifeBar * playerLife);
     }
     public override void Draw()
     {
-        var screenWidth = GameManager.GetScreenWidth();
-        var screenHeight = GameManager.GetScreenHeight();
 
         _spriteBatch.Begin();
 
@@ -47,35 +78,22 @@ public class Playing : HudState
         _spriteBatch.DrawString(_font, $"X: {_player.GetPosition().X}", new Vector2(20, 60), Color.White);
         _spriteBatch.DrawString(_font, $"Y: {_player.GetPosition().Y}", new Vector2(20, 80), Color.White);
         _spriteBatch.DrawString(_font, $"Z: {_player.GetPosition().Z}", new Vector2(20, 100), Color.White);
-        _spriteBatch.DrawString(_font, $"Alto caja: {_player.GetAltoCaja()}", new Vector2(20, 120), Color.White);
-        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 140), Color.White);
-
-        float lifeBarWidthPercent = 0.25f;   // 25% del ancho de la pantalla
-        float lifeBarHeightPercent = 0.04f;  // 4% de la altura de la pantalla
-        float paddingPercent = 0.02f;        // 2% de padding desde los bordes
-
-        int lifeBarWidth = (int)(screenWidth * lifeBarWidthPercent);
-        int lifeBarHeight = (int)(screenHeight * lifeBarHeightPercent);
-        int padding = (int)(screenHeight * paddingPercent);
+        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 120), Color.White);
 
         // Texto "Salud" encima de la barra
-        _spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);
+        // _spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);
         // Barra de vida
+        // Vector2 lifeBarOrigin = new Vector2(_lifeBarTexture.Width / 2, _lifeBarTexture.Height / 2);
         _spriteBatch.Draw(
             _lifeBarTexture,
-            new Rectangle((int)(screenWidth * 0.02f), screenHeight - lifeBarHeight - padding, (int)(lifeBarWidth * _player.LifePercent()), lifeBarHeight),
+            _lifeBarPosition,
             Color.Red
         );
-        /*
-        Vector2 direccionBrujula = new Vector2(_player.GetTurretDirection().X, _player.GetTurretDirection().Z);
-        direccionBrujula.Normalize();
-        float angulosBrujula = MathF.Acos(Vector2.Dot(direccionBrujula, Vector2.UnitX)); // está en radianes
-        if (direccionBrujula.Y > 0) { angulosBrujula = MathF.PI * 2 - angulosBrujula; }
-        */
-        Vector2 origin = new Vector2(_compass.Width / 2, _compass.Height / 2);
+
+        Vector2 origin = new Vector2(_compassTexture.Width / 2, _compassTexture.Height / 2);
         // Dibujo la brújula
         _spriteBatch.Draw(
-            _compass,
+            _compassTexture,
             _compassPosition,
             null,
             Color.White,
