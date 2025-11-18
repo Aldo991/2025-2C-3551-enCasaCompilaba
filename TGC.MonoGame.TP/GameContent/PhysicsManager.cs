@@ -82,7 +82,7 @@ public class PhysicsManager
             if (entA is Tank && entB is Projectile)
                 HandleProjectileHit((Tank) entA, (Projectile) entB, evt);
             else if (entB is Tank && entA is Projectile)
-                HandleProjectileHit((Tank) entA, (Projectile) entB, evt);
+                HandleProjectileHit((Tank) entB, (Projectile) entA, evt);
         }
     }
     private void HandleProjectileHit(Tank tank, Projectile projectile, CollisionEvent collisionEvent)
