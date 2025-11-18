@@ -41,7 +41,9 @@ public static class ContentLoader
     private static Texture2D[] _stoneTextures;
     private static Model[] _tankModel;
     private static Texture2D[] _tankTextures;
+    private static Texture2D[] _tankTreadmillsTextures;
     private static Texture2D[] _tankNormals;
+    private static Texture2D[] _tankTreadmillsNormals;
     private static Model[] _treeModels;
     private static Texture2D[] _treeTextures;
     private static Model[] _wallModels;
@@ -203,6 +205,7 @@ public static class ContentLoader
     }
     private static void LoadTankModels(ContentManager content)
     {
+        /*
         var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
         _tankModel = new Model[_paths.Length];
         Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
@@ -219,19 +222,36 @@ public static class ContentLoader
             }
             _tankModel[i] = model;
         }
+        */
+        _tankModel = new Model[1];
+        _tankModel[0] = content.Load<Model>("Models/tanks/T90");
+        Effect effect = content.Load<Effect>("Effects/TankShader");
+        foreach(Model model in _tankModel)
+        {
+            foreach (var mesh in model.Meshes)
+            {
+                foreach(var meshPart in mesh.MeshParts)
+                    meshPart.Effect = effect;
+            }
+        }
     }
     private static void LoadTankTextures(ContentManager content)
     {
         _tankTextures = new Texture2D[3];
-        // _tankTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/");
         _tankTextures[0] = content.Load<Texture2D>("Textures/tanks/T90/hullA");
         _tankTextures[1] = content.Load<Texture2D>("Textures/tanks/T90/hullB");
         _tankTextures[2] = content.Load<Texture2D>("Textures/tanks/T90/hullC");
+
+        _tankTreadmillsTextures = new Texture2D[1];
+        _tankTreadmillsTextures[0] = content.Load<Texture2D>("Textures/tanks/T90/treadmills");
     }
     private static void LoadTankNormals(ContentManager content)
     {
         _tankNormals = new Texture2D[1];
-        _tankNormals[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderTanks + "/T90/normal");
+        _tankNormals[0] = content.Load<Texture2D>("Textures/tanks/T90/normal");
+
+        _tankTreadmillsNormals = new Texture2D[1];
+        _tankTreadmillsNormals[0] = content.Load<Texture2D>("Textures/tanks/T90/treadmills_normal");
     }
     private static void LoadTreeModels(ContentManager content)
     {
@@ -329,6 +349,7 @@ public static class ContentLoader
             "projectile" => _projectileTextures[index],
             "stone" => _stoneTextures[index],
             "tank" => _tankTextures[index],
+            "tank-treadmills" => _tankTreadmillsTextures[index],
             "tree" => _treeTextures[index],
             "wall" => _wallTextures[index],
             _ => throw new ArgumentException("Invalid texture name"),
@@ -339,6 +360,7 @@ public static class ContentLoader
         return modelName switch
         {
             "tank" => _tankNormals[index],
+            "tank-treadmills" => _tankTreadmillsNormals[index],
             _ => throw new ArgumentException("Invalid Texture Name"),
         };
     }

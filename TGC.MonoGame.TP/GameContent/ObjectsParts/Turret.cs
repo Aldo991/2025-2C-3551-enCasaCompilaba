@@ -17,9 +17,13 @@ public class Turret
     private ModelMesh _turretMesh;
     private float _turretAngle;
     private Matrix _matrixTurretRotation;
+    private Texture2D _turretTexture;
+    private Texture2D _turretNormal;
     private ModelMesh _cannonMesh;
     private float _cannonAngle;
     private Matrix _matrixCannonRotation;
+    private Texture2D _cannonTexture;
+    private Texture2D _cannonNormal;
     private Matrix[] _boneTransform;
     private Vector3 _cannonDirection;
     public Turret(Model model)
@@ -76,8 +80,10 @@ public class Turret
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
+        _effect.Parameters["Texture"]?.SetValue(_turretTexture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_turretNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
         // Torreta
         Matrix boneTransformTurret = _boneTransform[_turretMesh.ParentBone.Index];
         var boneWorldTurret = _matrixTurretRotation * boneTransformTurret * world;
@@ -85,8 +91,10 @@ public class Turret
         _turretMesh.Draw();
 
         // Cannon
-        // Matrix boneTransformCannon = _boneTransform[_cannonMesh.ParentBone.Index];
-        // var boneWorldCannon = _matrixCannonRotation * boneWorldTurret;
+        _effect.Parameters["Texture"]?.SetValue(_cannonTexture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_cannonNormal);
+        _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
         var boneWorldCannon = boneWorldTurret;
         _cannonDirection = boneWorldTurret.Down;
 
@@ -97,4 +105,8 @@ public class Turret
     {
         return meshName == TurretName || meshName == CannonName;
     }
+    public void SetTurretTexture(Texture2D texture) => _turretTexture = texture;
+    public void SetTurretNormal(Texture2D texture) => _turretNormal = texture;
+    public void SetCannonTexture(Texture2D texture) => _cannonTexture = texture;
+    public void SetCannonNormal(Texture2D texture) => _cannonNormal = texture;
 }

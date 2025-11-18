@@ -7,6 +7,12 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
+
+
+
+
+
+
 texture Texture;
 sampler TextureSampler = sampler_state
 {
@@ -43,56 +49,77 @@ float KSpecular;
 float Shininess; 
 float3 LightPosition;
 float3 EyePosition;
-// float2 Tiling;
 
-struct VS_INPUT
+float Time = 0;
+
+struct VertexShaderInput
 {
 	float4 Position : POSITION0;
 	float2 TexCoord : TEXCOORD0;
-	float3 Normal : NORMAL0;
+	float4 Normal : NORMAL0;
+
 };
 
-struct PS_INPUT
+struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
 	float4 WorldPosition: TEXCOORD1;
 	float4 Normal : TEXCOORD2;
+
 };
 
-PS_INPUT VS_Main(VS_INPUT input)
+float3 getNormalFromMap(float2 textureCoordinates, float3 worldPosition, float3 worldNormal)
 {
-	PS_INPUT output = (PS_INPUT)0;
+    float3 tangentNormal = tex2D(NormalSampler, textureCoordinates).xyz * 2.0 - 1.0;
 
-	// Transformar vértices
+    float3 Q1 = ddx(worldPosition);
+    float3 Q2 = ddy(worldPosition);
+    float2 st1 = ddx(textureCoordinates);
+    float2 st2 = ddy(textureCoordinates);
+
+    worldNormal = normalize(worldNormal.xyz);
+    float3 T = normalize(Q1 * st2.y - Q2 * st1.y);
+    float3 B = -normalize(cross(worldNormal, T));
+    float3x3 TBN = float3x3(T, B, worldNormal);
+
+    return normalize(mul(tangentNormal, TBN));
+}
+
+VertexShaderOutput MainVS(VertexShaderInput input)
+{
+	// Variable de salida
+	VertexShaderOutput output = (VertexShaderOutput)0;
+	// Vértice en espacio mundo
 	float4 worldPosition = mul(input.Position, World);
-	output.Position = mul(worldPosition, View);
-	output.Position = mul(output.Position, Projection);
-
-	// Desplazamiento de textura
+	// Vértice en espacio vista
+	float4 viewPosition = mul(worldPosition, View);
+	// Vértice en espacio proyección
+	output.Position = mul(viewPosition, Projection);
+	// Propagación de la posición en el mundo
+	output.WorldPosition = worldPosition;
+	// Propagación de textura
 	output.TexCoord = input.TexCoord + float2(0, TreadmillsOffset);
-
 	// Normales del tanque
-	output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
+	output.Normal = mul(input.Normal, InverseTransposeWorld);
+	// output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
 
 	return output;
 }
 
-float4 PS_Main(PS_INPUT input) : COLOR
+float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// Vectores que inciden en el modelo
 	float3 LightDirection = normalize(LightPosition - input.WorldPosition.xyz);
 	float3 viewDirection = normalize(EyePosition - input.WorldPosition.xyz);
 	float3 halfVector = normalize(LightDirection + viewDirection);
-	float3 normal = normalize(input.Normal.xyz);
-
+	// float3 normal = normalize(input.Normal.xyz);
+	float3 normal = getNormalFromMap(input.TexCoord, input.WorldPosition.xyz, normalize(input.Normal.xyz));
 	// Textura
 	float4 text = tex2D(TextureSampler, input.TexCoord);
-
 	// Luz Difusa
 	float NdotL = saturate(dot(normal ,LightDirection));
 	float3 diffuseLight = KDiffuse * DiffuseColor * NdotL;
-
 	// Luz Especular
 	float NdotH = saturate(dot(normal, halfVector));
 	float3 specularLight = KSpecular * SpecularColor * pow(saturate(NdotH), Shininess);
@@ -109,7 +136,7 @@ technique BasicTechnique
 {
 	pass P0
 	{
-		VertexShader = compile VS_SHADERMODEL VS_Main();
-		PixelShader = compile PS_SHADERMODEL PS_Main();
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL MainPS();
 	}
 };

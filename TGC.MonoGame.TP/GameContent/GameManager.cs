@@ -18,6 +18,18 @@ public enum GameState
 }
 public class GameManager
 {
+    private static readonly Vector3 LigthPosition = new Vector3(10000, 500, 10000);
+    private static readonly Vector3 Ambientcolor = Color.LightYellow.ToVector3();
+    private static readonly Vector3 SpecularColor = Color.White.ToVector3();
+    /*
+    private const float KAmbient = 0.2f;
+    private const float KDiffuse = 0.6f;
+    private const float KSpecular = 0.2f;
+    */
+    private static float KAmbient = 0.2f;
+    private static float KDiffuse = 0.6f;
+    private static float KSpecular = 0.4f;
+    private const float Shininess = 15f;
     private static GameManager instance;
     // Variables globales, posición del mouse, tamaño de pantalla, estado
     // de los botones del mouse, etc.
@@ -85,7 +97,7 @@ public class GameManager
     {
         for (int i = 0; i < amount; i++)
         {    
-            Model tankModel = ContentLoader.GetModel("tank", 1);
+            Model tankModel = ContentLoader.GetModel("tank", 0);
             Random random = new Random();
             Vector3 enemyPosition;
             if (i == 0)
@@ -121,7 +133,8 @@ public class GameManager
     {
         Matrix view = _camera.ViewMatrix;
         Matrix projection = _camera.ProjectionMatrix;
-        player.Draw(gameTime, view, projection);
+        if (_state == GameState.Playing)
+            player.Draw(gameTime, view, projection);
         elementosLand.Draw(gameTime, _camera);
         _projectileManager.Draw(gameTime, view, projection);
         _tankManager.Draw(gameTime, view, projection);
@@ -189,4 +202,47 @@ public class GameManager
         => _projectileManager.DeleteProjectile(projectile);
     public static void RemoveTankFromTankManager(Tank tank)
         => _tankManager.DeleteTank(tank);
+    public static void SetIluminationParameters(
+        Effect effect,
+        Matrix inverseTransposeWorld,
+        Vector3 specularColor
+    )
+    {
+        Vector3 eyePosition = GetCameraPosition();
+        
+        effect.Parameters["EyePosition"].SetValue(eyePosition);
+        effect.Parameters["InverseTransposeWorld"].SetValue(inverseTransposeWorld);
+        effect.Parameters["LightPosition"].SetValue(LigthPosition);
+        effect.Parameters["AmbientColor"].SetValue(Ambientcolor);
+        effect.Parameters["SpecularColor"].SetValue(specularColor);
+        effect.Parameters["KAmbient"].SetValue(KAmbient);
+        effect.Parameters["KDiffuse"].SetValue(KDiffuse);
+        effect.Parameters["KSpecular"].SetValue(KSpecular);
+        effect.Parameters["Shininess"].SetValue(Shininess);
+    }
+
+    public static void ModificarKAmbiente(float cant)
+    {
+        KAmbient += cant;
+        if (KAmbient > 1)
+            KAmbient = 1;
+        else if (KAmbient < 0)
+            KAmbient = 0;
+    }
+    public static void ModificarKDiffuse(float cant)
+    {
+        KDiffuse += cant;
+        if (KDiffuse > 1)
+            KDiffuse = 1;
+        else if (KDiffuse < 0)
+            KDiffuse = 0;
+    }
+    public static void ModificarKSpecular(float cant)
+    {
+        KSpecular += cant;
+        if (KSpecular > 1)
+            KSpecular = 1;
+        else if (KSpecular < 0)
+            KSpecular = 0;
+    }
 }

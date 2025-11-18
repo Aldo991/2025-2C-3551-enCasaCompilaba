@@ -31,10 +31,18 @@ public class Bush : GameObject
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
-        // if (!IsActive) return;
+        Vector3 specularColor = Color.GreenYellow.ToVector3();
+        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
+
+        GameManager.SetIluminationParameters(
+            _effect,
+            inverseTransposeWorld,
+            specularColor
+        );
+
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Green.ToVector3());
         if (_texture != null)
             _effect.Parameters["Texture"]?.SetValue(_texture);
         foreach (var mesh in _model.Meshes)

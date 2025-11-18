@@ -5,10 +5,6 @@ using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using TGC.MonoGame.Samples.Collisions;
-
-// using TGC.MonoGame.Samples.Geometries.Textures;
-using BoundingBox = BepuUtilities.BoundingBox;
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -67,6 +63,8 @@ public class Tank : GameObject
         _wheels.SetWheelTexture(_texture);
         _wheels.SetTreadmillTexture(_texture);
         _turret = new Turret(_model);
+        _turret.SetTurretTexture(_texture);
+        _turret.SetCannonTexture(_texture);
         _meshes = new List<ModelMesh>();
         MeshesTanque();
         anchoCaja = 2f;
@@ -85,6 +83,14 @@ public class Tank : GameObject
         _wheels.SetWheelTexture(texture);
         _wheels.SetTreadmillTexture(texture);
     }
+    public new void SetNormal(Texture2D normal)
+    {
+        base.SetNormal(normal);
+        _turret.SetTurretNormal(normal);
+        _turret.SetCannonNormal(normal);
+        _wheels.SetTreadmillNormal(normal);
+        _wheels.SetWheelNormal(normal);
+    }
     public void SetIsPlayer(bool isPlayer)
     {
         _isPlayer = isPlayer;
@@ -99,6 +105,8 @@ public class Tank : GameObject
     public void SetLife(float life) => _life = life;
     public float LifePercent() => _life / InitialLife;
     public int GetScore() => _score;
+    public void SetTreadmillTexture(Texture2D texture) => _wheels.SetTreadmillTexture(texture);
+    public void SetTreadmillNormal(Texture2D texture) => _wheels.SetTreadmillNormal(texture);
     public void SetScore(int score) => _score = score;
     public void MoveForwardTank(GameTime gameTime)
     {
@@ -241,34 +249,21 @@ public class Tank : GameObject
         if (mostrarCaja)
             boxPrimitive.Draw(boxWorld, view, projection);
         
-        Vector3 ambientColor = Color.Yellow.ToVector3();
         Vector3 specularColor = Color.White.ToVector3();
-        float kAmbient = 0.2f;
-        float KDiffuse = 0.6f;
-        float KSpecular = 0.2f;
-        float shininess = 15f;
-        Vector3 lightPosition = new Vector3(1000, 100, 1000);
-        Vector3 eyePosition = GameManager.GetCameraPosition();
         Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
 
-        _effect.Parameters["EyePosition"].SetValue(eyePosition);
-        _effect.Parameters["InverseTransposeWorld"].SetValue(inverseTransposeWorld);
-        _effect.Parameters["LightPosition"].SetValue(lightPosition);
-        _effect.Parameters["AmbientColor"].SetValue(ambientColor);
-        _effect.Parameters["SpecularColor"].SetValue(specularColor);
-        _effect.Parameters["KAmbient"].SetValue(kAmbient);
-        _effect.Parameters["KDiffuse"].SetValue(KDiffuse);
-        _effect.Parameters["KSpecular"].SetValue(KSpecular);
-        _effect.Parameters["Shininess"].SetValue(shininess);
+        GameManager.SetIluminationParameters(
+            _effect,
+            inverseTransposeWorld, // este si es necesario, es propio de cada instancia de cada objeto
+            specularColor // este si debería ser propio de cada objeto no?
+        );
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
         _effect.Parameters["Texture"]?.SetValue(_texture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_textureNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
-        
-        if (_textureNormal != null)
-            _effect.Parameters["Normals"]?.SetValue(_textureNormal);
         foreach (var mesh in _meshes)
         {
             var worldMesh = _boneTransforms[mesh.ParentBone.Index] * _world;

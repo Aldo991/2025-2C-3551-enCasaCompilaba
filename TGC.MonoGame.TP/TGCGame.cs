@@ -1,5 +1,4 @@
 ﻿#region Using Statements
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,9 +21,9 @@ public class TGCGame : Game
         // Título del juego en la ventana del programa
         Window.Title = "TankWars";
         // Ancho y altura de la ventana
-        // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-        _graphics.ToggleFullScreen();
+        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+        // _graphics.ToggleFullScreen();
         Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
         // Visibilidad del mouse
         IsMouseVisible = false;
@@ -56,20 +55,7 @@ public class TGCGame : Game
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
         // Todo: revisar si debería estar en GameManager
-        Model tankModel = ContentLoader.GetModel("tank", 1);
-        var height = Land.Height(25f, 30f);
-        Vector3 tankPosition = new Vector3(25f, height, 30f);
-        Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
-        _tank = new Tank(tankModel, tankPosition, Tank.DefaultScale, 0f, tankTexture);
-        Model projectileModel = ContentLoader.GetModel("projectile", 0);
-        _tank.SetProjectileModel(projectileModel);
-        Song shootTank = ContentLoader.GetSoundEffect();
-        _tank.SetShootSound(shootTank);
-        _tank.SetIsPlayer(true);
-        Texture2D tankNormal = ContentLoader.GetNormal("tank", 0);
-        _tank.SetNormal(tankNormal);
-        Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
-        _tank.SetProjectileTexture(projectileTexture);
+        InitializeTank();
 
         _gameManager.SetHudPlayer(_tank);
 
@@ -113,12 +99,19 @@ public class TGCGame : Game
                 _tank.SetIsShooting(true);
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
-
+            /*
             if (kb.IsKeyDown(Keys.Subtract)) _tank.CambiarVida(-1f);
             if (kb.IsKeyDown(Keys.Add)) _tank.CambiarVida(1f);
             if (kb.IsKeyDown(Keys.O)) _tank.CambiarCaja();
             if (kb.IsKeyDown(Keys.Up)) _tank.CambiarTamanioCaja(0.1f);
             if (kb.IsKeyDown(Keys.Down)) _tank.CambiarTamanioCaja(-0.1f);
+            */
+            if (kb.IsKeyDown(Keys.O)) GameManager.ModificarKAmbiente(0.1f);
+            if (kb.IsKeyDown(Keys.I)) GameManager.ModificarKDiffuse(0.1f);
+            if (kb.IsKeyDown(Keys.U)) GameManager.ModificarKSpecular(0.1f);
+            if (kb.IsKeyDown(Keys.L)) GameManager.ModificarKAmbiente(-0.1f);
+            if (kb.IsKeyDown(Keys.K)) GameManager.ModificarKDiffuse(-0.1f);
+            if (kb.IsKeyDown(Keys.J)) GameManager.ModificarKSpecular(-0.1f);
 
             _tank.Update(gameTime);
 
@@ -171,5 +164,26 @@ public class TGCGame : Game
     {
         Content.Unload();
         base.UnloadContent();
+    }
+    private void InitializeTank()
+    {
+        Model tankModel = ContentLoader.GetModel("tank", 0);
+        var height = Land.Height(25f, 30f);
+        Vector3 tankPosition = new Vector3(25f, height, 30f);
+        Texture2D tankTexture = ContentLoader.GetTexture("tank", 0);
+        _tank = new Tank(tankModel, tankPosition, Tank.DefaultScale, 0f, tankTexture);
+        Model projectileModel = ContentLoader.GetModel("projectile", 0);
+        _tank.SetProjectileModel(projectileModel);
+        Song shootTank = ContentLoader.GetSoundEffect();
+        _tank.SetShootSound(shootTank);
+        _tank.SetIsPlayer(true);
+        Texture2D tankNormal = ContentLoader.GetNormal("tank", 0);
+        _tank.SetNormal(tankNormal);
+        Texture2D treadmillsTexture = ContentLoader.GetTexture("tank-treadmills", 0);
+        _tank.SetTreadmillTexture(treadmillsTexture);
+        Texture2D treadmillsNormal = ContentLoader.GetNormal("tank-treadmills", 0);
+        _tank.SetTreadmillNormal(treadmillsNormal);
+        Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
+        _tank.SetProjectileTexture(projectileTexture);
     }
 }

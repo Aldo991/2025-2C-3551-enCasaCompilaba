@@ -19,7 +19,9 @@ public class Wheels
     private Model _model;
     private Effect _effect;
     private Texture2D _wheelTexture;
+    private Texture2D _wheelNormal;
     private Texture2D _treadmillTexture;
+    private Texture2D _treadmillNormal;
     private List<ModelMesh> _wheelsMeshes;
     private List<ModelBone> _wheelsBones;
     private List<Matrix> _wheelsBonesTransforms;
@@ -90,8 +92,10 @@ public class Wheels
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
         _effect.Parameters["Texture"]?.SetValue(_wheelTexture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_wheelNormal);
+        _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
         for (int i = 0; i < _wheelsMeshes.Count; i++)
         {
             ModelMesh mesh = _wheelsMeshes[i];
@@ -100,8 +104,9 @@ public class Wheels
             _effect.Parameters["World"].SetValue(boneWorld);
             mesh.Draw();
         }
-        _effect.Parameters["TreadmillsOffset"].SetValue(_treadmillsOffset);
         _effect.Parameters["Texture"]?.SetValue(_treadmillTexture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_treadmillNormal);
+        _effect.Parameters["TreadmillsOffset"].SetValue(_treadmillsOffset);
         for (int i = 0; i < _treadmillsMesh.Count; i++)
         {
             ModelMesh mesh = _treadmillsMesh[i];
@@ -116,5 +121,7 @@ public class Wheels
         return WheelsNames.Contains(meshName) || Treadmills.Contains(meshName);
     }
     public void SetWheelTexture(Texture2D texture) => _wheelTexture = texture;
+    public void SetWheelNormal(Texture2D texture) => _wheelNormal = texture;
     public void SetTreadmillTexture(Texture2D texture) =>  _treadmillTexture = texture;
+    public void SetTreadmillNormal(Texture2D texture) =>  _treadmillNormal = texture;
 }
