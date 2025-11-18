@@ -23,7 +23,7 @@ public class ElementosLand
         float scaleHouseModel0 = 0.003f;
         float scaleHouseModel1 = 0.009f;
         // float scaleHouseModel2 = 0.009f;
-        float scaleProjectileModel0 = 0.001f;
+        // float scaleProjectileModel0 = 0.001f;
         // Con 0.003f queda como una piedra más chica que la rueda.
         // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
         float scaleStoneModel0 = 0.003f;

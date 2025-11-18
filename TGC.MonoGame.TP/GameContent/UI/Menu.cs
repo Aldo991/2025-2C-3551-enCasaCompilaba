@@ -10,6 +10,7 @@ public class Menu : HudState
     private Button _playButton;
     private Button _optionButton;
     private Button _exitButton;
+    private Button test;
     private GameManager _gameManager;
     public Menu(GraphicsDevice graphicsDevice) : base(graphicsDevice)
     {
@@ -18,27 +19,42 @@ public class Menu : HudState
 
         int width = GameManager.GetScreenWidth();
         int height = GameManager.GetScreenHeight();
-        int bw = Math.Max(220, width / 5);
-        int bh = Math.Max(60, height / 12);
-        var centerX = width / 2;
-        var centerY = height / 2;
 
-        var centerYPlay = height / 6;
-        var centerYOptions = height * 3 / 6;
-        var centerYExit = height * 5 / 6;
+        // estas son las medidas de un cuadradon donde van a ir los botones
+        int x1 = (int)Math.Round((double)(width * 0 / 10));
+        int y1 = (int)Math.Round((double)(height * 4 / 10));
+        int x2 = (int)Math.Round((double)(width * 1 / 10));
+        int y2 = (int)Math.Round((double)(height * 6 / 10));
+        var point1 = new Point(x1, y1);
+        var point2 = new Point(x2, y2);
+        test = new Button(point1, point2);
+        test.SetBackgroundColor(Color.AliceBlue);
 
-        var play1 = new Point(centerX - bw / 3, centerY - bh - 12);
-        var play2 = new Point(play1.X + bw, play1.Y + bh);
+        var x1PlayButton = x1;
+        var y1PlayButton = y1;
+        var x2PlayButton = (x2 + x1) / 2;
+        var y2PlayButton = y1 + (y2 - y1) / 5;
+        Point playPoint1 = new Point(x1PlayButton, y1PlayButton);
+        Point playPoint2 = new Point(x2PlayButton, y2PlayButton);
 
-        var options1 = new Point(centerX - bw / 3, centerY - bh + 12);
-        var options2 = new Point(options1.X + bw, options1.Y + bh);
+        var x1OptionButton = x1;
+        var y1OptionButton = y1 + (y2 - y1) * 2 / 5;
+        var x2OptionButton = (x2 + x1) / 2;
+        var y2OptionButton = y1 + (y2 - y1) * 3 / 5;
+        Point optionPoint1 = new Point(x1OptionButton, y1OptionButton);
+        Point optionPoint2 = new Point(x2OptionButton, y2OptionButton);
 
-        var exit1 = new Point(centerX - bw / 3, centerY - bh + 100);
-        var exit2 = new Point(exit1.X + bw, exit1.Y + bh);
+        var x1ExitButton = x1;
+        var y1ExitButton = y1 + (y2 - y1) * 4 / 5;
+        var x2ExitButton = (x2 + x1) / 2;
+        var y2ExitButton = y2;
+        Point exitPoint1 = new Point(x1ExitButton, y1ExitButton);
+        Point exitPoint2 = new Point(x2ExitButton, y2ExitButton);
 
-        _playButton = new Button(new Point(centerX, centerYPlay));
-        _optionButton = new Button(new Point(centerX, centerYOptions));
-        _exitButton = new Button(new Point(centerX, centerYExit));
+        _playButton = new Button(playPoint1, playPoint2, "Jugar");
+        _optionButton = new Button(optionPoint1, optionPoint2, "Opciones");
+        _exitButton = new Button(exitPoint1, exitPoint2, "Salir");
+
     }
     public override void Update(GameTime gameTime)
     {
@@ -90,12 +106,13 @@ public class Menu : HudState
         _spriteBatch.Draw(_pixel, _playButton.GetRectangle(), _playButton.GetBackgroundColor());
         _spriteBatch.Draw(_pixel, _optionButton.GetRectangle(), _optionButton.GetBackgroundColor());
         _spriteBatch.Draw(_pixel, _exitButton.GetRectangle(), _exitButton.GetBackgroundColor());
-        var jugarSize = _font.MeasureString("Jugar");
-        var opcSize = _font.MeasureString("Opciones");
-        var exitSize = _font.MeasureString("Salir");
-        _spriteBatch.DrawString(_font, "Jugar", _playButton.GetCenter() - jugarSize/2f, _playButton.GetTextColor());
-        _spriteBatch.DrawString(_font, "Opciones", _optionButton.GetCenter() - opcSize/2f, _optionButton.GetTextColor());
-        _spriteBatch.DrawString(_font, "Salir", _exitButton.GetCenter() - exitSize / 2f, _exitButton.GetTextColor());
+        // _spriteBatch.Draw(_pixel, test.GetRectangle(), test.GetBackgroundColor());
+        var jugarSize = _font.MeasureString(_playButton.GetText());
+        var opcSize = _font.MeasureString(_optionButton.GetText());
+        var exitSize = _font.MeasureString(_exitButton.GetText());
+        _spriteBatch.DrawString(_font, _playButton.GetText(), _playButton.GetCenter() - jugarSize/2f, _playButton.GetTextColor());
+        _spriteBatch.DrawString(_font, _optionButton.GetText(), _optionButton.GetCenter() - opcSize/2f, _optionButton.GetTextColor());
+        _spriteBatch.DrawString(_font, _exitButton.GetText(), _exitButton.GetCenter() - exitSize / 2f, _exitButton.GetTextColor());
 
         _spriteBatch.End();
     }
