@@ -19,8 +19,6 @@ public class ElementosLand
         // Con 0.003f queda bien
         float scaleBushModel0 = 0.003f;
         float scaleHouseModel0 = 0.003f;
-        float scaleHouseModel1 = 0.009f;
-        // float scaleHouseModel2 = 0.009f;
         // float scaleProjectileModel0 = 0.001f;
         // Con 0.003f queda como una piedra más chica que la rueda.
         // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
@@ -242,6 +240,7 @@ public class ElementosLand
             new Vector3(-3000, 565, -8500), new Vector3(-6000, 565, -9800),
             new Vector3(-8700, 565, 11000), new Vector3(-10500, 100, 13500)
         };
+        /*
         var posicionesArboles2 = new List<Vector3>
         {
             new Vector3(1500, 520, -1500), new Vector3(2000, 620, -5000),
@@ -280,20 +279,59 @@ public class ElementosLand
             new Vector3(-2800, 730, -9800), new Vector3(-7800, -130, 11800),
             new Vector3(-9800, -400, 13700)
         };
+        */
+        var posicionesArboles2 = new List<Vector3>
+        {
+            new Vector3(4500, 0, -9500), new Vector3(5000, 0, -1500),
+            new Vector3(5000, 0, -2000), new Vector3(5000, 0, -9200),
+            new Vector3(6000, 0, -3800), new Vector3(6000, 0, -5500),
+            new Vector3(5800, 0, -7400), new Vector3(6500, 0, -5800),
+            new Vector3(6500, 0, -9800), new Vector3(7000, 0, -1800),
+            new Vector3(7000, 0, -2200), new Vector3(7000, 0, -9400),
+            new Vector3(7800, 0, -7600), new Vector3(7800, 0, -13800),
+            new Vector3(8000, 0, -4000), new Vector3(8000, 0, -5800),
+            new Vector3(8500, 0, -6000), new Vector3(8500, 0, -10000),
+            new Vector3(9000, 0, -2000), new Vector3(9000, 0, -2400),
+            new Vector3(9000, 0, -6000), new Vector3(9000, 0, -7800),
+            new Vector3(9800, 0, -14000), new Vector3(9800, 0, -7800),
+            new Vector3(10000, 0, -4200), new Vector3(10000, 0, -6000),
+            new Vector3(10000, 0, -5800), new Vector3(10500, 0, -10200),
+            new Vector3(10500, 0, -6200), new Vector3(11000, 0, -2500),
+            new Vector3(11000, 0, -2600), new Vector3(11800, 0, -8000),
+            new Vector3(11800, 0, -14200), new Vector3(12000, 0, -12000),
+            new Vector3(12000, 0, -6200), new Vector3(12000, 0, -4400),
+            new Vector3(12500, 0, -10500), new Vector3(12500, 0, -6400),
+            new Vector3(13000, 0, -2800), new Vector3(13000, 0, -6600),
+            new Vector3(13800, 0, -14500), new Vector3(13800, 0, -8200),
+            new Vector3(14000, 0, -4600), new Vector3(14000, 0, -6500),
+            new Vector3(14500, 0, -10800), new Vector3(14500, 0, -6600),
+            new Vector3(15000, 0, -3000), new Vector3(15000, 0, -4600),
+            new Vector3(15800, 0, -14800), new Vector3(15800, 0, -8400),
+            new Vector3(16000, 0, -4800), new Vector3(-3500, 0, -3000),
+            new Vector3(-6200, 0, -3000), new Vector3(-9700, 0, -7000),
+            new Vector3(-2800, 0, -9800), new Vector3(-7800, 0, 11800),
+            new Vector3(-9800, 0, 13700)
+        };
+        
         var posicionesCasasModelo1 = new List<Vector3>
         {
-            new Vector3(0, 490, 0), new Vector3(0, 490, 1490),
-            new Vector3(-8100, -480, 14390), new Vector3(-10100, -550, 16390),
-            new Vector3(-3000, 490, -2000), new Vector3(-3000, 700, -6000),
-            new Vector3(-3000, 830, -10500), new Vector3(1050, 490, 550)
+            new Vector3(225, 0, -150),      new Vector3(225, 0, -165),
+            new Vector3(225, 0, -180),      new Vector3(225, 0, -135),
+            new Vector3(225, 0, -120),      new Vector3(225, 0, -195),
+
+            new Vector3(-725, 0, -400),     new Vector3(-725, 0, -385),
+            new Vector3(-725, 0, -415),     new Vector3(-725, 0, -370),
+            new Vector3(-725, 0, -430),     new Vector3(-725, 0, -355),
         };
         var posicionesCasasModelo2 = new List<Vector3>
         {
-            new Vector3(-8000, -400, 17090), new Vector3(100, 490, -2000),
-            new Vector3(100, 490, -6000), new Vector3(100, 900, -10000),
-            new Vector3(-6000, 600, -2000), new Vector3(-9000, 940, -10000),
-            new Vector3(-14100, -580, 14390)
+            new Vector3(200, 0, -150),      new Vector3(200, 0, -165),
+            new Vector3(200, 0, -180),      new Vector3(200, 0, -135),
+            new Vector3(200, 0, -120),      new Vector3(200, 0, -195),
 
+            new Vector3(-700, 0, -400),     new Vector3(-700, 0, -385),
+            new Vector3(-700, 0, -415),     new Vector3(-700, 0, -370),
+            new Vector3(-700, 0, -430),     new Vector3(-700, 0, -355),
         };
         var posicionesArbustos = new List<Vector3>
         {
@@ -360,14 +398,22 @@ public class ElementosLand
         foreach (var pos in posicionesCasasModelo1)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, scaleHouseModel0, 0);
+            var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, House.DefaultScaleHouse, 0);
+            Texture2D texture = ContentLoader.GetTexture("house", 0);
+            Texture2D normal = ContentLoader.GetNormal("house", 0);
+            casaModelo1.SetTexture(texture);
+            casaModelo1.SetNormal(normal);
             _gameElements.Add(casaModelo1);
         }
         foreach (var pos in posicionesCasasModelo2) // Cambiado a modelo 1
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var casaModelo3 = new House(ContentLoader.GetModel("house", 0), finalPos, scaleHouseModel1, 0f);
-            _gameElements.Add(casaModelo3);
+            var casaModelo2 = new House(ContentLoader.GetModel("house", 0), finalPos, House.DefaultScaleHouse, 180f);
+            Texture2D texture = ContentLoader.GetTexture("house", 0);
+            Texture2D normal = ContentLoader.GetNormal("house", 0);
+            casaModelo2.SetTexture(texture);
+            casaModelo2.SetNormal(normal);
+            _gameElements.Add(casaModelo2);
         }
         foreach (var pos in posicionesWalls1)
         {
@@ -409,7 +455,7 @@ public class ElementosLand
         var houseModel0TestHeight = Land.Height(50,50);
         Texture2D houseModel0TestTexture = ContentLoader.GetTexture("house", 0);
         Vector3 houseModel0TestPosition = new Vector3(50f, houseModel0TestHeight, 50f);
-        House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
+        House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, House.DefaultScaleHouse);
         houseModel0Test.SetTexture(houseModel0TestTexture);
         Texture2D houseModel0TextureNormal = ContentLoader.GetNormal("house", 0);
         houseModel0Test.SetNormal(houseModel0TextureNormal);

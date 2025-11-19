@@ -11,7 +11,7 @@ public class FollowCamera
     // Constantes de la cámara
     public const float DefaultFieldOfViewDegrees = MathHelper.PiOver4;
     public const float DefaultNearPlaneDistance = 1f;
-    public const float DefaultFarPlaneDistance = 2000f;
+    public const float DefaultFarPlaneDistance = 500f;
     public const float OrbitAngularSpeed = 0.35f;
     public const float OrbitVerticalAngle = 0.25f;
     // Matriz de vista y proyección de la cámara

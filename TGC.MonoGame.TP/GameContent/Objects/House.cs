@@ -9,6 +9,7 @@ namespace TGC.MonoGame.TP;
 
 public class House : GameObject
 {
+    public const float DefaultScaleHouse = 0.003f;
     private Effect _effect;
     // private BoxPrimitive boxPrimitive;
     // private Matrix boxWorld;

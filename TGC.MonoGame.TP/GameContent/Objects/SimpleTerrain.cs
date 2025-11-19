@@ -24,7 +24,7 @@ namespace TGC.MonoGame.TP
             Effect = effect;
 
             // cargo el heightmap
-            LoadHeightmap(graphicsDevice, heightMap, 10, .1f, Vector3.Zero);
+            LoadHeightmap(graphicsDevice, heightMap, 20, .1f, Vector3.Zero);
             // textura con el color Map
             colorMapTexture = colorMap;
             // diffuse maps auxiliares
