@@ -185,5 +185,7 @@ public class TGCGame : Game
         _tank.SetTreadmillNormal(treadmillsNormal);
         Texture2D projectileTexture = ContentLoader.GetTexture("projectile", 0);
         _tank.SetProjectileTexture(projectileTexture);
+        Texture2D projectileNormal = ContentLoader.GetNormal("projectile", 0);
+        _tank.SetProjectileNormal(projectileNormal);
     }
 }

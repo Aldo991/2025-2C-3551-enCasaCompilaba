@@ -23,6 +23,7 @@ public class Projectile : GameObject
     private Matrix sphereMatrix;
 
     public Projectile(Model model, Vector3 startPosition, Vector3 direction, Texture2D texture = null,
+        Texture2D normal = null,
         float speed = 100f, float lifetime = 3f, float scale = 0.00025f, float rotation = 0f)
     {
         _model = model;
@@ -38,6 +39,7 @@ public class Projectile : GameObject
         _texture = texture;
         _initialPosition = startPosition;
         _scale = scale;
+        _textureNormal = normal;
         sphereRadius = .2f;
         spherePrimitive = new SpherePrimitive(GameManager.GetGraphicsDevice());
         CreateBoundingBoxToDraw();
@@ -116,14 +118,22 @@ public class Projectile : GameObject
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
         // spherePrimitive.Draw(sphereMatrix, view, projection);
-        if (!_isActive)
-            return;
+        if (!_isActive) return;
 
-        // Set the View and Projection matrices, needed to draw every 3D model.
+        Vector3 specularColor = Color.White.ToVector3();
+        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
+
+        GameManager.SetIluminationParameters(
+            _effect,
+            inverseTransposeWorld,
+            specularColor
+        );
+
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Green.ToVector3());
         _effect.Parameters["Texture"]?.SetValue(_texture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_textureNormal);
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Green.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

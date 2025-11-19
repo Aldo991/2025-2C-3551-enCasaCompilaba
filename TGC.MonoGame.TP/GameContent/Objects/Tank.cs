@@ -27,6 +27,7 @@ public class Tank : GameObject
     private float _velocity;
     private Model _projectileModel;
     private Texture2D _projectileTexture;
+    private Texture2D _projectileNormal;
     private bool _isShooting;
     private float _life;
     private int _score;
@@ -72,7 +73,7 @@ public class Tank : GameObject
         profundidadCaja = 3.5f;
         mostrarCaja = false;
         Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 0);
         boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
         CreateBoundingBoxToDraw();
         CreateCollisionBox();
@@ -182,7 +183,7 @@ public class Tank : GameObject
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
             MediaPlayer.Play(_shootSound);
-        return new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture);
+        return new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture, _projectileNormal);
     }
     public Vector3 GetCannonDirection()
     {
@@ -200,6 +201,7 @@ public class Tank : GameObject
     }
     public void SetProjectileModel(Model model) => _projectileModel = model;
     public void SetProjectileTexture(Texture2D texture) => _projectileTexture = texture;
+    public void SetProjectileNormal(Texture2D texture) => _projectileNormal = texture;
     public override void Update(GameTime gameTime)
     {
         // body de la colisión
@@ -233,7 +235,7 @@ public class Tank : GameObject
         boxWorld = rotationMatrix * Matrix.CreateTranslation(_position);
 
         Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
+        Texture2D boxTexture = ContentLoader.GetTexture("house", 0);
         boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
 
         // Recalcular transforms absolutos luego de modificar los locales

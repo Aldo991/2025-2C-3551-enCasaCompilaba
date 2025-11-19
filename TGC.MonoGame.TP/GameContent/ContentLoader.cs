@@ -36,6 +36,7 @@ public static class ContentLoader
     private static Model[] _landModels;
     private static Model[] _projectileModels;
     private static Texture2D[] _projectileTextures;
+    private static Texture2D[] _projectileNormals;
     private static Model[] _stoneModels;
     private static Texture2D[] _stoneTextures;
     private static Model[] _tankModel;
@@ -72,6 +73,7 @@ public static class ContentLoader
         // Cargo los modelos de los proyectiles
         LoadProjectileModels(content);
         LoadProjectileTextures(content);
+        LoadProjectileNormals(content);
 
         // Cargo los modelos de piedras
         LoadStonesTextures(content);
@@ -133,19 +135,12 @@ public static class ContentLoader
         Effect effect = content.Load<Effect>("Effects/HouseShader");
         _houseModels[0] = content.Load<Model>("Models/houses/house0");
         foreach(var model in _houseModels)
-        {
-            foreach(var mesh in model.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                    meshPart.Effect = effect;
-            }
-        }
+            LoadEffectOnModel(model, effect);
     }
     private static void LoadHouseTextures(ContentManager content)
     {
-        _houseTextures = new Texture2D[4];
+        _houseTextures = new Texture2D[1];
         _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house0");
-        _houseTextures[1] = content.Load<Texture2D>("Textures/houses/house0-normal");
         // _houseTextures[3] = content.Load<Texture2D>("Textures/houses/caja-madera-3");
     }
     private static void LoadHouseNormals(ContentManager content)
@@ -171,25 +166,35 @@ public static class ContentLoader
     }
     private static void LoadProjectileModels(ContentManager content)
     {
+        /*
         var paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
         _projectileModels = new Model[paths.Length];
         for (int i = 0; i < paths.Length; i++)
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(paths[i]);
             _projectileModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderProjectiles + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "ProjectileShader");
             foreach (var mesh in _projectileModels[i].Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
             }
         }
+        */
+        _projectileModels = new Model[1];
+        _projectileModels[0] = content.Load<Model>("Models/projectiles/projectile0");
+        Effect effect = content.Load<Effect>("Effects/ProjectileShader");
+        foreach(var model in _projectileModels)
+            LoadEffectOnModel(model, effect);
     }
     private static void LoadProjectileTextures(ContentManager content)
     {
-        _projectileTextures = new Texture2D[2];
-        _projectileTextures[0] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderProjectiles + "/projectile0-base-color");
-        _projectileTextures[1] = content.Load<Texture2D>(ContentFolderTextures + ContentFolderProjectiles + "/projectile1");
+        _projectileTextures = new Texture2D[1];
+        _projectileTextures[0] = content.Load<Texture2D>("Textures/projectiles/projectile0-base-color");
+    }
+    private static void LoadProjectileNormals(ContentManager content)
+    {
+        _projectileNormals = new Texture2D[1];
+        _projectileNormals[0] = content.Load<Texture2D>("Textures/projectiles/projectile0-normal");
     }
     private static void LoadStonesTextures(ContentManager content)
     {
@@ -243,9 +248,7 @@ public static class ContentLoader
         _tankModel[0] = content.Load<Model>("Models/tanks/T90");
         Effect effect = content.Load<Effect>("Effects/TankShader");
         foreach(Model model in _tankModel)
-        {
             LoadEffectOnModel(model, effect);
-        }
     }
     private static void LoadTankTextures(ContentManager content)
     {
@@ -380,6 +383,7 @@ public static class ContentLoader
         return modelName switch
         {
             "house" => _houseNormals[index],
+            "projectile" => _projectileNormals[index],
             "tank" => _tankNormals[index],
             "tank-treadmills" => _tankTreadmillsNormals[index],
             _ => throw new ArgumentException("Invalid Texture Name"),

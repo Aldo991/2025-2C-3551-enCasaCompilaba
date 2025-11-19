@@ -18,11 +18,10 @@ public class ElementosLand
         _gameElements = new List<GameObject>();
         // Con 0.003f queda bien
         float scaleBushModel0 = 0.003f;
-        float scaleHouseModel0 = 0.003f;
         // float scaleProjectileModel0 = 0.001f;
         // Con 0.003f queda como una piedra más chica que la rueda.
         // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
-        float scaleStoneModel0 = 0.003f;
+        float scaleStoneModel0 = 0.0015f;
         float scaleStoneModel1 = 0.003f;
         // float scaleTankModel1 = 0.01f;
         // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol

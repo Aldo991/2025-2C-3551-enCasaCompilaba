@@ -199,25 +199,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/projectiles/projectile0.fbx;Models/projectiles/projectile0
 
-#begin Models/projectiles/projectile1.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/projectiles/projectile1.fbx;Models/projectiles/projectile1
-
 #begin Models/stones/SM_LittleRock_01.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -567,17 +548,17 @@
 /processorParam:TextureFormat=Color
 /build:Textures/projectiles/projectile0-base-color.png;Textures/projectiles/projectile0-base-color
 
-#begin Textures/projectiles/projectile1.jpg
+#begin Textures/projectiles/projectile0-normal.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=True
+/processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=True
+/processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/projectiles/projectile1.jpg;Textures/projectiles/projectile1
+/build:Textures/projectiles/projectile0-normal.png;Textures/projectiles/projectile0-normal
 
 #begin Textures/stones/stone0.jpg
 /importer:TextureImporter
