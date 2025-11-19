@@ -3,7 +3,6 @@ using BepuPhysics;
 using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using TGC.MonoGame.Samples.Collisions;
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -16,7 +15,6 @@ public class House : GameObject
     private float boxWidht;
     private float boxHeight;
     private float boxLength;
-    private GraphicsDevice graphicsDevice;
     public House(
         Model model,
         Vector3 position,
@@ -28,7 +26,6 @@ public class House : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        graphicsDevice = GameManager.GetGraphicsDevice();
         boxWidht = 10f;
         boxHeight = 4.5f;
         boxLength = 5f;
@@ -94,8 +91,9 @@ public class House : GameObject
         // boxPrimitive.Draw(boxWorld, view, projection);
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
-        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());
         _effect.Parameters["Texture"]?.SetValue(_texture);
+        _effect.Parameters["NormalTexture"]?.SetValue(_textureNormal);
+        _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
             _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);

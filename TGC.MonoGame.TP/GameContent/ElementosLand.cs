@@ -1,12 +1,10 @@
 ﻿#region Using Statements
-
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TGC.MonoGame.TP;
-
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -365,10 +363,10 @@ public class ElementosLand
             var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, scaleHouseModel0, 0);
             _gameElements.Add(casaModelo1);
         }
-        foreach (var pos in posicionesCasasModelo2)
+        foreach (var pos in posicionesCasasModelo2) // Cambiado a modelo 1
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var casaModelo3 = new House(ContentLoader.GetModel("house", 1), finalPos, scaleHouseModel1, 0f);
+            var casaModelo3 = new House(ContentLoader.GetModel("house", 0), finalPos, scaleHouseModel1, 0f);
             _gameElements.Add(casaModelo3);
         }
         foreach (var pos in posicionesWalls1)
@@ -409,21 +407,13 @@ public class ElementosLand
 
         /* Casas de prueba */
         var houseModel0TestHeight = Land.Height(50,50);
-        Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
+        Texture2D houseModel0TestTexture = ContentLoader.GetTexture("house", 0);
         Vector3 houseModel0TestPosition = new Vector3(50f, houseModel0TestHeight, 50f);
         House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, scaleHouseModel0);
-        houseModel0Test.SetTexture(houseModel2TestTexture);
+        houseModel0Test.SetTexture(houseModel0TestTexture);
+        Texture2D houseModel0TextureNormal = ContentLoader.GetNormal("house", 0);
+        houseModel0Test.SetNormal(houseModel0TextureNormal);
         _gameElements.Add(houseModel0Test);
-        /*
-        Vector3 houseModel1TestPosition = new Vector3(50f, 28f, 25f);
-        House houseModel1Test = new House(ContentLoader.GetModel("house", 1), houseModel1TestPosition, scaleHouseModel1);
-        houseModel1Test.SetTexture(houseModel2TestTexture);
-        _gameElements.Add(houseModel1Test);
-        Vector3 houseModel2TestPosition = new Vector3(50f, 28f, 0f);
-        House houseModel2Test = new House(ContentLoader.GetModel("house", 3), houseModel2TestPosition, scaleHouseModel2);
-        // Texture2D houseModel2TestTexture = ContentLoader.GetTexture("house", 1);
-        houseModel2Test.SetTexture(houseModel2TestTexture);
-        _gameElements.Add(houseModel2Test);
         /* Casas de prueba */
 
         /* Projectiles de prueba
@@ -522,7 +512,5 @@ public class ElementosLand
             if (camera.IsOnCamera(gameObject.GetBoundingBoxToDraw()))
                 gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
         }
-        // foreach(GameObject gameObject in _gameElements)
-            // gameObject.Draw(gameTime, camera.ViewMatrix, camera.ProjectionMatrix);
     }
 }

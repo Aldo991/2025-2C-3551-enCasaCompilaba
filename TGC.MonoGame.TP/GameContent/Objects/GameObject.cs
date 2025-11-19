@@ -55,7 +55,6 @@ public abstract class GameObject
     }
     public BodyHandle GetBodyHandle() => _bodyHandle;
     public Vector3 GetPosition() => _position;
-    public void SetNormal(Texture2D normal) => _textureNormal = normal;
     public void SetPosition(Vector3 position) => _position = position;
     public float GetScale() => _scale;
     public void SetScale(float scale) => _scale = scale;
@@ -63,4 +62,5 @@ public abstract class GameObject
     public void SetRotation(float rotation) => _rotation = rotation;
     public Texture2D GetTexture() => _texture;
     public void SetTexture(Texture2D texture) => _texture = texture;
+    public void SetNormal(Texture2D normal) => _textureNormal = normal;
 }

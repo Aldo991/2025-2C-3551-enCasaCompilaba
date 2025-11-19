@@ -56,7 +56,7 @@ struct VertexShaderInput
 {
 	float4 Position : POSITION0;
 	float2 TexCoord : TEXCOORD0;
-	float3 Normal : NORMAL0;
+	float4 Normal : NORMAL0;
     float4 Color : COLOR0;
 };
 
@@ -69,7 +69,24 @@ struct VertexShaderOutput
     float4 Color : COLOR0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
+float3 getNormalFromMap(float2 textureCoordinates, float3 worldPosition, float3 worldNormal)
+{
+    float3 tangentNormal = tex2D(NormalSampler, textureCoordinates).xyz * 2.0 - 1.0;
+
+    float3 Q1 = ddx(worldPosition);
+    float3 Q2 = ddy(worldPosition);
+    float2 st1 = ddx(textureCoordinates);
+    float2 st2 = ddy(textureCoordinates);
+
+    worldNormal = normalize(worldNormal.xyz);
+    float3 T = normalize(Q1 * st2.y - Q2 * st1.y);
+    float3 B = -normalize(cross(worldNormal, T));
+    float3x3 TBN = float3x3(T, B, worldNormal);
+
+    return normalize(mul(tangentNormal, TBN));
+}
+
+VertexShaderOutput MainVS(VertexShaderInput input)
 {
     // Variable de salida
 	VertexShaderOutput output = (VertexShaderOutput)0;
@@ -79,12 +96,15 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);	
 	// Vértice en espacio proyección
     output.Position = mul(viewPosition, Projection);
+	// Propagación de la posición en el mundo
+	output.WorldPosition = worldPosition;
 	// Propagación de textura
 	output.TexCoord = input.TexCoord;
 	// Propagación del color??? esto sirve??
     output.Color = input.Color;
 	// Normales del tanque
-	output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
+	output.Normal = mul(input.Normal, InverseTransposeWorld);
+
 
     return output;
 }
@@ -95,7 +115,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	float3 LightDirection = normalize(LightPosition - input.WorldPosition.xyz);
 	float3 viewDirection = normalize(EyePosition - input.WorldPosition.xyz);
 	float3 halfVector = normalize(LightDirection + viewDirection);
-	float3 normal = normalize(input.Normal.xyz);
+	// float3 normal = normalize(input.Normal.xyz);
+	float3 normal = getNormalFromMap(input.TexCoord, input.WorldPosition.xyz, normalize(input.Normal.xyz));
 	// Textura
 	float4 text = tex2D(TextureSampler, input.TexCoord);
 	// Luz difusa

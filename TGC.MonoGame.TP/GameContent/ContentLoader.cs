@@ -22,11 +22,9 @@ public static class ContentLoader
     public const string ContentFolderMusic = "Music/";
     public const string ContentFolderSpriteFonts = "SpriteFonts/";
     private const string ContentFolderBushes = "/bushes";
-    private const string ContentFolderHouses = "/houses";
     private const string ContentFolderLands = "/land";
     private const string ContentFolderProjectiles = "/projectiles";
     private const string ContentFolderStones = "/stones";
-    private const string ContentFolderTanks = "/tanks";
     private const string ContentFolderTrees = "/trees";
     private const string ContentFolderWalls = "/walls";
 
@@ -34,6 +32,7 @@ public static class ContentLoader
     private static Model[] _bushModels;
     private static Model[] _houseModels;
     private static Texture2D[] _houseTextures;
+    private static Texture2D[] _houseNormals;
     private static Model[] _landModels;
     private static Model[] _projectileModels;
     private static Texture2D[] _projectileTextures;
@@ -65,6 +64,7 @@ public static class ContentLoader
         // Cargo los modelos de casas
         LoadHouseModels(content);
         LoadHouseTextures(content);
+        LoadHouseNormals(content);
 
         // Cargo los modelos de terrenos
         LoadLandModels(content);
@@ -115,14 +115,26 @@ public static class ContentLoader
     }
     private static void LoadHouseModels(ContentManager content)
     {
+        /*
         var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderHouses + "/", "*.fbx");
         _houseModels = new Model[_paths.Length];
         for (int i = 0; i < _paths.Length; i++)
         {
             var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
             _houseModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderHouses + "/" + pathWithoutExtension);
-            Effect effect = content.Load<Effect>(ContentFolderEffects + "HouseShader");
             foreach (var mesh in _houseModels[i].Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                    meshPart.Effect = effect;
+            }
+        }
+        */
+        _houseModels = new Model[1];
+        Effect effect = content.Load<Effect>("Effects/HouseShader");
+        _houseModels[0] = content.Load<Model>("Models/houses/house0");
+        foreach(var model in _houseModels)
+        {
+            foreach(var mesh in model.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                     meshPart.Effect = effect;
@@ -133,9 +145,13 @@ public static class ContentLoader
     {
         _houseTextures = new Texture2D[4];
         _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house0");
-        _houseTextures[1] = content.Load<Texture2D>("Textures/houses/house3");
-        _houseTextures[2] = content.Load<Texture2D>("Textures/houses/house3-normal");
-        _houseTextures[3] = content.Load<Texture2D>("Textures/houses/caja-madera-3");
+        _houseTextures[1] = content.Load<Texture2D>("Textures/houses/house0-normal");
+        // _houseTextures[3] = content.Load<Texture2D>("Textures/houses/caja-madera-3");
+    }
+    private static void LoadHouseNormals(ContentManager content)
+    {
+        _houseNormals = new Texture2D[1];
+        _houseNormals[0] = content.Load<Texture2D>("Textures/houses/house0-normal");
     }
     private static void LoadLandModels(ContentManager content)
     {
@@ -228,11 +244,7 @@ public static class ContentLoader
         Effect effect = content.Load<Effect>("Effects/TankShader");
         foreach(Model model in _tankModel)
         {
-            foreach (var mesh in model.Meshes)
-            {
-                foreach(var meshPart in mesh.MeshParts)
-                    meshPart.Effect = effect;
-            }
+            LoadEffectOnModel(model, effect);
         }
     }
     private static void LoadTankTextures(ContentManager content)
@@ -324,6 +336,14 @@ public static class ContentLoader
         _heightmapTerrain[3] = content.Load<Texture2D>("Terrain/grass");
         _terrainEffect = content.Load<Effect>("Effects/Terrain");
     }
+    private static void LoadEffectOnModel(Model model, Effect effect)
+    {
+        foreach (var mesh in model.Meshes)
+        {
+            foreach (var meshPart in mesh.MeshParts)
+                meshPart.Effect = effect;
+        }
+    }
     public static Model GetModel(string modelName, int index)
     {
         return modelName switch
@@ -359,6 +379,7 @@ public static class ContentLoader
     {
         return modelName switch
         {
+            "house" => _houseNormals[index],
             "tank" => _tankNormals[index],
             "tank-treadmills" => _tankTreadmillsNormals[index],
             _ => throw new ArgumentException("Invalid Texture Name"),

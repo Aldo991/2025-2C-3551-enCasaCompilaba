@@ -64,7 +64,7 @@ struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
-	float4 WorldPosition: TEXCOORD1;
+	float4 WorldPosition : TEXCOORD1;
 	float4 Normal : TEXCOORD2;
 
 };
@@ -100,6 +100,8 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 	output.WorldPosition = worldPosition;
 	// Propagación de textura
 	output.TexCoord = input.TexCoord + float2(0, TreadmillsOffset);
+
+	
 	// Normales del tanque
 	output.Normal = mul(input.Normal, InverseTransposeWorld);
 	// output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
