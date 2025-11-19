@@ -90,16 +90,16 @@ public class Menu : HudState
     public override void Draw()
     {
         // Ancho y altura de la pantalla
-        int widht = GameManager.GetScreenWidth();
+        int width = GameManager.GetScreenWidth();
         int height = GameManager.GetScreenHeight();
 
         _spriteBatch.Begin();
         // Fondo del menú
-        _spriteBatch.Draw(_pixel, new Rectangle(0, 0, widht, height), new Color(0, 0, 0, 180));
+        _spriteBatch.Draw(_pixel, new Rectangle(0, 0, width, height), new Color(0, 0, 0, 180));
 
         string title = "TankWars";
         var titleSize = _font.MeasureString(title);
-        var center = new Vector2(widht / 2f, height / 5f);
+        var center = new Vector2(width / 2f, height / 5f);
 
         _spriteBatch.DrawString(_font, title, center - titleSize / 2f, Color.Yellow);
 

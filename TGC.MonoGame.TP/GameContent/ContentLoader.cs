@@ -27,9 +27,11 @@ public static class ContentLoader
     private const string ContentFolderStones = "/stones";
     private const string ContentFolderTrees = "/trees";
     private const string ContentFolderWalls = "/walls";
+    private const string ContentFolderGrass = "/grass";
 
     private static string _rootDirectory;
     private static Model[] _bushModels;
+    private static Texture2D[] _bushTextures;
     private static Model[] _houseModels;
     private static Texture2D[] _houseTextures;
     private static Texture2D[] _houseNormals;
@@ -53,14 +55,18 @@ public static class ContentLoader
     private static Song _shootTank;
     private static Texture2D[] _heightmapTerrain;
     private static Effect _terrainEffect;
+    private static Song _warBackground;
+    
 
     public static void Load(ContentManager content)
     {
         var aux1 = Directory.GetCurrentDirectory();
         _rootDirectory = Directory.GetParent(aux1).Parent.Parent.FullName + "/Content/";
+        LoadSong(content);
 
         // Cargo los modelos de arbustos
         LoadBushModels(content);
+        LoadBushTextures(content);
 
         // Cargo los modelos de casas
         LoadHouseModels(content);
@@ -91,6 +97,7 @@ public static class ContentLoader
         // Cargo los modelos de muros
         LoadWallModels(content);
         LoadWallTextures(content);
+        
 
         LoadSpriteFonts(content);
         LoadHudTextures(content);
@@ -98,7 +105,14 @@ public static class ContentLoader
 
         LoadHeightmapTerrain(content);
     }
+    
+    public static Song GetWarBackground() => _warBackground;
 
+    private static void LoadSong(ContentManager content)
+    {
+        _warBackground = content.Load<Song>(ContentFolderSounds + "war-background");
+        
+    }
     private static void LoadBushModels(ContentManager content)
     {
         var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderBushes + "/", "*.fbx");
@@ -305,11 +319,19 @@ public static class ContentLoader
             }
         }
     }
+    
     private static void LoadWallTextures(ContentManager content)
+         {
+             _wallTextures = new Texture2D[1];
+             _wallTextures[0] = content.Load<Texture2D>("Textures/walls/brickwall_4");
+         }
+    private static void LoadBushTextures(ContentManager content)
     {
-        _wallTextures = new Texture2D[1];
-        _wallTextures[0] = content.Load<Texture2D>("Textures/walls/brickwall_4");
+        _bushTextures = new Texture2D[1];
+        _bushTextures[0] = content.Load<Texture2D>("Textures/bushes/hojas");
     }
+   
+   
     private static void LoadSpriteFonts(ContentManager content)
     {
         _spriteFont = content.Load<SpriteFont>("hud/DefaultFont");
@@ -367,6 +389,7 @@ public static class ContentLoader
     {
         return modelName switch
         {
+            "bush" => _bushTextures[index],
             "house" => _houseTextures[index],
             "hud" => _hudTextures[index],
             "projectile" => _projectileTextures[index],

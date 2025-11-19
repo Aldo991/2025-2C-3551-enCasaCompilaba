@@ -452,6 +452,12 @@
 /processorParam:Quality=Best
 /build:Sounds/shoot.mp3
 
+#begin Sounds/war-background.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/war-background.mp3
+
 #begin Terrain/grass.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -499,6 +505,18 @@
 /processorParam:MakeSquare=True
 /processorParam:TextureFormat=Color
 /build:Terrain/heightmap-terrain.jpg
+
+#begin Textures/bushes/hojas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/bushes/hojas.png
 
 #begin Textures/houses/caja-madera-3.jpg
 /importer:TextureImporter

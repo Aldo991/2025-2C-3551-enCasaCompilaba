@@ -363,6 +363,8 @@ public class ElementosLand
             new Vector3(-15800, 1000, -14800), new Vector3(-15800, 990, -8400),
             new Vector3(-16000, 1090, -4800)
         };
+       
+
 
         foreach (var pos in posicionesArboles)
         {
@@ -443,12 +445,15 @@ public class ElementosLand
         var bushModel0TestHeight = Land.Height(25,30);
         Vector3 bushModel0TestPosition = new Vector3(25f, bushModel0TestHeight, 30f);
         Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
+        bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
         _gameElements.Add(bushModel0Test);
         var bushModel1TestHeight = Land.Height(20,30);
         Vector3 bushModel1TestPosition = new Vector3(20f, bushModel1TestHeight, 30f);
         Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition, scaleBushModel0);
+        bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
         _gameElements.Add(bushModel1Test);
         /* Arbustos de prueba */
+        
 
         /* Casas de prueba */
         var houseModel0TestHeight = Land.Height(50,50);

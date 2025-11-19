@@ -10,6 +10,8 @@ using System;
 using Microsoft.Xna.Framework.Input;
 using BepuPhysics.Collidables;
 using BepuPhysics;
+using Microsoft.Xna.Framework.Media;
+
 #endregion
 
 public enum GameState
@@ -124,10 +126,27 @@ public class GameManager
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
+        
         _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
         _physicManager.Update();
+        if (_state != GameState.Playing)
+            {
+                if (MediaPlayer.State != MediaState.Playing)
+                {
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = 0.4f;
+                    MediaPlayer.Play(ContentLoader.GetWarBackground());
+                }
+            }
+            else
+            {
+                // Si está jugando -> detener la música del menú
+                if (MediaPlayer.State == MediaState.Playing)
+                    MediaPlayer.Stop();
+            }
+            
     }
     public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
     {
