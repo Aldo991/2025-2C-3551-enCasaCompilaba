@@ -17,7 +17,7 @@ public class ElementosLand
         // Inicializo las variables
         _gameElements = new List<GameObject>();
         // Con 0.003f queda bien
-        float scaleBushModel0 = 0.003f;
+        // float scaleBushModel0 = 0.003f;
         // float scaleProjectileModel0 = 0.001f;
         // Con 0.003f queda como una piedra más chica que la rueda.
         // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
@@ -332,40 +332,86 @@ public class ElementosLand
             new Vector3(-700, 0, -415),     new Vector3(-700, 0, -370),
             new Vector3(-700, 0, -430),     new Vector3(-700, 0, -355),
         };
-        var posicionesArbustos = new List<Vector3>
+        var posicionesArbustos = new List<Vector2>
         {
-            new Vector3(-1000, 490, -1000), new Vector3(-2000, 490, -5000),
-            new Vector3(-2000, 490, -3400), new Vector3(-2500, 490, -5400),
-            new Vector3(-2500, 730, -9200), new Vector3(-3000, 490, -1200),
-            new Vector3(-3000, 490, -1800), new Vector3(-3000, 490, -9000),
-            new Vector3(-4000, 490, -3600), new Vector3(-4000, 490, -5200),
-            new Vector3(-3800, 490, -7200), new Vector3(-4500, 490, -5600),
-            new Vector3(-4500, 490, -9500), new Vector3(-5000, 490, -1500),
-            new Vector3(-5000, 490, -2000), new Vector3(-5000, 490, -9200),
-            new Vector3(-6000, 490, -3800), new Vector3(-7800, 490, -13800),
-            new Vector3(-6500, 590, -9800), new Vector3(-7000, 490, -1800),
-            new Vector3(-7000, 490, -2200), new Vector3(-7000, 490, -9400),
-            new Vector3(-8000, 490, -4000), new Vector3(-8500, 940, -10000),
-            new Vector3(-9000, 940, -2000), new Vector3(-9000, 940, -2400),
-            new Vector3(-9800, 1190, -14000), new Vector3(-9800, 990, -7800),
-            new Vector3(-10000, 490, -4200), new Vector3(-10000, 590, -6000),
-            new Vector3(-10000, 490, -5800), new Vector3(-10500, 1090, -10200),
-            new Vector3(-10500, 490, -6200), new Vector3(-11000, 490, -2500),
-            new Vector3(-11000, 490, -2600), new Vector3(-11800, 490, -8000),
-            new Vector3(-11800, 1190, -14200), new Vector3(-12000, 1090, -12000),
-            new Vector3(-12000, 490, -6200), new Vector3(-12000, 490, -4400),
-            new Vector3(-12500, 1190, -10500), new Vector3(-12500, 490, -6400),
-            new Vector3(-13000, 490, -2800), new Vector3(-13000, 690, -6600),
-            new Vector3(-13800, 1090, -14500), new Vector3(-13800, 990, -8200),
-            new Vector3(-14000, 490, -4600), new Vector3(-14000, 490, -6500),
-            new Vector3(-14500, 1190, -10800), new Vector3(-14500, 490, -6600),
-            new Vector3(-15000, 490, -3000), new Vector3(-15000, 990, -4600),
-            new Vector3(-15800, 1000, -14800), new Vector3(-15800, 990, -8400),
-            new Vector3(-16000, 1090, -4800)
-        };
-       
+            /* Grupos de arbustos */
+            new Vector2(-25, -10),       new Vector2(-30, -50),
+            new Vector2(-26.5f, -10),    new Vector2(-31.5f, -50),
+            new Vector2(-28, -10),       new Vector2(-33, -50),
+            new Vector2(-29.5f, -10),    new Vector2(-34.5f, -50),
+            new Vector2(-31, -10),       new Vector2(-36, -50),
+            new Vector2(-32.5f, -10),    new Vector2(-37.5f, -50),
+            new Vector2(-34f, -10),      new Vector2(-39, -50),
 
+            new Vector2(70, 40),       new Vector2(-30, 120),
+            new Vector2(71.5f, 40),    new Vector2(-31.5f, 120),
+            new Vector2(73, 40),       new Vector2(-33, 120),
+            new Vector2(74.5f, 40),    new Vector2(-34.5f, 120),
+            new Vector2(76, 40),       new Vector2(-36, 120),
+            new Vector2(77.5f, 40),    new Vector2(-37.5f, 120),
+            new Vector2(79f, 40),      new Vector2(-39, 120),
+            
+            new Vector2(110, -98),      new Vector2(130, 120),
+            new Vector2(111.5f, -98),   new Vector2(131.5f, 120),
+            new Vector2(113, -98),      new Vector2(133, 120),
+            new Vector2(114.5f, -98),   new Vector2(134.5f, 120),
+            new Vector2(116, -98),      new Vector2(136, 120),
+            new Vector2(117.5f, -98),   new Vector2(137.5f, 120),
+            new Vector2(119f, -98),     new Vector2(139, 120),
 
+            /* Arbusto aleatorios */
+            new Vector2(-32, 117),      new Vector2(200, -158),
+            new Vector2(-199, 0),       new Vector2(73, -45),
+            new Vector2(12, 198),       new Vector2(-7, -123),
+            new Vector2(45, 45),        new Vector2(-200, 200),
+            new Vector2(99, -100),      new Vector2(0, 0),
+            new Vector2(184, 13),       new Vector2(-88, 76),
+            new Vector2(37, -172),      new Vector2(-5, 5),
+            new Vector2(150, -49),      new Vector2(-140, 67),
+            new Vector2(23, -23),       new Vector2(-66, -66),
+            new Vector2(200, 200),      new Vector2(-1, 1),
+            new Vector2(58, -190),      new Vector2(-120, 120),
+            new Vector2(135, -135),     new Vector2(-77, 88),
+            new Vector2(4, -4),         new Vector2(-200, -199),
+            new Vector2(84, 95),        new Vector2(-34, 166),
+            new Vector2(11, 11),        new Vector2(-150, 150),
+            new Vector2(62, -62),       new Vector2(-3, 178),
+            new Vector2(190, -181),     new Vector2(-99, 99),
+            new Vector2(27, -83),       new Vector2(-56, 137),
+            new Vector2(0, 200),        new Vector2(-200, 0),
+            new Vector2(142, -142),     new Vector2(-15, 15),
+            new Vector2(76, -34),       new Vector2(-168, 69),
+            new Vector2(33, -167),      new Vector2(-44, 44),
+            new Vector2(129, -76),      new Vector2(-92, 185),
+            new Vector2(8, -8),         new Vector2(-111, 111),
+            new Vector2(55, -55),       new Vector2(-2, 2),
+            new Vector2(199, -199),     new Vector2(-183, 184),
+            new Vector2(101, -102),     new Vector2(-59, 60),
+            new Vector2(13, -114),      new Vector2(-47, 47),
+            new Vector2(68, -69),       new Vector2(-128, 129),
+            new Vector2(140, -141),     new Vector2(-30, 30),
+            new Vector2(7, 77),         new Vector2(-96, 96),
+            new Vector2(172, -173),     new Vector2(-21, 21),
+            new Vector2(46, -146),      new Vector2(-154, 154),
+            new Vector2(119, -120),     new Vector2(-80, 80),
+            new Vector2(3, -200),       new Vector2(195, -5),
+            new Vector2(-61, 131),      new Vector2(16, -116),
+            new Vector2(-39, 139),      new Vector2(85, -86),
+            new Vector2(-170, 171),     new Vector2(54, -154),
+            new Vector2(-9, 9),         new Vector2(182, -183),
+            new Vector2(-27, 127),      new Vector2(20, -120),
+            new Vector2(-142, 143),     new Vector2(64, -164),
+            new Vector2(-6, 6),         new Vector2(157, -158),
+            new Vector2(-135, 136),     new Vector2(30, -130),
+            new Vector2(-73, 173),      new Vector2(91, -92),
+            new Vector2(-18, 118),      new Vector2(39, -139),
+            new Vector2(-4, 104),       new Vector2(148, -149),
+            new Vector2(-86, 186),      new Vector2(21, -121),
+            new Vector2(-124, 125),     new Vector2(60, -160),
+            new Vector2(-10, 110),      new Vector2(170, -171),
+            new Vector2(-55, 155),      new Vector2(2, -102)
+        };   
+        
         foreach (var pos in posicionesArboles)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
@@ -392,8 +438,9 @@ public class ElementosLand
         }
         foreach (var pos in posicionesArbustos)
         {
-            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var bush = new Bush(ContentLoader.GetModel("bush", 0), finalPos, scaleBushModel0);
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
+            var bush = new Bush(ContentLoader.GetModel("bush", 1), finalPos);
+            bush.SetTexture(ContentLoader.GetTexture("bush", 0));
             _gameElements.Add(bush);
         }
         foreach (var pos in posicionesCasasModelo1)
@@ -441,21 +488,21 @@ public class ElementosLand
             _gameElements.Add(wall);
         }
 
-        /* Arbustos de prueba */
+        /* Arbustos de prueba
         var bushModel0TestHeight = Land.Height(25,30);
         Vector3 bushModel0TestPosition = new Vector3(25f, bushModel0TestHeight, 30f);
-        Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 0), bushModel0TestPosition, scaleBushModel0);
+        Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel0TestPosition);
         bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
         _gameElements.Add(bushModel0Test);
         var bushModel1TestHeight = Land.Height(20,30);
         Vector3 bushModel1TestPosition = new Vector3(20f, bushModel1TestHeight, 30f);
-        Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition, scaleBushModel0);
+        Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition);
         bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
         _gameElements.Add(bushModel1Test);
         /* Arbustos de prueba */
         
 
-        /* Casas de prueba */
+        /* Casas de prueba
         var houseModel0TestHeight = Land.Height(50,50);
         Texture2D houseModel0TestTexture = ContentLoader.GetTexture("house", 0);
         Vector3 houseModel0TestPosition = new Vector3(50f, houseModel0TestHeight, 50f);

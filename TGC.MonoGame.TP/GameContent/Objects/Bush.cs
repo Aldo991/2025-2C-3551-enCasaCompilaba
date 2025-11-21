@@ -11,15 +11,18 @@ namespace TGC.MonoGame.TP;
 public class Bush : GameObject
 {
     private Effect _effect;
+    private const float DefaultScaleBush = 0.003f;
     public Bush(
         Model model,
         Vector3 position,
-        float scale = 1f,
+        float scale = DefaultScaleBush,
         float rotation = 0f)
     {
+        var offset = 0.25f;
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _position = position;
+        _position.Y += offset;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
         _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
@@ -31,7 +34,7 @@ public class Bush : GameObject
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
-        Vector3 specularColor = Color.GreenYellow.ToVector3();
+        Vector3 specularColor = Color.LightYellow.ToVector3();
         Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
 
         GameManager.SetIluminationParameters(

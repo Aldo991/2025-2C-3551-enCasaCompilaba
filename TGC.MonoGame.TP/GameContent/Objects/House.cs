@@ -19,7 +19,7 @@ public class House : GameObject
     public House(
         Model model,
         Vector3 position,
-        float scale = 1f,
+        float scale = DefaultScaleHouse,
         float rotation = 0f)
     {
         _model = model;
