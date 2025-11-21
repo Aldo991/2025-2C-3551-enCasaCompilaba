@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 
 public class Button
 {
+    private const float DefaultScaleX = 0.05f;
+    private const float DefaultScaleY = 0.04f;
     private string _text;
     private Color _textColor;
     private Color _backgroundColor;
@@ -22,6 +24,7 @@ public class Button
         _text = text;
         _textColor = Color.White;
     }
+    /*
     public Button(Point center, string text = null)
     {
         Point point1 = new Point(center.X - 100, center.Y - 25);
@@ -29,6 +32,25 @@ public class Button
         var buttonWidth = point2.X - point1.X;
         var buttonHeight = point2.Y - point1.Y;
         _zoneButton = new Rectangle(point1.X, point1.Y, buttonWidth, buttonHeight);
+        _backgroundColor = Color.Gray;
+        _text = text;
+        _textColor = Color.White;
+    }
+    */
+    public Button(Point leftBottomCorner, string text)
+    {
+        int width = GameManager.GetScreenWidth();
+        int height = GameManager.GetScreenHeight();
+
+        int sizeX = (int)(width * DefaultScaleX);
+        int sizeY = (int)(height * DefaultScaleY);
+        Point point1 = new Point(leftBottomCorner.X, leftBottomCorner.Y);
+        _zoneButton = new Rectangle(
+            point1.X + Padding,
+            point1.Y + Padding,
+            sizeX - Padding,
+            sizeY - Padding
+        );
         _backgroundColor = Color.Gray;
         _text = text;
         _textColor = Color.White;

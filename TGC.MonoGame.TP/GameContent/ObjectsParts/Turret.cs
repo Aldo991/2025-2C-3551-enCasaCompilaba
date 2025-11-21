@@ -26,6 +26,7 @@ public class Turret
     private Texture2D _cannonNormal;
     private Matrix[] _boneTransform;
     private Vector3 _cannonDirection;
+    private float _sensitivity;
     public Turret(Model model)
     {
         _model = model;
@@ -35,6 +36,7 @@ public class Turret
         _boneTransform = new Matrix[_model.Bones.Count];
         _matrixTurretRotation = Matrix.CreateRotationZ(-_turretAngle);
         _matrixCannonRotation = Matrix.CreateRotationX(_cannonAngle);
+        _sensitivity = 0.001f;
         GetTurretMeshesAndBonesFromModel();
         GetCAnnonMeshesAndBonesFromModel();
     }
@@ -59,6 +61,7 @@ public class Turret
         return _matrixCannonRotation * _matrixTurretRotation * _boneTransform[_cannonMesh.ParentBone.Index];
     }
     public Vector3 GetCannonDirection() => _cannonDirection;
+    public void ChangeSensitivity(float sensitivity) => _sensitivity += sensitivity;
     public void Update(bool isPlayer)
     {
         if (isPlayer)
@@ -66,10 +69,10 @@ public class Turret
             int offsetX = GameManager.GetMousePositionX() - GameManager.GetScreenCenterWidth();
             int offsetY = GameManager.GetMousePositionY() - GameManager.GetScreenCenterHeight();
             // Torreta
-            _turretAngle += offsetX * 0.001f;
+            _turretAngle += offsetX * _sensitivity;
             _matrixTurretRotation = Matrix.CreateRotationZ(-_turretAngle);
             // Cannon
-            _cannonAngle += offsetY * 0.001f;
+            _cannonAngle += offsetY * _sensitivity;
             // _cannonAngle = (float)Math.Clamp((double)_cannonAngle, -0.2, 0.06);
             _matrixCannonRotation = Matrix.CreateRotationX(_cannonAngle);
         }

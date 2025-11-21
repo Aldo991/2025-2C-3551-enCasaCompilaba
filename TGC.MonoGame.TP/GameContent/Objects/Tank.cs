@@ -207,6 +207,7 @@ public class Tank : GameObject
     public void SetProjectileModel(Model model) => _projectileModel = model;
     public void SetProjectileTexture(Texture2D texture) => _projectileTexture = texture;
     public void SetProjectileNormal(Texture2D texture) => _projectileNormal = texture;
+    public void ChangeSensitivity(float sensitivity) => _turret.ChangeSensitivity(sensitivity);
     public override void Update(GameTime gameTime)
     {
         // body de la colisión

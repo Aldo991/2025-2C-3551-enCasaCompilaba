@@ -55,8 +55,8 @@ public class TGCGame : Game
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
         // Todo: revisar si debería estar en GameManager
-        InitializeTank();
 
+        InitializeTank();
         _gameManager.SetHudPlayer(_tank);
 
         _gameManager.CreateEnemies(2);
@@ -99,13 +99,7 @@ public class TGCGame : Game
                 _tank.SetIsShooting(true);
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
-            /*
-            if (kb.IsKeyDown(Keys.Subtract)) _tank.CambiarVida(-1f);
-            if (kb.IsKeyDown(Keys.Add)) _tank.CambiarVida(1f);
-            if (kb.IsKeyDown(Keys.O)) _tank.CambiarCaja();
-            if (kb.IsKeyDown(Keys.Up)) _tank.CambiarTamanioCaja(0.1f);
-            if (kb.IsKeyDown(Keys.Down)) _tank.CambiarTamanioCaja(-0.1f);
-            */
+
             if (kb.IsKeyDown(Keys.O)) GameManager.ModificarKAmbiente(0.1f);
             if (kb.IsKeyDown(Keys.I)) GameManager.ModificarKDiffuse(0.1f);
             if (kb.IsKeyDown(Keys.U)) GameManager.ModificarKSpecular(0.1f);

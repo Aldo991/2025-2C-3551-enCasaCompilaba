@@ -179,7 +179,7 @@ public class GameManager
     // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
     {
-        float radius = 350f;
+        float radius = 250f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
     }
     // Setea la información del juego, más que nada del mouse
@@ -196,6 +196,7 @@ public class GameManager
         _screenWidth = graphicsDevice.Viewport.Width;
         _screenHeight = graphicsDevice.Viewport.Height;
     }
+    #region StaticMethods
     // Entrega información de la posición del mouse y de la pantalla.
     public static int GetMousePositionX() => _mousePositionX;
     public static int GetMousePositionY() => _mousePositionY;
@@ -264,4 +265,5 @@ public class GameManager
         else if (KSpecular < 0)
             KSpecular = 0;
     }
+    #endregion
 }

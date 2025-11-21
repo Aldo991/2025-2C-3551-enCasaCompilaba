@@ -9,9 +9,10 @@ namespace TGC.MonoGame.TP;
 public class FollowCamera
 {
     // Constantes de la cámara
-    public const float DefaultFieldOfViewDegrees = MathHelper.PiOver4;
+    // public const float DefaultFieldOfViewDegrees = MathHelper.PiOver2;
+    public const float DefaultFieldOfViewDegrees = MathHelper.Pi;
     public const float DefaultNearPlaneDistance = 1f;
-    public const float DefaultFarPlaneDistance = 500f;
+    public const float DefaultFarPlaneDistance = 600f;
     public const float OrbitAngularSpeed = 0.35f;
     public const float OrbitVerticalAngle = 0.25f;
     // Matriz de vista y proyección de la cámara
@@ -27,25 +28,31 @@ public class FollowCamera
     private float Radius;
     private float VerticalAngle;
     private float HorizontalAngle;
-    private float Sensitivity;
+    // private float Sensitivity;
 
     public FollowCamera(
         float aspectRatio,
-        float radius, float sensitivity = 0.001f,
+        float radius,
+        // float sensitivity = 0.001f,
         float nearPlaneDistance = DefaultNearPlaneDistance,
         float farPlaneDistance = DefaultFarPlaneDistance,
         float fieldOfViewDegrees = DefaultFieldOfViewDegrees)
     {
         Radius = radius;
         HorizontalAngle = MathHelper.PiOver2;
-        VerticalAngle = 0.3f;
-        Sensitivity = sensitivity;
+        // VerticalAngle = 0.3f;
+        VerticalAngle = 0.45f;
+        // Sensitivity = sensitivity;
         BuildProjection(aspectRatio, nearPlaneDistance, farPlaneDistance, fieldOfViewDegrees);
         _boundingFrustum = new BoundingFrustum(View * Projection);
     }
     // Construye la proyección de la cámara
-    public void BuildProjection(float aspectRatio, float nearPlaneDistance, float farPlaneDistance,
-        float fieldOfViewDegrees)
+    public void BuildProjection(
+        float aspectRatio,
+        float nearPlaneDistance,
+        float farPlaneDistance,
+        float fieldOfViewDegrees
+    )
     {
         Projection = Matrix.CreatePerspectiveFieldOfView(
             MathHelper.ToRadians(fieldOfViewDegrees), aspectRatio, nearPlaneDistance, farPlaneDistance);
@@ -64,7 +71,7 @@ public class FollowCamera
     private Vector3 CalculateOffsetPosition(Vector3 direction)
     {
         direction *= Radius;
-        direction.Y += 200f;
+        // direction.Y += 150f;
         return direction;
     }
     // Este método setea la cámara detrás el tanque cuando se está jugando. Sería como el "Update"

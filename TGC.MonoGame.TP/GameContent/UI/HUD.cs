@@ -20,14 +20,16 @@ internal class Hud
         _dictHudStates = new Dictionary<GameState, HudState>()
         {
             {GameState.Menu, new Menu(graphicsDevice)},
-            {GameState.Options, new Options(graphicsDevice)},
+            {GameState.Options, new Options(graphicsDevice, player)},
             {GameState.Playing, new Playing(graphicsDevice, player)}
         };
     }
     public void SetPlayer(Tank player)
     {
         Playing state = (Playing)_dictHudStates.GetValueOrDefault(GameState.Playing);
+        Options optionState = (Options)_dictHudStates.GetValueOrDefault(GameState.Options);
         state.SetPlayer(player);
+        optionState.SetPlayer(player);
     }
     public void SetHudState(GameState gameState)
     {
