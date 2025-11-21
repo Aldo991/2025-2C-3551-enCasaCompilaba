@@ -28,6 +28,7 @@ public class Tank : GameObject
     private Model _projectileModel;
     private Texture2D _projectileTexture;
     private Texture2D _projectileNormal;
+    private List<Projectile> _projectiles;
     private bool _isShooting;
     private float _life;
     private int _score;
@@ -60,6 +61,7 @@ public class Tank : GameObject
         _boneTransforms = new Matrix[model.Bones.Count];
         _velocity = 0f;
         _isMovingforward = true;
+        _projectiles = new List<Projectile>();
         _wheels = new Wheels(_model);
         _wheels.SetWheelTexture(_texture);
         _wheels.SetTreadmillTexture(_texture);
@@ -183,8 +185,11 @@ public class Tank : GameObject
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
             MediaPlayer.Play(_shootSound);
-        return new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture, _projectileNormal);
+        Projectile p = new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture, _projectileNormal);
+        _projectiles.Add(p);
+        return p;
     }
+    public bool OwnProjectile(Projectile p) => _projectiles.Contains(p);
     public Vector3 GetCannonDirection()
     {
         Matrix cannonBoneTraslation = _turret.GetCannonTraslation();
