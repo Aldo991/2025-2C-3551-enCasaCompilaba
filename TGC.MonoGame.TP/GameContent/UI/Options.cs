@@ -73,6 +73,11 @@ public class Options : HudState
         _addEnemy = new Button(backPoint1, backPoint2, "+");
         _addEnemy.SetBackgroundColor(Color.Blue);
     }
+    private void CreateDeleteEnemyButton()
+    {
+        Point point = new Point();
+        _deleteEnemy = new Button(point, "+");
+    }
     private void CreateAddSensitivityButton()
     {
         Point point = new Point(1020, 200);
@@ -84,10 +89,6 @@ public class Options : HudState
         Point point = new Point(820, 200);
         _substractSensitivity = new Button(point, "-");
         _substractSensitivity.SetBackgroundColor(Color.Blue);
-    }
-    private void CreateDeleteEnemyButton()
-    {
-        
     }
     private void DrawButton(Button button)
     {

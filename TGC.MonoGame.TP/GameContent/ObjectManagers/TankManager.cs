@@ -18,6 +18,7 @@ public class TankManager
         _tanks = new List<Tank>();
     }
     // Agrega un tanque a la lista de tanques activos
+    public int GetSize() => _tanks.Count;
     public void AddTank(Tank tank)
     {
         _tanks.Add(tank);

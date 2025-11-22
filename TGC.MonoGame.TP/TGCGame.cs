@@ -66,7 +66,6 @@ public class TGCGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        // _gameManager.UpdatePhysics();
         // Seteo información como la posición del mouse
         _gameManager.SetGameInfo();
         // Estado de las teclas del teclado, es decir, si están presionadas o no, etc.

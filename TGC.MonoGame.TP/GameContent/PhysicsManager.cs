@@ -87,15 +87,26 @@ public class PhysicsManager
     }
     private void HandleProjectileHit(Tank tank, Projectile projectile, CollisionEvent collisionEvent)
     {
-        if (!tank.OwnProjectile(projectile))
+        if (!projectile.OwnShooter(tank))
         {
             tank.CambiarVida(-10);
-            _simulation.Bodies.Remove(projectile.GetBodyHandle());
-            _bodyToEntity.Remove(projectile.GetBodyHandle());
+            RemoveObjectFromPhysics(projectile);
             projectile.Desactivate();
             GameManager.RemoveProjectileFromProjectileManager(projectile);
+            Tank shooter = projectile.GetShooter();
+            shooter.AddScore(10);
             if (tank.GetLife() <= 0 && !tank.GetIsPlayer())
+            {
+                RemoveObjectFromPhysics(tank);
                 GameManager.RemoveTankFromTankManager(tank);
+                shooter.AddKill();
+            }
         }
+    }
+    private void RemoveObjectFromPhysics(GameObject gameObject)
+    {
+        var bodyHandle = gameObject.GetBodyHandle();
+        _simulation.Bodies.Remove(bodyHandle);
+        _bodyToEntity.Remove(bodyHandle);
     }
 }

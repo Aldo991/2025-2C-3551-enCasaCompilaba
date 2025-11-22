@@ -1,5 +1,6 @@
 #region Using Statements
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -25,6 +26,7 @@ public class Playing : HudState
     private float _compassAngle;
     private bool _showScoreboard;
     private int _fps;
+    private List<string> _hudStrings;
     public Playing(GraphicsDevice graphicsDevice, Tank player) : base(graphicsDevice)
     {
         
@@ -32,6 +34,7 @@ public class Playing : HudState
         _lifeBarTexture = ContentLoader.GetTexture("hud", 1);
         _compassTexture = ContentLoader.GetTexture("hud", 0);
         _showScoreboard = false;
+        _hudStrings = new List<string>();
         CalculateCompassPosition(); // instancia la variable _compassPosition
         CalculateLifeBarPosition(); // instancia la variable _lifeBarPosition
     }
@@ -56,6 +59,20 @@ public class Playing : HudState
         _lifeBarPosition = new Rectangle(lifeBarX, lifeBarY, lifeBarWidth, lifeBarHeight);
         _originalWidthLifeBar = lifeBarWidth;
     }
+    private void DrawString(List<string> strings)
+    {
+        int width = GameManager.GetScreenWidth();
+        int height = GameManager.GetScreenHeight();
+        float widthScale = 0.011f;
+        float heightScale = 0.02f;
+        int positionX = (int)(width * widthScale);
+        int positionY = (int)(height * heightScale);
+        for (int i = 0; i < strings.Count; i++)
+        {
+            Vector2 position = new Vector2(positionX, (i+1) * positionY);
+            _spriteBatch.DrawString(_font, strings[i], position, Color.White);
+        }
+    }
     public void SetPlayer(Tank player) => _player = player;
     public override void Update(GameTime gameTime)
     {
@@ -72,13 +89,25 @@ public class Playing : HudState
     {
 
         _spriteBatch.Begin();
+        List<string> stringsToDraw = new List<string>();
+        string score = "Puntaje: " + _player.GetScore().ToString();
+        string kills = "Bajas: " + _player.GetKills().ToString();
+        string totalEnemies = "Enemigos Restantes: " + GameManager.TotalEnemies().ToString();
+        string positionX = "X: " + _player.GetPosition().X.ToString();
+        string positionY = "Y: " + _player.GetPosition().Y.ToString();
+        string positionZ = "Z: " + _player.GetPosition().Z.ToString();
+        string fps = "FPS: " + _fps.ToString();
+
+        stringsToDraw.Add(score);
+        stringsToDraw.Add(kills);
+        stringsToDraw.Add(totalEnemies);
+        stringsToDraw.Add(positionX);
+        stringsToDraw.Add(positionY);
+        stringsToDraw.Add(positionZ);
+        stringsToDraw.Add(fps);
 
         // Score en la esquina superior izquierda
-        _spriteBatch.DrawString(_font, $"Bajas/Muertes: {_player.GetScore()}", new Vector2(20, 20), Color.White);
-        _spriteBatch.DrawString(_font, $"X: {_player.GetPosition().X}", new Vector2(20, 60), Color.White);
-        _spriteBatch.DrawString(_font, $"Y: {_player.GetPosition().Y}", new Vector2(20, 80), Color.White);
-        _spriteBatch.DrawString(_font, $"Z: {_player.GetPosition().Z}", new Vector2(20, 100), Color.White);
-        _spriteBatch.DrawString(_font, $"FPS: {_fps}", new Vector2(20, 120), Color.White);
+        DrawString(stringsToDraw);
 
         // Texto "Salud" encima de la barra
         // _spriteBatch.DrawString(_font, "Salud", new Vector2(screenWidth * 0.02f, screenHeight - lifeBarHeight - padding - _font.MeasureString("Salud").Y), Color.White);

@@ -32,6 +32,7 @@ public class Tank : GameObject
     private bool _isShooting;
     private float _life;
     private int _score;
+    private int _kills;
     private bool _isPlayer;
     private EnemyAction _enemyAction;
     private Song _shootSound;
@@ -108,6 +109,7 @@ public class Tank : GameObject
     public void SetLife(float life) => _life = life;
     public float LifePercent() => _life / InitialLife;
     public int GetScore() => _score;
+    public int GetKills() => _kills;
     public void SetTreadmillTexture(Texture2D texture) => _wheels.SetTreadmillTexture(texture);
     public void SetTreadmillNormal(Texture2D texture) => _wheels.SetTreadmillNormal(texture);
     public void SetScore(int score) => _score = score;
@@ -185,7 +187,7 @@ public class Tank : GameObject
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
             MediaPlayer.Play(_shootSound);
-        Projectile p = new Projectile(_projectileModel, cannonPos, cannonDirection, _projectileTexture, _projectileNormal);
+        Projectile p = new Projectile(_projectileModel, cannonPos, cannonDirection, this, _projectileTexture, _projectileNormal);
         _projectiles.Add(p);
         return p;
     }
@@ -283,6 +285,8 @@ public class Tank : GameObject
         _wheels.Draw(_world, view, projection);
     }
     public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
+    public void AddKill() => _kills += 1;
+    public void AddScore(int points) => _score += points;
     #region PRIVATE METHODS
     private void MeshesTanque()
     {

@@ -21,16 +21,17 @@ public class Projectile : GameObject
     private SpherePrimitive spherePrimitive;
     private float sphereRadius;
     private Matrix sphereMatrix;
+    private Tank _shooter;
 
-    public Projectile(Model model, Vector3 startPosition, Vector3 direction, Texture2D texture = null,
-        Texture2D normal = null,
+    public Projectile(Model model, Vector3 startPosition, Vector3 direction, Tank tank,
+        Texture2D texture = null, Texture2D normal = null,
         float speed = 100f, float lifetime = 3f, float scale = 0.00025f, float rotation = 0f)
     {
         _model = model;
         _effect = model.Meshes[0].MeshParts[0].Effect;
         _direction = Vector3.Normalize(direction);
-        // _position = startPosition + (3 * _direction);
         _position = startPosition + Offset();
+        _shooter = tank;
         _speed = speed;
         _lifeTime = lifetime;
         _elapsedTime = 0;
@@ -86,6 +87,8 @@ public class Projectile : GameObject
         var directionZ = _direction.Z * _speed;
         return new Vector3(directionX, directionY, directionZ);
     }
+    public bool OwnShooter(Tank tank) => _shooter == tank;
+    public Tank GetShooter() => _shooter;
     public override void Update(GameTime gameTime)
     {
         BodyReference body = GameManager.GetBodyReference(_bodyHandle);

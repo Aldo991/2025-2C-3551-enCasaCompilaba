@@ -240,7 +240,7 @@ public class GameManager
         effect.Parameters["KSpecular"].SetValue(KSpecular);
         effect.Parameters["Shininess"].SetValue(Shininess);
     }
-
+    public static int TotalEnemies() => _tankManager.GetSize();
     public static void ModificarKAmbiente(float cant)
     {
         KAmbient += cant;
