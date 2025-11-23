@@ -59,7 +59,7 @@ public class TGCGame : Game
         InitializeTank();
         _gameManager.SetHudPlayer(_tank);
 
-        _gameManager.CreateEnemies(2);
+        _gameManager.CreateEnemies(10);
 
         base.LoadContent();
     }

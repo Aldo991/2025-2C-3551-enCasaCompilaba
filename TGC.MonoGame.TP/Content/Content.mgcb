@@ -104,6 +104,18 @@
 /processorParam:TextureFormat=Color
 /build:hud/health.png
 
+#begin hud/red-arrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:hud/red-arrow.png
+
 #begin Models/bushes/bush0.fbx
 /importer:FbxImporter
 /processor:ModelProcessor

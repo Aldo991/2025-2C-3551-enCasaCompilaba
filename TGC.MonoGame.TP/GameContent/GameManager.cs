@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using BepuPhysics.Collidables;
 using BepuPhysics;
 using Microsoft.Xna.Framework.Media;
+using System.Collections.Generic;
 
 #endregion
 
@@ -241,6 +242,7 @@ public class GameManager
         effect.Parameters["Shininess"].SetValue(Shininess);
     }
     public static int TotalEnemies() => _tankManager.GetSize();
+    public static List<Vector3> GetEnemiesPosition() => _tankManager.GetPositions();
     public static void ModificarKAmbiente(float cant)
     {
         KAmbient += cant;
