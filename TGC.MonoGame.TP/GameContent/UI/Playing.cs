@@ -18,8 +18,8 @@ public class Playing : HudState
     private const float CompassScaleYPosition = .1f;
     private const float CompassWidth = .18f;
     private const float CompassHeight = .18f;
-    private const float LifeBarScaleXPosition = 0.05f;
-    private const float LifeBarScaleYPosition = 0.95f;
+    private const float LifeBarScaleXPosition = 0.03f;
+    private const float LifeBarScaleYPosition = 0.98f;
     private const float LifeBarWidth = 0.25f;
     private const float LifeBarHeight = 0.04f;
     private const float EnemyArrowsScale = 0.41f;
@@ -129,10 +129,9 @@ public class Playing : HudState
             );
             // Calculo el alfa de la flecha, dependiendo de la distancia hacia el jugador
             float distance = Vector2.Distance(enemyPosition, playerPosition);
+            byte distanceByte = (byte)Math.Clamp(distance, 20, 255);
             Color colorEnemyArrow = Color.White;
-            colorEnemyArrow.A = (byte)(255 - distance);
-            if (colorEnemyArrow.A < 20)
-                colorEnemyArrow.A = 20;
+            colorEnemyArrow.A = (byte)(255 - distanceByte);
             EnemyArrowInfo info = new EnemyArrowInfo
             {
                 position = arrowPosition,
