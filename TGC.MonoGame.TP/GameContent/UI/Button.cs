@@ -1,4 +1,5 @@
 
+using System;
 using Microsoft.Xna.Framework;
 
 public class Button
@@ -10,13 +11,15 @@ public class Button
     private Color _backgroundColor;
     private Rectangle _zoneButton;
     private const int Padding = 10;
-    public Button(Point point1, Point point2, string text = null)
+    public Action _action;
+    public Button(Point point1, Point point2, string text = "")
     {
         var buttonWidth = point2.X - point1.X;
-        var buttonHeight = point2.Y - point1.Y;
+        // var buttonHeight = point2.Y - point1.Y;
+        var buttonHeight = point1.Y - point2.Y;
         _zoneButton = new Rectangle(
             point1.X + Padding,
-            point1.Y + Padding,
+            point2.Y + Padding,
             buttonWidth - Padding,
             buttonHeight - Padding
         );
@@ -24,19 +27,6 @@ public class Button
         _text = text;
         _textColor = Color.White;
     }
-    /*
-    public Button(Point center, string text = null)
-    {
-        Point point1 = new Point(center.X - 100, center.Y - 25);
-        Point point2 = new Point(center.X + 100, center.Y + 25);
-        var buttonWidth = point2.X - point1.X;
-        var buttonHeight = point2.Y - point1.Y;
-        _zoneButton = new Rectangle(point1.X, point1.Y, buttonWidth, buttonHeight);
-        _backgroundColor = Color.Gray;
-        _text = text;
-        _textColor = Color.White;
-    }
-    */
     public Button(Point leftBottomCorner, string text)
     {
         int width = GameManager.GetScreenWidth();

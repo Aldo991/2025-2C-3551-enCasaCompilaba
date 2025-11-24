@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,10 +8,13 @@ namespace TGC.MonoGame.TP;
 public class Options : HudState
 {
     private Button _backButton;
+    private Button _addRound;
+    private Button _removeRound;
     private Button _addEnemy;
-    private Button _deleteEnemy;
+    private Button _removeEnemy;
     private Button _addSensitivity;
     private Button _substractSensitivity;
+    private List<Button> _buttons;
     private bool _mousePressedLast;
     private GameManager _gameManager;
     private Tank _player;
@@ -19,64 +23,102 @@ public class Options : HudState
         _player = player;
         _gameManager = GameManager.Instance;
         _mousePressedLast = false;
+        _buttons = new List<Button>();
 
         int width = GameManager.GetScreenWidth();
         int height = GameManager.GetScreenHeight();
 
         // estas son las medidas de un cuadrado donde van a ir los botones
-        int x1 = (int)Math.Round((double)(width * 0 / 10));
-        int y1 = (int)Math.Round((double)(height * 4 / 10));
-        int x2 = (int)Math.Round((double)(width * 1 / 10));
-        int y2 = (int)Math.Round((double)(height * 6 / 10));
+        // Por lo menos el botón de volver
+        int x1 = (int)(width * 0 / 10);
+        int y1 = (int)(height * 6 / 10);
+        int x2 = (int)(width * 1 / 10);
+        int y2 = (int)(height * 4 / 10);
+        Point leftDownMenuButtons = new Point(x1, y1);
+        Point rightUpMenuButtons = new Point(x2, y2);
 
-        var x1BackButton = x1;
-        var y1BackButton = y1 + (y2 - y1) * 4 / 5;
-        var x2BackButton = (x2 + x1) / 2;
-        var y2BackButton = y2;
+        CreateBackButton(leftDownMenuButtons, rightUpMenuButtons);
+
+        // Estas van a ser las medidas donde van a ir las opciones
+        int x1LeftSettings = (int)(width * 3 / 10);
+        int y1BottomSettings = (int)(height * 8 / 10);
+        int x2RightSettings = (int)(width * 7 / 10);
+        int y2UpSettings = (int)(height * 2 / 10);
+
+        Point leftDown = new Point(x1LeftSettings, y1BottomSettings);
+        Point rightUp = new Point(x2RightSettings, y2UpSettings);
+
+        // botonTest = new Button(punto1, punto2, "");
+
+        CreateOptions(leftDown, rightUp);
+        // CreateAddSensitivityButton();
+        // CreateSubstractSensitivityButton();
+    }
+    private void CreateBackButton(Point leftUp, Point rightDown)
+    {
+        var x1BackButton = leftUp.X;
+        var y1BackButton = leftUp.Y + (rightDown.Y - leftUp.Y) * 4 / 5;
+        var x2BackButton = (rightDown.X + leftUp.X) / 2;
+        var y2BackButton = rightDown.Y;
         Point backPoint1 = new Point(x1BackButton, y1BackButton);
         Point backPoint2 = new Point(x2BackButton, y2BackButton);
-
-        var xSize = x2BackButton - x1BackButton;
-        var ySize = y2BackButton - y1BackButton;
-
         _backButton = new Button(backPoint1, backPoint2, "Volver");
-
-        CreateAddEnemyButton();
-        CreateDeleteEnemyButton();
-        CreateAddSensitivityButton();
-        CreateSubstractSensitivityButton();
+        _backButton._action = () =>
+        {
+            _gameManager.SetState(GameState.Menu);
+        };
+        _buttons.Add(_backButton);
     }
-    private void CreateAddEnemyButton()
+    private void CreateOptions(Point leftDown, Point rightUp)
     {
-        int width = GameManager.GetScreenWidth();
-        int height = GameManager.GetScreenHeight();
+        // int width = leftDown.X - rightUp.X;
+        int height = rightUp.Y - leftDown.Y;
+        int optionHeight = (int)(height / 5);
+        Point option1 = new Point(leftDown.X, leftDown.Y + 4 * optionHeight);
+        Point option11 = new Point(rightUp.X, rightUp.Y - optionHeight);
 
-        // estas son las medidas de un cuadrado donde van a ir los botones
-        /*
-        int x1 = (int)Math.Round((double)(width * 4 / 10));
-        int y1 = (int)Math.Round((double)(height * 4 / 10));
-        int x2 = (int)Math.Round((double)(width * 5 / 10));
-        int y2 = (int)Math.Round((double)(height * 6 / 10));
-
-        var x1BackButton = x1;
-        var y1BackButton = y1 + (y2 - y1) * 4 / 5;
-        var x2BackButton = (x2 + x1) / 2;
-        var y2BackButton = y2;
-        */
-        int x1Button = (int)(width * .60);
-        int x2Button = (int)(width * .62);
-        int y1Button = (int)(height * .30);
-        int y2Button = (int)(height * .33);
-        Point backPoint1 = new Point(x1Button, y1Button);
-        Point backPoint2 = new Point(x2Button, y2Button);
-
-        _addEnemy = new Button(backPoint1, backPoint2, "+");
-        _addEnemy.SetBackgroundColor(Color.Blue);
+        CreateMaxRounds(option1, option11);
+        option1.Y -= optionHeight;
+        option11.Y -= optionHeight;
+        CreateTotalEnemies(option1, option11);
     }
-    private void CreateDeleteEnemyButton()
+    private void CreateMaxRounds(Point leftDown, Point rightUp)
     {
-        Point point = new Point();
-        _deleteEnemy = new Button(point, "+");
+        int width = rightUp.X - leftDown.X;
+        int y1Buttons = leftDown.Y;
+
+        // string text = "Rondas totales";
+
+        int x1MinusButton = (int)(width * .70) + leftDown.X;
+        Point leftBottomMinus = new Point(x1MinusButton, y1Buttons);
+        _removeRound = new Button(leftBottomMinus, "-");
+        _removeRound._action = () => GameManager.ChangeMaxRounds(-1);
+
+        int x1AddButton = (int)(width * .85) + leftDown.X;
+        Point leftBottomAdd = new Point(x1AddButton, y1Buttons);
+        _addRound = new Button(leftBottomAdd, "+");
+        _addRound._action = () => GameManager.ChangeMaxRounds(1);
+
+        _buttons.Add(_removeRound);
+        _buttons.Add(_addRound);
+    }
+    private void CreateTotalEnemies(Point leftDown, Point rightUp)
+    {
+        int width = rightUp.X - leftDown.X;
+        int y1Buttons = leftDown.Y;
+
+        int x1MinusButton = (int)(width * .70) + leftDown.X;
+        Point leftBottomMinus = new Point(x1MinusButton, y1Buttons);
+        _removeEnemy = new Button(leftBottomMinus, "-");
+        _removeEnemy._action = () => GameManager.ChangeEnemiesPerRound(-1);
+
+        int x1AddButton = (int)(width * .85) + leftDown.X;
+        Point leftBottomAdd = new Point(x1AddButton, y1Buttons);
+        _addEnemy = new Button(leftBottomAdd, "+");
+        _addEnemy._action = () => GameManager.ChangeEnemiesPerRound(1);
+
+        _buttons.Add(_removeEnemy);
+        _buttons.Add(_addEnemy);
     }
     private void CreateAddSensitivityButton()
     {
@@ -109,29 +151,21 @@ public class Options : HudState
         var point = new Point(mouseX, mouseY);
         bool leftMouseButtonPressed = GameManager.GetLeftButtonMousePressed();
         // pinto del texto de color si el mouse está encima
-        if (_backButton.Contains(point))
-            _backButton.SetTextColor(Color.Blue);
-        else
-            _backButton.SetTextColor(Color.White);
-        if (_addSensitivity.Contains(point))
-            _addSensitivity.SetTextColor(Color.Blue);
-        else
-            _addSensitivity.SetTextColor(Color.White);
-        if (_substractSensitivity.Contains(point))
-            _substractSensitivity.SetTextColor(Color.Blue);
-        else
-            _substractSensitivity.SetTextColor(Color.White);
-        
+        foreach(Button button in _buttons)
+        {
+            if (button.Contains(point))
+                button.SetTextColor(Color.Blue);
+            else
+                button.SetTextColor(Color.White);
+        }
         // reviso si se hizo click en el botón
         if (leftMouseButtonPressed && !_mousePressedLast)
         {
-            if (_backButton.Contains(point))
-                _gameManager.SetState(GameState.Menu);
-            if (_addSensitivity.Contains(point))
-                _player.ChangeSensitivity(0.001f);
-            if (_substractSensitivity.Contains(point))
-                _player.ChangeSensitivity(-0.001f);
-
+            foreach(Button button in _buttons)
+            {
+                if (button.Contains(point))
+                    button._action();
+            }
         }
         _mousePressedLast = leftMouseButtonPressed;
     }
@@ -151,16 +185,13 @@ public class Options : HudState
         _spriteBatch.DrawString(_font, title, center - titleSize / 2f, Color.Yellow);
 
         DrawButton(_backButton);
-        // DrawButton(_addEnemy);
-        DrawButton(_addSensitivity);
-        DrawButton(_substractSensitivity);
-        /*
-        // dibujo el botón volver
-        _spriteBatch.Draw(_pixel, _backButton.GetRectangle(), _backButton.GetBackgroundColor());
-        // dibujo el texto volver en el botón
-        var backSize = _font.MeasureString(_backButton.GetText());
-        _spriteBatch.DrawString(_font, _backButton.GetText(), _backButton.GetCenter() - backSize / 2f, _backButton.GetTextColor());
-        */
+        // DrawButton(_addSensitivity);
+        // DrawButton(_substractSensitivity);
+        // DrawButton(botonTest);
+        DrawButton(_removeRound);
+        DrawButton(_addRound);
+        DrawButton(_removeEnemy);
+        DrawButton(_addEnemy);
 
         _spriteBatch.End();
     }

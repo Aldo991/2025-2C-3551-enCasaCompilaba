@@ -19,7 +19,7 @@ public class Playing : HudState
     private const float CompassWidth = .18f;
     private const float CompassHeight = .18f;
     private const float LifeBarScaleXPosition = 0.03f;
-    private const float LifeBarScaleYPosition = 0.98f;
+    private const float LifeBarScaleYPosition = 0.95f;
     private const float LifeBarWidth = 0.25f;
     private const float LifeBarHeight = 0.04f;
     private const float EnemyArrowsScale = 0.41f;
@@ -199,19 +199,25 @@ public class Playing : HudState
         List<string> stringsToDraw = new List<string>();
         string score = "Puntaje: " + _player.GetScore().ToString();
         string kills = "Bajas: " + _player.GetKills().ToString();
-        string totalEnemies = "Enemigos Restantes: " + GameManager.TotalEnemies().ToString();
         string positionX = "X: " + _player.GetPosition().X.ToString();
         string positionY = "Y: " + _player.GetPosition().Y.ToString();
         string positionZ = "Z: " + _player.GetPosition().Z.ToString();
         string fps = "FPS: " + _fps.ToString();
+        string totalEnemies = "Enemigos Restantes: " + GameManager.TotalEnemies().ToString();
+        string actualRound = "Ronda actual: " + GameManager.GetActualRound().ToString();
+        string totalEnemiesPerRound = "Enemigos por ronda: " + GameManager.GetEnemiesPerRound().ToString();
+        string totalRounds = "Rondas totales: " + GameManager.GetMaxRounds().ToString();
 
         stringsToDraw.Add(score);
         stringsToDraw.Add(kills);
-        stringsToDraw.Add(totalEnemies);
         stringsToDraw.Add(positionX);
         stringsToDraw.Add(positionY);
         stringsToDraw.Add(positionZ);
         stringsToDraw.Add(fps);
+        stringsToDraw.Add(totalEnemies);
+        stringsToDraw.Add(actualRound);
+        stringsToDraw.Add(totalEnemiesPerRound);
+        stringsToDraw.Add(totalRounds);
 
         // Score en la esquina superior izquierda
         DrawString(stringsToDraw);

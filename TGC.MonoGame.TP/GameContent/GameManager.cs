@@ -24,11 +24,9 @@ public class GameManager
     private static readonly Vector3 LigthPosition = new Vector3(10000, 500, 10000);
     private static readonly Vector3 Ambientcolor = Color.LightYellow.ToVector3();
     private static readonly Vector3 SpecularColor = Color.White.ToVector3();
-    /*
-    private const float KAmbient = 0.2f;
-    private const float KDiffuse = 0.6f;
-    private const float KSpecular = 0.2f;
-    */
+    private static int TotalRounds;
+    private static int ActualRound;
+    private static int EnemiesPerRound;
     private static float KAmbient = 0.2f;
     private static float KDiffuse = 0.6f;
     private static float KSpecular = 0.4f;
@@ -65,6 +63,9 @@ public class GameManager
     // Inicializa las variables del GameManager
     public void Initialize(GraphicsDevice graphicsDevice, Tank player)
     {
+        TotalRounds = 3;
+        ActualRound = 0;
+        EnemiesPerRound = 1;
         _graphicsDevice = graphicsDevice;
         _physicManager = PhysicsManager.Instance;
         SetScreenInfo(graphicsDevice);
@@ -96,7 +97,7 @@ public class GameManager
     // Permite mostrar el scoreboard, no está implementado
     public void SetScoreboard(bool mode) => _hud.SetScoreboard(mode);
     // Método auxiliar para crear enemigos
-    public void CreateEnemies(int amount)
+    public static void CreateEnemies(int amount)
     {
         for (int i = 0; i < amount; i++)
         {    
@@ -180,7 +181,7 @@ public class GameManager
     // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
     {
-        float radius = 250f;
+        float radius = 15f;
         _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
     }
     // Setea la información del juego, más que nada del mouse
@@ -222,7 +223,19 @@ public class GameManager
     public static void RemoveProjectileFromProjectileManager(Projectile projectile)
         => _projectileManager.DeleteProjectile(projectile);
     public static void RemoveTankFromTankManager(Tank tank)
-        => _tankManager.DeleteTank(tank);
+    {
+        _tankManager.DeleteTank(tank);
+        if (TotalEnemies() == 0)
+        {
+            if (GetActualRound() < GetMaxRounds())
+            {
+                CreateEnemies(EnemiesPerRound);
+                ActualRound += 1;
+            }
+            // else
+                // _state = GameState.Win;
+        }
+    }
     public static void SetIluminationParameters(
         Effect effect,
         Matrix inverseTransposeWorld,
@@ -267,5 +280,10 @@ public class GameManager
         else if (KSpecular < 0)
             KSpecular = 0;
     }
+    public static void ChangeMaxRounds(int i) => TotalRounds += i;
+    public static void ChangeEnemiesPerRound(int i) => EnemiesPerRound += i;
+    public static int GetMaxRounds() => TotalRounds;
+    public static int GetActualRound() => ActualRound;
+    public static int GetEnemiesPerRound() => EnemiesPerRound;
     #endregion
 }

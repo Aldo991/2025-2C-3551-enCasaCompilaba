@@ -342,15 +342,6 @@ public static class ContentLoader
         _hudTextures[0] = content.Load<Texture2D>("hud/Brujula");
         _hudTextures[1] = content.Load<Texture2D>("hud/health");
         _hudTextures[2] = content.Load<Texture2D>("hud/red-arrow");
-        /*
-        var _paths = Directory.GetFiles(_rootDirectory + ContentFolderHuds + "/", "*.png");
-        _hudTextures = new Texture2D[_paths.Length];
-        for (int i = 0; i < _paths.Length; i++)
-        {
-            var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-            _hudTextures[i] = content.Load<Texture2D>(ContentFolderHuds + "/" + pathWithoutExtension);
-        }
-        */
         // 0 es brújula, 1 health, 2 es flecha
     }
     private static void LoadSounds(ContentManager content)
