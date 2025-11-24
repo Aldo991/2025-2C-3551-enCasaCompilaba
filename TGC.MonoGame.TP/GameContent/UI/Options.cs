@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,9 +8,13 @@ namespace TGC.MonoGame.TP;
 
 public class Options : HudState
 {
-    private Button _addSensitivity;
-    private Button _substractSensitivity;
+    private struct OptionTextPositions
+    {
+        public Point position;
+        public Func<string> text;
+    };
     private List<Button> _buttons;
+    private List <OptionTextPositions> _texts;
     private bool _mousePressedLast;
     private GameManager _gameManager;
     private Tank _player;
@@ -19,6 +24,7 @@ public class Options : HudState
         _gameManager = GameManager.Instance;
         _mousePressedLast = false;
         _buttons = new List<Button>();
+        _texts = new List<OptionTextPositions>();
 
         int width = GameManager.GetScreenWidth();
         int height = GameManager.GetScreenHeight();
@@ -84,13 +90,14 @@ public class Options : HudState
         option1.Y -= optionHeight;
         option11.Y -= optionHeight;
         CreateTotalEnemies(option1, option11);
+        option1.Y -= optionHeight;
+        option11.Y -= optionHeight;
+        CreateChangeFullScreen(option1, option11);
     }
     private void CreateMaxRounds(Point leftDown, Point rightUp)
     {
         int width = rightUp.X - leftDown.X;
         int y1Buttons = leftDown.Y;
-
-        // string text = "Rondas totales";
 
         int x1MinusButton = (int)(width * .70) + leftDown.X;
         Point leftBottomMinus = new Point(x1MinusButton, y1Buttons);
@@ -104,6 +111,16 @@ public class Options : HudState
 
         _buttons.Add(removeRound);
         _buttons.Add(addRound);
+        
+        string textTotalRounds = "Rondas totales: ";
+        Point positionTotalRounds = leftDown;
+        var optionTextPositions = new OptionTextPositions
+        {
+            position = positionTotalRounds,
+            text = () => textTotalRounds + $"{GameManager.GetMaxRounds()}",
+        };
+        _texts.Add(optionTextPositions);
+
     }
     private void CreateTotalEnemies(Point leftDown, Point rightUp)
     {
@@ -122,18 +139,42 @@ public class Options : HudState
 
         _buttons.Add(removeEnemy);
         _buttons.Add(addEnemy);
+
+        string textTotalEnemies = "Enemigo totales por ronda: ";
+        Point positionTotalEnemies = leftDown;
+        var optionTextPositions = new OptionTextPositions
+        {
+            position = positionTotalEnemies,
+            text = () => textTotalEnemies + $"{GameManager.GetEnemiesPerRound()}",
+        };
+        _texts.Add(optionTextPositions);        
     }
-    private void CreateAddSensitivityButton()
+    private void CreateChangeFullScreen(Point leftDown, Point rightUp)
     {
-        Point point = new Point(1020, 200);
-        _addSensitivity = new Button(point, "+");
-        _addSensitivity.SetBackgroundColor(Color.Blue);
-    }
-    private void CreateSubstractSensitivityButton()
-    {
-        Point point = new Point(820, 200);
-        _substractSensitivity = new Button(point, "-");
-        _substractSensitivity.SetBackgroundColor(Color.Blue);
+        int width = rightUp.X - leftDown.X;
+        int y1Buttons = leftDown.Y;
+
+        int x1NoFullScreenButton = (int)(width * .7) + leftDown.X;
+        Point leftBottomNoFullScreen = new Point(x1NoFullScreenButton, y1Buttons);
+        var noFullScreenButton = new Button(leftBottomNoFullScreen, "No");
+        noFullScreenButton._action = () => GameManager.SetFullScreen(false);
+
+        int x1FullScreenButton = (int)(width * .85) + leftDown.X;
+        Point leftBottomFullScreen = new Point(x1FullScreenButton, y1Buttons);
+        var fullScreenButton = new Button(leftBottomFullScreen, "Si");
+        fullScreenButton._action = () => GameManager.SetFullScreen(true);
+
+        _buttons.Add(noFullScreenButton);
+        _buttons.Add(fullScreenButton);
+
+        string textFullScreen = "Pantalla completa";
+        Point positionFullScreen = leftDown;
+        var optionTextPositions = new OptionTextPositions
+        {
+            position = positionFullScreen,
+            text = () => textFullScreen
+        };
+        _texts.Add(optionTextPositions);
     }
     private void DrawButton(Button button)
     {
@@ -142,6 +183,15 @@ public class Options : HudState
         // dibujo el texto del botón
         var buttonSize = _font.MeasureString(button.GetText());
         _spriteBatch.DrawString(_font, button.GetText(), button.GetCenter() - buttonSize / 2f, button.GetTextColor());
+    }
+    private void DrawString(OptionTextPositions optionTextPositions)
+    {
+        _spriteBatch.DrawString(
+            _font,
+            optionTextPositions.text(),
+            optionTextPositions.position.ToVector2(),
+            Color.White
+        );
     }
     public void SetPlayer(Tank player)
     {
@@ -189,6 +239,8 @@ public class Options : HudState
 
         foreach(var button in _buttons)
             DrawButton(button);
+        foreach(var optionPosition in _texts)
+            DrawString(optionPosition);
 
         _spriteBatch.End();
     }

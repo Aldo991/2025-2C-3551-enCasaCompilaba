@@ -51,6 +51,7 @@ public class GameManager
     // Da la instancia del GameManager, la idea es usarlo como singleton
     private static PhysicsManager _physicManager;
     private static GraphicsDevice _graphicsDevice;
+    private static GraphicsDeviceManager _graphicsManager;
     private static ElementosLand _GameElements;
     private static Land _land;
     public static GameManager Instance
@@ -63,12 +64,16 @@ public class GameManager
         }
     }
     // Inicializa las variables independientes del GameManager
-    public void InitializeIndependentContent(GraphicsDevice graphicsDevice)
+    public void InitializeIndependentContent(
+        GraphicsDevice graphicsDevice,
+        GraphicsDeviceManager graphicsManager
+    )
     {
         TotalRounds = 3;
         ActualRound = 0;
         EnemiesPerRound = 1;
         _graphicsDevice = graphicsDevice;
+        _graphicsManager = graphicsManager;
         _physicManager = PhysicsManager.Instance;
         _land = new Land();
         _GameElements = new ElementosLand();
@@ -136,7 +141,6 @@ public class GameManager
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
-        
         _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
@@ -200,7 +204,7 @@ public class GameManager
         _leftButtonMousePressed = ms.LeftButton == ButtonState.Pressed;
     }
     // Setea información de la pantalla
-    private void SetScreenInfo(GraphicsDevice graphicsDevice)
+    private static void SetScreenInfo(GraphicsDevice graphicsDevice)
     {
         _screenWidth = graphicsDevice.Viewport.Width;
         _screenHeight = graphicsDevice.Viewport.Height;
@@ -287,8 +291,18 @@ public class GameManager
         else if (KSpecular < 0)
             KSpecular = 0;
     }
-    public static void ChangeMaxRounds(int i) => TotalRounds += i;
-    public static void ChangeEnemiesPerRound(int i) => EnemiesPerRound += i;
+    public static void ChangeMaxRounds(int i)
+    {
+        TotalRounds += i;
+        if (TotalRounds < 0)
+            TotalRounds = 0;
+    }
+    public static void ChangeEnemiesPerRound(int i)
+    {
+        EnemiesPerRound += i;
+        if (EnemiesPerRound < 0)
+            EnemiesPerRound = 0;
+    }
     public static int GetMaxRounds() => TotalRounds;
     public static int GetActualRound() => ActualRound;
     public static int GetEnemiesPerRound() => EnemiesPerRound;
@@ -302,5 +316,14 @@ public class GameManager
         CreateEnemies(EnemiesPerRound);
     }
     public static Tank GetPlayer() => _tankManager.GetPlayer();
+    public static void SetFullScreen(bool setFull)
+    {
+        if (_graphicsManager.IsFullScreen && !setFull)
+            _graphicsManager.ToggleFullScreen();
+        else if (!_graphicsManager.IsFullScreen && setFull)
+            _graphicsManager.ToggleFullScreen();
+        SetScreenInfo(_graphicsDevice);
+        _graphicsManager.ApplyChanges();
+    }
     #endregion
 }
