@@ -12,7 +12,7 @@ namespace TGC.MonoGame.TP;
 public class ElementosLand
 {
     private List<GameObject> _gameElements;
-    public ElementosLand(ContentManager content)
+    public ElementosLand()
     {
         // Inicializo las variables
         _gameElements = new List<GameObject>();

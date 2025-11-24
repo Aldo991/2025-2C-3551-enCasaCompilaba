@@ -113,6 +113,7 @@ public class Tank : GameObject
     public void SetTreadmillTexture(Texture2D texture) => _wheels.SetTreadmillTexture(texture);
     public void SetTreadmillNormal(Texture2D texture) => _wheels.SetTreadmillNormal(texture);
     public void SetScore(int score) => _score = score;
+    public void SetKills(int kills) => _kills = kills;
     public void MoveForwardTank(GameTime gameTime)
     {
         GameManager.SetAwakeTrue(_bodyHandle);

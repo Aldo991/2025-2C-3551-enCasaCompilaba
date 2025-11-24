@@ -51,6 +51,8 @@ public class GameManager
     // Da la instancia del GameManager, la idea es usarlo como singleton
     private static PhysicsManager _physicManager;
     private static GraphicsDevice _graphicsDevice;
+    private static ElementosLand _GameElements;
+    private static Land _land;
     public static GameManager Instance
     {
         get
@@ -60,21 +62,27 @@ public class GameManager
             return instance;
         }
     }
-    // Inicializa las variables del GameManager
-    public void Initialize(GraphicsDevice graphicsDevice, Tank player)
+    // Inicializa las variables independientes del GameManager
+    public void InitializeIndependentContent(GraphicsDevice graphicsDevice)
     {
         TotalRounds = 3;
         ActualRound = 0;
         EnemiesPerRound = 1;
         _graphicsDevice = graphicsDevice;
         _physicManager = PhysicsManager.Instance;
+        _land = new Land();
+        _GameElements = new ElementosLand();
         SetScreenInfo(graphicsDevice);
         _state = GameState.Menu;
         _projectileManager = new ProjectileManager();
-        _tankManager = new TankManager();
-        _hud = new Hud(graphicsDevice, player);
-        _hud.SetHudState(GameState.Menu);
         InitializeCamera(graphicsDevice);
+    }
+    // Inicializa las variables dependientes del tanque del GameManager
+    public void InitializeDependentContent(Tank player)
+    {
+        _tankManager = new TankManager(player);
+        _hud = new Hud(_graphicsDevice, player);
+        _hud.SetHudState(GameState.Menu);
     }
     public void SetHudPlayer(Tank player) => _hud.SetPlayer(player);
     // Devuelve si el estado del juego es pausa o no
@@ -150,17 +158,16 @@ public class GameManager
             }
             
     }
-    public void Draw(ElementosLand elementosLand, Tank player, GameTime gameTime, Land land)
+    public void Draw(Tank player, GameTime gameTime)
     {
         Matrix view = _camera.ViewMatrix;
         Matrix projection = _camera.ProjectionMatrix;
         if (_state == GameState.Playing)
             player.Draw(gameTime, view, projection);
-        elementosLand.Draw(gameTime, _camera);
+        _GameElements.Draw(gameTime, _camera);
         _projectileManager.Draw(gameTime, view, projection);
         _tankManager.Draw(gameTime, view, projection);
-        // land.Draw(gameTime, _camera.ViewMatrix, _camera.ProjectionMatrix, Color.Green);
-        land.Draw(view, projection);
+        _land.Draw(view, projection);
         _hud.Draw();
     }
     // Orbita a través del tanque cuando está en pausa
@@ -285,5 +292,15 @@ public class GameManager
     public static int GetMaxRounds() => TotalRounds;
     public static int GetActualRound() => ActualRound;
     public static int GetEnemiesPerRound() => EnemiesPerRound;
+    public static void Restart()
+    {
+        Tank player = GetPlayer();
+        _tankManager.DeleteAll();
+        ActualRound = 0;
+        player.SetScore(0);
+        player.SetKills(0);
+        CreateEnemies(EnemiesPerRound);
+    }
+    public static Tank GetPlayer() => _tankManager.GetPlayer();
     #endregion
 }

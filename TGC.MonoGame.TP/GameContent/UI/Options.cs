@@ -1,4 +1,4 @@
-using System;
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,11 +7,6 @@ namespace TGC.MonoGame.TP;
 
 public class Options : HudState
 {
-    private Button _backButton;
-    private Button _addRound;
-    private Button _removeRound;
-    private Button _addEnemy;
-    private Button _removeEnemy;
     private Button _addSensitivity;
     private Button _substractSensitivity;
     private List<Button> _buttons;
@@ -38,6 +33,7 @@ public class Options : HudState
         Point rightUpMenuButtons = new Point(x2, y2);
 
         CreateBackButton(leftDownMenuButtons, rightUpMenuButtons);
+        CreateRestartButton(leftDownMenuButtons, rightUpMenuButtons);
 
         // Estas van a ser las medidas donde van a ir las opciones
         int x1LeftSettings = (int)(width * 3 / 10);
@@ -62,12 +58,19 @@ public class Options : HudState
         var y2BackButton = rightDown.Y;
         Point backPoint1 = new Point(x1BackButton, y1BackButton);
         Point backPoint2 = new Point(x2BackButton, y2BackButton);
-        _backButton = new Button(backPoint1, backPoint2, "Volver");
-        _backButton._action = () =>
-        {
-            _gameManager.SetState(GameState.Menu);
-        };
-        _buttons.Add(_backButton);
+        var backButton = new Button(backPoint1, backPoint2, "Volver");
+        backButton._action = () => _gameManager.SetState(GameState.Menu);
+        _buttons.Add(backButton);
+    }
+    private void CreateRestartButton(Point leftUp, Point rightDown)
+    {
+        int menuHeightBotton = (leftUp.Y - rightDown.Y) / 5;
+        int x1RestartButton = leftUp.X;
+        int y1RestartButton = leftUp.Y - menuHeightBotton * 4;
+        Point restartPoint = new Point(x1RestartButton, y1RestartButton);
+        var restartButton = new Button(restartPoint, "Reiniciar");
+        restartButton._action = () => GameManager.Restart();
+        _buttons.Add(restartButton);
     }
     private void CreateOptions(Point leftDown, Point rightUp)
     {
@@ -91,16 +94,16 @@ public class Options : HudState
 
         int x1MinusButton = (int)(width * .70) + leftDown.X;
         Point leftBottomMinus = new Point(x1MinusButton, y1Buttons);
-        _removeRound = new Button(leftBottomMinus, "-");
-        _removeRound._action = () => GameManager.ChangeMaxRounds(-1);
+        var removeRound = new Button(leftBottomMinus, "-");
+        removeRound._action = () => GameManager.ChangeMaxRounds(-1);
 
         int x1AddButton = (int)(width * .85) + leftDown.X;
         Point leftBottomAdd = new Point(x1AddButton, y1Buttons);
-        _addRound = new Button(leftBottomAdd, "+");
-        _addRound._action = () => GameManager.ChangeMaxRounds(1);
+        var addRound = new Button(leftBottomAdd, "+");
+        addRound._action = () => GameManager.ChangeMaxRounds(1);
 
-        _buttons.Add(_removeRound);
-        _buttons.Add(_addRound);
+        _buttons.Add(removeRound);
+        _buttons.Add(addRound);
     }
     private void CreateTotalEnemies(Point leftDown, Point rightUp)
     {
@@ -109,16 +112,16 @@ public class Options : HudState
 
         int x1MinusButton = (int)(width * .70) + leftDown.X;
         Point leftBottomMinus = new Point(x1MinusButton, y1Buttons);
-        _removeEnemy = new Button(leftBottomMinus, "-");
-        _removeEnemy._action = () => GameManager.ChangeEnemiesPerRound(-1);
+        var removeEnemy = new Button(leftBottomMinus, "-");
+        removeEnemy._action = () => GameManager.ChangeEnemiesPerRound(-1);
 
         int x1AddButton = (int)(width * .85) + leftDown.X;
         Point leftBottomAdd = new Point(x1AddButton, y1Buttons);
-        _addEnemy = new Button(leftBottomAdd, "+");
-        _addEnemy._action = () => GameManager.ChangeEnemiesPerRound(1);
+        var addEnemy = new Button(leftBottomAdd, "+");
+        addEnemy._action = () => GameManager.ChangeEnemiesPerRound(1);
 
-        _buttons.Add(_removeEnemy);
-        _buttons.Add(_addEnemy);
+        _buttons.Add(removeEnemy);
+        _buttons.Add(addEnemy);
     }
     private void CreateAddSensitivityButton()
     {
@@ -184,14 +187,8 @@ public class Options : HudState
         var center = new Vector2(width / 2f, height / 5f);
         _spriteBatch.DrawString(_font, title, center - titleSize / 2f, Color.Yellow);
 
-        DrawButton(_backButton);
-        // DrawButton(_addSensitivity);
-        // DrawButton(_substractSensitivity);
-        // DrawButton(botonTest);
-        DrawButton(_removeRound);
-        DrawButton(_addRound);
-        DrawButton(_removeEnemy);
-        DrawButton(_addEnemy);
+        foreach(var button in _buttons)
+            DrawButton(button);
 
         _spriteBatch.End();
     }

@@ -2,6 +2,10 @@
 using System;
 using Microsoft.Xna.Framework;
 
+/// <summary>
+/// Los botones se dibujan desde la esquina inferior izquierda hacia la esquina
+/// superior derecha
+/// </summary>
 public class Button
 {
     private const float DefaultScaleX = 0.05f;

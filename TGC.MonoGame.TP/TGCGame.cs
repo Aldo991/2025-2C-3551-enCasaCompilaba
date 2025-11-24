@@ -13,8 +13,6 @@ public class TGCGame : Game
     private Tank _tank;
     private ElementosLand _elementosLand;
     private GameManager _gameManager;
-    private Land _land;
-    private Land _landHeightmap;
     public TGCGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -41,23 +39,21 @@ public class TGCGame : Game
         // Cargo todos los elementos del juego, como efectos, modelos, sprites, sonidos y texturas
         ContentLoader.Load(Content);
 
-        var world = Matrix.CreateScale(20000f, 0f, 20000f);
-        _land = new Land(GraphicsDevice, ContentLoader.GetModel("land", 0), world);
-
+        _gameManager.InitializeIndependentContent(GraphicsDevice);
+        InitializeTank();
+        // _gameManager.SetHudPlayer(_tank);
         // Inicializo el Game Manager
-        _gameManager.Initialize(GraphicsDevice, _tank);
+        _gameManager.InitializeDependentContent(_tank);
         // Creo el terreno
-        _landHeightmap = new Land();
+        // _landHeightmap = new Land();
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
-        _elementosLand = new ElementosLand(Content);
+        _elementosLand = new ElementosLand();
 
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
         // Todo: revisar si debería estar en GameManager
 
-        InitializeTank();
-        _gameManager.SetHudPlayer(_tank);
 
         GameManager.CreateEnemies(GameManager.GetEnemiesPerRound());
 
@@ -151,7 +147,7 @@ public class TGCGame : Game
         GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
         // En el GameManager están todos los contenidos
-        _gameManager.Draw(_elementosLand, _tank, gameTime, _landHeightmap);
+        _gameManager.Draw(_tank, gameTime);
     }
     protected override void UnloadContent()
     {

@@ -12,13 +12,16 @@ namespace TGC.MonoGame.TP;
 
 public class TankManager
 {
+    private Tank _player;
     private List<Tank> _tanks;
-    public TankManager()
+    public TankManager(Tank player)
     {
+        _player = player;
         _tanks = new List<Tank>();
     }
     // Agrega un tanque a la lista de tanques activos
     public int GetSize() => _tanks.Count;
+    public Tank GetPlayer() => _player;
     public List<Vector3> GetPositions()
     {
         List<Vector3> ret = new List<Vector3>();
@@ -35,6 +38,7 @@ public class TankManager
     {
         _tanks.Remove(tank);
     }
+    public void DeleteAll() => _tanks.Clear();
     public void Update(GameTime gameTime)
     {
         foreach (var tank in _tanks)
