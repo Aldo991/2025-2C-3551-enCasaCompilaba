@@ -39,6 +39,7 @@ public class Tank : GameObject
     private SoundEffect _shootSound;
     private SoundEffect _deadSound;
     private SoundEffect _hitSound;
+    private SoundEffect _receiveHitSound;
     public Tank(
         Model model,
         Vector3 position,
@@ -72,6 +73,7 @@ public class Tank : GameObject
         CreateCollisionBox();
         _deadSound = ContentLoader.GetSoundEffect("dead");
         _hitSound = ContentLoader.GetSoundEffect("metal-hit2");
+        _receiveHitSound = ContentLoader.GetSoundEffect("metal-hit");
     }
     public new void SetTexture(Texture2D texture)
     {
@@ -326,9 +328,16 @@ public class Tank : GameObject
     public void PlayHitSound()
     {
         var volume = GameManager.GetVolumeFloat();
-        if (_hitSound.Name == "metal-hit")
-            volume = .01f;
+        if (_hitSound.Name == "Sounds/metal-hit")
+            volume = .025f;
         _hitSound.Play(volume, 0, 0);
+    }
+    public void PlayReceiveHitSound()
+    {
+        var volume = GameManager.GetVolumeFloat();
+        if (_receiveHitSound.Name == "Sounds/metal-hit")
+            volume = .025f;
+        _receiveHitSound.Play(volume, 0, 0);
     }
     public Vector3 GetTankFrontDirection() => _tankFrontDirection;
 }

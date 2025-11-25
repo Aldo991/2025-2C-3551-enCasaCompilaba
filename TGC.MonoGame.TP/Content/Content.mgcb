@@ -500,6 +500,12 @@
 /processorParam:Quality=Best
 /build:Sounds/metal-hit2.wav
 
+#begin Sounds/metal-hit3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/metal-hit3.wav
+
 #begin Sounds/shoot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

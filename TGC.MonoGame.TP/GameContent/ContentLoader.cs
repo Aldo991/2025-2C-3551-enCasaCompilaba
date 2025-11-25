@@ -284,12 +284,13 @@ public static class ContentLoader
     }
     private static void LoadSoundEffects(ContentManager content)
     {
-        _soundEffects = new SoundEffect[5];
+        _soundEffects = new SoundEffect[6];
         _soundEffects[0] = content.Load<SoundEffect>("Sounds/dead");
         _soundEffects[1] = content.Load<SoundEffect>("Sounds/metal-hit");
         _soundEffects[2] = content.Load<SoundEffect>("Sounds/metal-hit2");
-        _soundEffects[3] = content.Load<SoundEffect>("Sounds/shoot");
-        _soundEffects[4] = content.Load<SoundEffect>("Sounds/victory");
+        _soundEffects[3] = content.Load<SoundEffect>("Sounds/metal-hit3");
+        _soundEffects[4] = content.Load<SoundEffect>("Sounds/shoot");
+        _soundEffects[5] = content.Load<SoundEffect>("Sounds/victory");
     }
     private static void LoadMusic(ContentManager content)
     {
@@ -370,8 +371,9 @@ public static class ContentLoader
             "dead" => _soundEffects[0],
             "metal-hit" => _soundEffects[1],
             "metal-hit2" => _soundEffects[2],
-            "shoot" => _soundEffects[3],
-            "victory" => _soundEffects[4],
+            "metal-hit3" => _soundEffects[3],
+            "shoot" => _soundEffects[4],
+            "victory" => _soundEffects[5],
             _ => throw new ArgumentException("Invalid Sound Name"),
         };
     }

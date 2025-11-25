@@ -102,6 +102,8 @@ public class PhysicsManager
             }
             if (shooter.GetIsPlayer())
                 shooter.PlayHitSound();
+            if (tank.GetIsPlayer())
+                tank.PlayReceiveHitSound();
         }
     }
     private void RemoveObjectFromPhysics(GameObject gameObject)
