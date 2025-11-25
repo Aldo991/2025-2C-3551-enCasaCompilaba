@@ -212,10 +212,8 @@ public class Tank : GameObject
         // aplico la velocidad al cuerpo de la colisión
         body.Velocity.Linear = direction.ToNumerics();
         var position = pose.Position;
-        position.Y = Land.Height(position.X, position.Z);
-        body.Pose.Position.Y = position.Y + 1f;
-        // seteo esa posición nueva a la variable _position, que me sirve para graficar el tanque
-        _position = body.Pose.Position;
+        // Normal del terreno bajo el tanque
+        Vector3 terrainNormal = Land.GetTerrainNormal(position.X ,position.Z);
 
         // roto el tanque según el ángulo de _rotation, usando un quaternion
         Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY, _rotation);
@@ -225,6 +223,23 @@ public class Tank : GameObject
         pose.Orientation = quaternion.ToNumerics();
         // construyo la matriz de mundo según la escala, la rotación del cuaternión y la traslación
         _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
+        
+
+        Vector3 forward = _tankFrontDirection;
+        forward.Normalize();
+
+        Vector3 right = Vector3.Cross(terrainNormal, forward);
+        right.Normalize();
+
+        forward = Vector3.Cross(right, terrainNormal);
+
+        Matrix orientation = Matrix.CreateWorld(position, forward, terrainNormal);
+  
+        _world = Matrix.CreateScale(_scale) * orientation;
+        position.Y = Land.Height(position.X, position.Z);
+        body.Pose.Position.Y = position.Y + 0.9f;
+        // seteo esa posición nueva a la variable _position, que me sirve para graficar el tanque
+        _position = body.Pose.Position;
 
         UpdateBoundingBoxToDraw();
 

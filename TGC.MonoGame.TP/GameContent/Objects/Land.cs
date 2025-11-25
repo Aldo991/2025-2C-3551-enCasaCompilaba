@@ -74,6 +74,23 @@ public class Land
         graphicsDevice.RasterizerState = oldRasterizerState;
     }
     
+    public static Vector3 GetTerrainNormal(float x, float z)
+    {
+        float offset = 1f; 
+
+        float hL = Land.Height(x - offset, z);
+        float hR = Land.Height(x + offset, z);
+        float hD = Land.Height(x, z - offset); 
+        float hU = Land.Height(x, z + offset); 
+
+        Vector3 dx = new Vector3(2 * offset, hR - hL, 0);
+        Vector3 dz = new Vector3(0, hU - hD, 2 * offset);
+
+        Vector3 normal = Vector3.Cross(dz, dx);
+        normal.Normalize();
+        return normal;
+    }
+    
     public void Draw(GameTime gameTime, Matrix view, Matrix projection, Color color)
     {
         _effect.Parameters["View"].SetValue(view);
