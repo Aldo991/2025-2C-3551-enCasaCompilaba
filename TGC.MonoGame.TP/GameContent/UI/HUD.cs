@@ -22,7 +22,8 @@ internal class Hud
             {GameState.Menu, new Menu()},
             {GameState.Options, new Options()},
             {GameState.Playing, new Playing()},
-            {GameState.Win, new Win()}
+            {GameState.Win, new Win()},
+            {GameState.Defeat, new Defeat()}
         };
     }
     public void SetPlayer(Tank player)

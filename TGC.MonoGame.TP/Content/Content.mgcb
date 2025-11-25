@@ -458,6 +458,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/walls/Bluestone_wall.fbx;Models/walls/Bluestone_wall
 
+#begin Music/defeat.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/defeat.mp3
+
+#begin Music/defeat2.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/defeat2.mp3
+
 #begin Music/victory.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -469,6 +481,24 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/war-background.mp3
+
+#begin Sounds/dead.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/dead.wav
+
+#begin Sounds/metal-hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/metal-hit.wav
+
+#begin Sounds/metal-hit2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/metal-hit2.wav
 
 #begin Sounds/shoot.wav
 /importer:WavImporter

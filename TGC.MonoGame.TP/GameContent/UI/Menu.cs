@@ -11,10 +11,8 @@ public class Menu : HudState
     private Button _optionButton;
     private Button _exitButton;
     private Button test;
-    private GameManager _gameManager;
     public Menu() : base()
     {
-        _gameManager = GameManager.Instance;
         _mousePressedLast = false;
 
         int width = GameManager.GetScreenWidth();
@@ -62,11 +60,13 @@ public class Menu : HudState
         var mouseY = GameManager.GetMousePositionY();
         var point = new Point(mouseX, mouseY);
         bool leftMouseButtonPressed = GameManager.GetLeftButtonMousePressed();
-
-        if (_playButton.Contains(point))
-            _playButton.SetTextColor(Color.Blue);
-        else
-            _playButton.SetTextColor(Color.White);
+        if (!GameManager.WasDefeated())
+        {
+            if (_playButton.Contains(point))
+                _playButton.SetTextColor(Color.Blue);
+            else
+                _playButton.SetTextColor(Color.White);
+        }
         if (_optionButton.Contains(point))
             _optionButton.SetTextColor(Color.Blue);
         else
@@ -78,12 +78,16 @@ public class Menu : HudState
 
         if (leftMouseButtonPressed && !_mousePressedLast)
         {
-            if (_playButton.Contains(point)) {
-                _gameManager.SetState(GameState.Playing);
-                Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
+            if (!GameManager.WasDefeated())
+            {
+                if (_playButton.Contains(point))
+                {
+                    GameManager.SetState(GameState.Playing);
+                    Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
+                }
             }
-            else if (_optionButton.Contains(point)) { _gameManager.SetState(GameState.Options); }
-            else if (_exitButton.Contains(point)) { _gameManager.SetState(GameState.Exit); }
+            if (_optionButton.Contains(point)) { GameManager.SetState(GameState.Options); }
+            else if (_exitButton.Contains(point)) { GameManager.SetState(GameState.Exit); }
         }
         _mousePressedLast = leftMouseButtonPressed;
     }
@@ -103,14 +107,16 @@ public class Menu : HudState
 
         _spriteBatch.DrawString(_font, title, center - titleSize / 2f, Color.Yellow);
 
-        _spriteBatch.Draw(_pixel, _playButton.GetRectangle(), _playButton.GetBackgroundColor());
+        if (!GameManager.WasDefeated())
+            _spriteBatch.Draw(_pixel, _playButton.GetRectangle(), _playButton.GetBackgroundColor());
         _spriteBatch.Draw(_pixel, _optionButton.GetRectangle(), _optionButton.GetBackgroundColor());
         _spriteBatch.Draw(_pixel, _exitButton.GetRectangle(), _exitButton.GetBackgroundColor());
         // _spriteBatch.Draw(_pixel, test.GetRectangle(), test.GetBackgroundColor());
         var jugarSize = _font.MeasureString(_playButton.GetText());
         var opcSize = _font.MeasureString(_optionButton.GetText());
         var exitSize = _font.MeasureString(_exitButton.GetText());
-        _spriteBatch.DrawString(_font, _playButton.GetText(), _playButton.GetCenter() - jugarSize/2f, _playButton.GetTextColor());
+        if (!GameManager.WasDefeated())
+            _spriteBatch.DrawString(_font, _playButton.GetText(), _playButton.GetCenter() - jugarSize/2f, _playButton.GetTextColor());
         _spriteBatch.DrawString(_font, _optionButton.GetText(), _optionButton.GetCenter() - opcSize/2f, _optionButton.GetTextColor());
         _spriteBatch.DrawString(_font, _exitButton.GetText(), _exitButton.GetCenter() - exitSize / 2f, _exitButton.GetTextColor());
 

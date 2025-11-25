@@ -27,7 +27,6 @@ public class PhysicsManager
             _buffer,
             _narrowPhaseCallbacks,
             new PoseIntegratorCallbacks(new System.Numerics.Vector3(0,0f,0)),
-            // new PoseIntegratorCallbacks(new System.Numerics.Vector3(0,-9.8f,0)),
             new SolveDescription(8,1)
         );
         var targetThreadCount = Math.Max(1,
@@ -89,7 +88,7 @@ public class PhysicsManager
     {
         if (!projectile.OwnShooter(tank))
         {
-            tank.CambiarVida(-10);
+            tank.ChangeLife(-10);
             RemoveObjectFromPhysics(projectile);
             projectile.Desactivate();
             GameManager.RemoveProjectileFromProjectileManager(projectile);
@@ -101,6 +100,8 @@ public class PhysicsManager
                 GameManager.RemoveTankFromTankManager(tank);
                 shooter.AddKill();
             }
+            if (shooter.GetIsPlayer())
+                shooter.PlayHitSound();
         }
     }
     private void RemoveObjectFromPhysics(GameObject gameObject)

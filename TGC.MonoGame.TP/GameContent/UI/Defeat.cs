@@ -1,24 +1,18 @@
 using Microsoft.Xna.Framework;
+using TGC.MonoGame.TP;
 
-namespace TGC.MonoGame.TP;
-
-public class Win : HudState
+public class Defeat : HudState
 {
     Vector2 screenCenter;
-    public Win() : base()
+    public override void Update(GameTime gameTime)
     {
         var centerWidth = GameManager.GetScreenCenterWidth();
         var centerHeight = GameManager.GetScreenCenterHeight();
         screenCenter = new Vector2(centerWidth, centerHeight);
     }
-    public override void Update(GameTime gameTime)
-    {
-        
-    }
     public override void Draw()
     {
-
-        string text = "Ganaste! Tu puntuacion: " + GameManager.GetPlayer().GetScore().ToString();
+        string text = "Perdiste! Tu puntuacion: " + GameManager.GetPlayer().GetScore().ToString();
 
         _spriteBatch.Begin();
         _spriteBatch.DrawString(_font, text, screenCenter, Color.White);

@@ -98,8 +98,8 @@ public class Turret
         _effect.Parameters["NormalTexture"]?.SetValue(_cannonNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
-        var boneWorldCannon = boneWorldTurret;
-        _cannonDirection = boneWorldTurret.Down;
+        var boneWorldCannon = _matrixCannonRotation * boneWorldTurret;
+        _cannonDirection = boneWorldCannon.Down;
 
         _effect.Parameters["World"].SetValue(boneWorldCannon);
         _cannonMesh.Draw();

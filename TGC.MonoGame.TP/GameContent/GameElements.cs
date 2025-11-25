@@ -16,15 +16,22 @@ public class GameElements
     {
         // Inicializo las variables
         _gameElements = new List<GameObject>();
+        // inicializo las posiciones
+        MapPopulator.Generate();
+        List<Vector2> housePosition = MapPopulator.Houses;
+        List<Vector2> bigStonePosition = MapPopulator.BigStones;
+        List<Vector2> bushes = MapPopulator.Bushes;
+        List<Vector2> littleStonePosition = MapPopulator.LittleStones;
         // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
         // Son los 3 el mismo modelo?
-        float scaleTreeModel0 = 0.003f;
-        float scaleTreeModel1 = 0.003f;
-        float scaleTreeModel2 = 0.015f;
+        // float scaleTreeModel0 = 0.003f;
+        // float scaleTreeModel1 = 0.003f;
+        // float scaleTreeModel2 = 0.015f;
         // Está bien, pero sería más un muro más que una pared
-        float scaleWallModel0 = 0.03f;
+        // float scaleWallModel0 = 0.03f;
 
         // Terreno
+        /*
         var posicionesWalls2Rot = new List<Vector3>
         {
             new Vector3(-22500, 0, 22700), new Vector3(-22500, 0, 20500),
@@ -270,7 +277,6 @@ public class GameElements
             new Vector3(-2800, 730, -9800), new Vector3(-7800, -130, 11800),
             new Vector3(-9800, -400, 13700)
         };
-        */
         var posicionesArboles2 = new List<Vector3>
         {
             new Vector3(4500, 0, -9500), new Vector3(5000, 0, -1500),
@@ -333,7 +339,7 @@ public class GameElements
         };
         var posicionesArbustos = new List<Vector2>
         {
-            /* Grupos de arbustos */
+            // Grupos de arbustos
             new Vector2(-25, -10),       new Vector2(-30, -50),
             new Vector2(-26.5f, -10),    new Vector2(-31.5f, -50),
             new Vector2(-28, -10),       new Vector2(-33, -50),
@@ -358,7 +364,7 @@ public class GameElements
             new Vector2(117.5f, -98),   new Vector2(137.5f, 120),
             new Vector2(119f, -98),     new Vector2(139, 120),
 
-            /* Arbusto aleatorios */
+            // Arbusto aleatorios 
             new Vector2(-32, 117),      new Vector2(200, -158),
             new Vector2(-199, 0),       new Vector2(73, -45),
             new Vector2(12, 198),       new Vector2(-7, -123),
@@ -410,7 +416,8 @@ public class GameElements
             new Vector2(-10, 110),      new Vector2(170, -171),
             new Vector2(-55, 155),      new Vector2(2, -102)
         };   
-        
+        */
+        /*
         foreach (var pos in posicionesArboles)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
@@ -442,7 +449,8 @@ public class GameElements
             bush.SetTexture(ContentLoader.GetTexture("bush", 0));
             _gameElements.Add(bush);
         }
-        foreach (var pos in houses)
+        */
+        foreach (var pos in housePosition)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
             var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, House.DefaultScaleHouse, 0);
@@ -452,6 +460,34 @@ public class GameElements
             casaModelo1.SetNormal(normal);
             _gameElements.Add(casaModelo1);
         }
+        foreach(var pos in bigStonePosition)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
+            int modelIndex = MapPopulator.GenerateRandomInt(0,5);
+            var stone = new Stone(ContentLoader.GetModel("stone", modelIndex), finalPos, Stone.DefaultScaleBigStone);
+            Texture2D texture = ContentLoader.GetTexture("stone", 2);
+            stone.SetTexture(texture);
+            _gameElements.Add(stone);
+        }
+        foreach(var pos in bushes)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
+            var bush = new Bush(ContentLoader.GetModel("bush", 1), finalPos);
+            bush.SetTexture(ContentLoader.GetTexture("bush", 0));
+            _gameElements.Add(bush);
+        }
+        foreach (var pos in littleStonePosition)
+        {
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
+            int modelIndex = MapPopulator.GenerateRandomInt(0,5);
+            var stone = new Stone(ContentLoader.GetModel("stone", modelIndex), finalPos, Stone.DefaultScaleLittleStone);
+            Texture2D texture = ContentLoader.GetTexture("stone", 2);
+            stone.SetTexture(texture);
+            _gameElements.Add(stone);
+        }
+        /*
+        */
+        /*
         foreach (var pos in posicionesWalls1)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
@@ -476,80 +512,7 @@ public class GameElements
             var wall = new Wall(ContentLoader.GetModel("wall", 0), finalPos, scaleWallModel0, 0f);
             _gameElements.Add(wall);
         }
-
-        /* Piedras de prueba */
-        /* Piedra 1 */
-        var stoneModel0TestHeight = Land.Height(30,30);
-        Vector3 stoneModel0TestPosition = new Vector3(30f, stoneModel0TestHeight, 30f);
-        Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, Stone.DefaultScaleLittleStone);
-        Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel0Test.SetTexture(stoneModel0TestTexture);
-        _gameElements.Add(stoneModel0Test);
-        /* Piedra 2 */
-        var stoneModel1TestHeight = Land.Height(30,35);
-        Vector3 stoneModel1TestPosition = new Vector3(30f, stoneModel1TestHeight, 35f);
-        Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, Stone.DefaultScaleLittleStone);
-        Texture2D stoneModel1TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel1Test.SetTexture(stoneModel1TestTexture);
-        _gameElements.Add(stoneModel1Test);
-        /* Piedra 3 */
-        var stoneModel2TestHeight = Land.Height(30,40);
-        Vector3 stoneModel2TestPosition = new Vector3(30f, stoneModel2TestHeight, 40f);
-        Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, Stone.DefaultScaleLittleStone);
-        Texture2D stoneModel2TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel2Test.SetTexture(stoneModel2TestTexture);
-        _gameElements.Add(stoneModel2Test);
-        /* Piedra 4 */
-        var stoneModel3TestHeight = Land.Height(30,45);
-        Vector3 stoneModel3TestPosition = new Vector3(30f, stoneModel3TestHeight, 45f);
-        Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, Stone.DefaultScaleLittleStone);
-        Texture2D stoneModel3TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel3Test.SetTexture(stoneModel3TestTexture);
-        _gameElements.Add(stoneModel3Test);
-        /* Piedra 5 */
-        var stoneModel4TestHeight = Land.Height(30,50);
-        Vector3 stoneModel4TestPosition = new Vector3(30f, stoneModel4TestHeight, 50f);
-        Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, Stone.DefaultScaleLittleStone);
-        Texture2D stoneModel4TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel4Test.SetTexture(stoneModel4TestTexture);
-        _gameElements.Add(stoneModel4Test);
-        /* Piedra 6 */
-        var stoneModel5TestHeight = Land.Height(100,55);
-        Vector3 stoneModel5TestPosition = new Vector3(100f, stoneModel5TestHeight, 55f);
-        Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, Stone.DefaultScaleBigStone);
-        Texture2D stoneModel5TestTexture = ContentLoader.GetTexture("stone", 2);
-        stoneModel5Test.SetTexture(stoneModel5TestTexture);
-        _gameElements.Add(stoneModel5Test);
-        /* Piedras de prueba */
-
-        /* Árboles de prueba */
-        /* Árbol 1 */
-        var treeModel0TestHeight = Land.Height(35,30);
-        Vector3 treeModel0TestPosition = new Vector3(35f, treeModel0TestHeight, 30f);
-        Tree treeModel0Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel0TestPosition, scaleTreeModel0);
-        _gameElements.Add(treeModel0Test);
-        /* Árbol 2 */
-        var treeModel1TestHeight = Land.Height(35,35);
-        Vector3 treeModel1TestPosition = new Vector3(35f, treeModel1TestHeight, 35f);
-        Tree treeModel1Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel1TestPosition, scaleTreeModel1);
-        _gameElements.Add(treeModel1Test);
-        /* Árbol 3 */
-        var treeModel2TestHeight = Land.Height(35,40);
-        Vector3 treeModel2TestPosition = new Vector3(35f, treeModel2TestHeight, 40f);
-        Tree treeModel2Test = new Tree(ContentLoader.GetModel("tree", 3), treeModel2TestPosition, scaleTreeModel2);
-        Texture2D treeModel3TestTexture = ContentLoader.GetTexture("tree", 0);
-        treeModel2Test.SetTexture(treeModel3TestTexture);
-        _gameElements.Add(treeModel2Test);
-        /* Árboles de prueba */
-
-        /* Paredes de prueba*/
-        var wallModel0TestHeight = Land.Height(40,40);
-        Vector3 wallModel0TestPosition = new Vector3(40f, wallModel0TestHeight, 40f);
-        Wall wallModel0Test = new Wall(ContentLoader.GetModel("wall", 0), wallModel0TestPosition, scaleWallModel0);
-        Texture2D wallModel0TestTexture = ContentLoader.GetTexture("wall", 0);
-        wallModel0Test.SetTexture(wallModel0TestTexture);
-        _gameElements.Add(wallModel0Test);
-        /* Paredes de prueba*/
+        */
 
     }
     public void Update(GameTime gameTime)

@@ -12,6 +12,7 @@ public class FollowCamera
     public const float DefaultFieldOfViewDegrees = 45f;
     public const float DefaultNearPlaneDistance = 1f;
     public const float DefaultFarPlaneDistance = 250f;
+    public const float DefaultRadius = 15f;
     public const float OrbitAngularSpeed = 0.35f;
     public const float OrbitVerticalAngle = 0.25f;
     // Matriz de vista y proyección de la cámara
@@ -30,7 +31,7 @@ public class FollowCamera
 
     public FollowCamera(
         float aspectRatio,
-        float radius,
+        float radius = DefaultRadius,
         float nearPlaneDistance = DefaultNearPlaneDistance,
         float farPlaneDistance = DefaultFarPlaneDistance,
         float fieldOfViewDegrees = DefaultFieldOfViewDegrees)

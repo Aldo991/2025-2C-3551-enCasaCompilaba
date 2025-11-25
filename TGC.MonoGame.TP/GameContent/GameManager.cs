@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 public enum GameState
 {
-    Menu, Options, Playing, Exit, Win
+    Menu, Options, Playing, Exit, Win, Defeat
 }
 public class GameManager
 {
@@ -42,7 +42,7 @@ public class GameManager
     // Estado del juego
     private static GameState _state;
     // Hud y UI
-    private Hud _hud;
+    private static Hud _hud;
     // ObjectManagers
     private static ProjectileManager _projectileManager;
     private static TankManager _tankManager;
@@ -56,6 +56,7 @@ public class GameManager
     private static GraphicsDeviceManager _graphicsManager;
     private static GameElements _gameElements;
     private static Land _land;
+    private static bool _wasDefeated;
     public static GameManager Instance
     {
         get
@@ -76,6 +77,7 @@ public class GameManager
         EnemiesPerRound = 1;
         Volume = .4f;
         CanPlayWinMusic = true;
+        _wasDefeated = false;
         _graphicsDevice = graphicsDevice;
         _graphicsManager = graphicsManager;
         _physicManager = PhysicsManager.Instance;
@@ -106,7 +108,7 @@ public class GameManager
     // Devuelve el estado del juego
     public GameState GetState() => _state;
     // Setea un estado del juego
-    public void SetState(GameState newGameState)
+    public static void SetState(GameState newGameState)
     {
         _state = newGameState;
         _hud.SetHudState(newGameState);
@@ -150,7 +152,7 @@ public class GameManager
         _tankManager.Update(gameTime);
         _gameElements.Update(gameTime);
         _physicManager.Update();
-        if (_state != GameState.Playing && _state != GameState.Win)
+        if (_state != GameState.Playing && _state != GameState.Win && _state != GameState.Defeat)
         {
             if (MediaPlayer.State != MediaState.Playing)
             {
@@ -166,6 +168,16 @@ public class GameManager
                 MediaPlayer.IsRepeating = false;
                 MediaPlayer.Volume = GetVolume();
                 MediaPlayer.Play(ContentLoader.GetMusic("victory"));
+                CanPlayWinMusic = false;
+            }
+        }
+        else if (_state == GameState.Defeat && CanPlayWinMusic)
+        {
+            if (MediaPlayer.State != MediaState.Playing)
+            {
+                MediaPlayer.IsRepeating = false;
+                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Play(ContentLoader.GetMusic("defeat2"));
                 CanPlayWinMusic = false;
             }
         }
@@ -190,25 +202,16 @@ public class GameManager
     }
     // Orbita a través del tanque cuando está en pausa
     public void UpdateOrbitAuto(Vector3 position, GameTime gameTime)
-    {
-        _camera.UpdateOrbitAuto(position, gameTime);
-    }
+        => _camera.UpdateOrbitAuto(position, gameTime);
     // Agrega un projectil al manager
     public void AddToProjectileManager(Projectile projectile)
-    {
-        _projectileManager.AddProjectile(projectile);
-    }
+        => _projectileManager.AddProjectile(projectile);
     // Setea la cámara detrás del tanque, apuntando al mismo lugar que apunta el cañón
     public void SetCameraBehindTank(Vector3 target, Vector3 direction)
-    {
-        _camera.SetCameraDirection(target, direction);
-    }
+        => _camera.SetCameraDirection(target, direction);
     // Método auxiliar que inicializa la cámara
     private void InitializeCamera(GraphicsDevice graphicsDevice)
-    {
-        float radius = 15f;
-        _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio, radius);
-    }
+        => _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio);
     // Setea la información del juego, más que nada del mouse
     public void SetGameInfo()
     {
@@ -258,7 +261,7 @@ public class GameManager
                 ActualRound += 1;
             }
             else
-                _state = GameState.Win;
+                SetState(GameState.Win);
         }
     }
     public static void SetIluminationParameters(
@@ -303,8 +306,10 @@ public class GameManager
         ActualRound = 1;
         player.SetScore(0);
         player.SetKills(0);
+        player.SetLife(100);
         CreateEnemies(EnemiesPerRound);
         CanPlayWinMusic = true;
+        _wasDefeated = false;
     }
     public static Tank GetPlayer() => _tankManager.GetPlayer();
     public static void SetFullScreen(bool setFull)
@@ -318,5 +323,7 @@ public class GameManager
     }
     public static float GetVolume() => Volume;
     public static float ChangeVolume(float volume) => Volume += volume;
+    public static bool WasDefeated() => _wasDefeated;
+    public static void SetWasDefeated(bool state) => _wasDefeated = state;
     #endregion
 }

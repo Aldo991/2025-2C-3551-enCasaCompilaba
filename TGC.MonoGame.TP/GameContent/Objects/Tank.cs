@@ -1,11 +1,11 @@
 #region Using Statements
+using System;
 using System.Collections.Generic;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 #endregion
 
 namespace TGC.MonoGame.TP;
@@ -37,6 +37,8 @@ public class Tank : GameObject
     private bool _isPlayer;
     private EnemyAction _enemyAction;
     private SoundEffect _shootSound;
+    private SoundEffect _deadSound;
+    private SoundEffect _hitSound;
     public Tank(
         Model model,
         Vector3 position,
@@ -68,6 +70,8 @@ public class Tank : GameObject
         MeshesTanque();
         CreateBoundingBoxToDraw();
         CreateCollisionBox();
+        _deadSound = ContentLoader.GetSoundEffect("dead");
+        _hitSound = ContentLoader.GetSoundEffect("metal-hit2");
     }
     public new void SetTexture(Texture2D texture)
     {
@@ -90,7 +94,6 @@ public class Tank : GameObject
             _enemyAction = new EnemyAction(this);
     }
     public bool GetIsPlayer() => _isPlayer;
-    public void SetGraphicsDevice(GraphicsDevice graphicsDevice) => _graphicsDevice = graphicsDevice;
     public bool GetIsShooting() => _isShooting;
     public void SetIsShooting(bool shoot) => _isShooting = shoot;
     public float GetLife() => _life;
@@ -307,8 +310,25 @@ public class Tank : GameObject
         _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription, this);
     }
     #endregion
-
-    /// BORRAR
-    public void CambiarVida(float cantidad) => _life += cantidad;
+    public void ChangeLife(float amount)
+    {
+        _life += amount;
+        if (_life == 0)
+        {
+            _deadSound.Play();
+            if (GetIsPlayer())
+            {
+                GameManager.SetState(GameState.Defeat);
+                GameManager.SetWasDefeated(true);                
+            }
+        }
+    }
+    public void PlayHitSound()
+    {
+        var volume = Math.Clamp(GameManager.GetVolume(), 0f, 1f);
+        if (_hitSound.Name == "metal-hit")
+            volume = .01f;
+        _hitSound.Play(volume, 0, 0);
+    }
     public Vector3 GetTankFrontDirection() => _tankFrontDirection;
 }

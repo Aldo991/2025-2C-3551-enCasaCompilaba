@@ -105,16 +105,16 @@ public class TGCGame : Game
         // Si presiono la tecla P o la tecla Escape, pauso el juego
         if ( (kb.IsKeyDown(Keys.P) || kb.IsKeyDown(Keys.Escape)) && !_gameManager.GetPressingPause())
         {
-            if (_gameManager.IsPause()) // El juego está en pausa y va a dejar de estarlo
+            if (_gameManager.IsPause() && !GameManager.WasDefeated()) // El juego está en pausa y va a dejar de estarlo
             {
-                _gameManager.SetState(GameState.Playing);
+                GameManager.SetState(GameState.Playing);
                 IsMouseVisible = false;
                 _gameManager.SetCameraBehindTank(_tank.GetCannonPosition(), _tank.GetCannonDirection());
                 Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
                 MediaPlayer.Stop();
             }
             else // Se está jugando y se desea poner en pausa
-            { _gameManager.SetState(GameState.Menu); IsMouseVisible = true; }
+            { GameManager.SetState(GameState.Menu); IsMouseVisible = true; }
             _gameManager.SetPressingPause(true);
         }
         if (kb.IsKeyUp(Keys.P) && kb.IsKeyUp(Keys.Escape) && _gameManager.GetPressingPause())

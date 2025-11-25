@@ -284,15 +284,20 @@ public static class ContentLoader
     }
     private static void LoadSoundEffects(ContentManager content)
     {
-        _soundEffects = new SoundEffect[2];
-        _soundEffects[0] = content.Load<SoundEffect>("Sounds/shoot");
-        _soundEffects[1] = content.Load<SoundEffect>("Sounds/victory");
+        _soundEffects = new SoundEffect[5];
+        _soundEffects[0] = content.Load<SoundEffect>("Sounds/dead");
+        _soundEffects[1] = content.Load<SoundEffect>("Sounds/metal-hit");
+        _soundEffects[2] = content.Load<SoundEffect>("Sounds/metal-hit2");
+        _soundEffects[3] = content.Load<SoundEffect>("Sounds/shoot");
+        _soundEffects[4] = content.Load<SoundEffect>("Sounds/victory");
     }
     private static void LoadMusic(ContentManager content)
     {
-        _music = new Song[2];
-        _music[0] = content.Load<Song>("Music/victory");
-        _music[1] = content.Load<Song>("Music/war-background");
+        _music = new Song[4];
+        _music[0] = content.Load<Song>("Music/defeat");
+        _music[1] = content.Load<Song>("Music/defeat2");
+        _music[2] = content.Load<Song>("Music/victory");
+        _music[3] = content.Load<Song>("Music/war-background");
     }
     private static void LoadHeightmapTerrain(ContentManager content)
     {
@@ -362,8 +367,11 @@ public static class ContentLoader
     {
         return sound switch
         {
-            "shoot" => _soundEffects[0],
-            "victory" => _soundEffects[1],
+            "dead" => _soundEffects[0],
+            "metal-hit" => _soundEffects[1],
+            "metal-hit2" => _soundEffects[2],
+            "shoot" => _soundEffects[3],
+            "victory" => _soundEffects[4],
             _ => throw new ArgumentException("Invalid Sound Name"),
         };
     }
@@ -371,8 +379,10 @@ public static class ContentLoader
     {
         return music switch
         {
-            "victory" => _music[0],
-            "war-background" => _music[1],
+            "defeat" => _music[0],
+            "defeat2" => _music[1],
+            "victory" => _music[2],
+            "war-background" => _music[3],
             _ => throw new ArgumentException("Invalid Music Name")
         };
     }

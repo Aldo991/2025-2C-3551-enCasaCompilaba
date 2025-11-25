@@ -65,7 +65,7 @@ public class Options : HudState
         Point backPoint1 = new Point(x1BackButton, y1BackButton);
         Point backPoint2 = new Point(x2BackButton, y2BackButton);
         var backButton = new Button(backPoint1, backPoint2, "Volver");
-        backButton._action = () => _gameManager.SetState(GameState.Menu);
+        backButton._action = () => GameManager.SetState(GameState.Menu);
         _buttons.Add(backButton);
     }
     private void CreateRestartButton(Point leftUp, Point rightDown)
