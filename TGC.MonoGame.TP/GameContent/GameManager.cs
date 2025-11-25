@@ -24,7 +24,7 @@ public class GameManager
     private static readonly Vector3 LigthPosition = new Vector3(10000, 500, 10000);
     private static readonly Vector3 Ambientcolor = Color.LightYellow.ToVector3();
     private static readonly Vector3 SpecularColor = Color.White.ToVector3();
-    private static float Volume;
+    private static int Volume;
     private static bool CanPlayWinMusic;
     private static int TotalRounds;
     private static int ActualRound;
@@ -75,7 +75,7 @@ public class GameManager
         TotalRounds = 3;
         ActualRound = 1;
         EnemiesPerRound = 1;
-        Volume = .4f;
+        Volume = 4;
         CanPlayWinMusic = true;
         _wasDefeated = false;
         _graphicsDevice = graphicsDevice;
@@ -153,7 +153,7 @@ public class GameManager
             if (MediaPlayer.State != MediaState.Playing)
             {
                 MediaPlayer.IsRepeating = true;
-                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Volume = GetVolumeFloat();
                 MediaPlayer.Play(ContentLoader.GetMusic("war-background"));
             }
         }
@@ -162,7 +162,7 @@ public class GameManager
             if (MediaPlayer.State != MediaState.Playing)
             {
                 MediaPlayer.IsRepeating = false;
-                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Volume = GetVolumeFloat();
                 MediaPlayer.Play(ContentLoader.GetMusic("victory"));
                 CanPlayWinMusic = false;
             }
@@ -172,7 +172,7 @@ public class GameManager
             if (MediaPlayer.State != MediaState.Playing)
             {
                 MediaPlayer.IsRepeating = false;
-                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Volume = GetVolumeFloat();
                 MediaPlayer.Play(ContentLoader.GetMusic("defeat2"));
                 CanPlayWinMusic = false;
             }
@@ -317,8 +317,13 @@ public class GameManager
         SetScreenInfo(_graphicsDevice);
         _graphicsManager.ApplyChanges();
     }
-    public static float GetVolume() => Volume;
-    public static float ChangeVolume(float volume) => Volume += volume;
+    public static int GetVolume() => Volume;
+    public static float GetVolumeFloat() => (float)(Volume / 10f);
+    public static void ChangeVolume(int volume)
+    {
+        Volume += volume;
+        Volume = Math.Clamp(Volume, 0, 10);
+    }
     public static bool WasDefeated() => _wasDefeated;
     public static void SetWasDefeated(bool state) => _wasDefeated = state;
     #endregion

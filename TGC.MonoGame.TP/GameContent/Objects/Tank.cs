@@ -175,10 +175,10 @@ public class Tank : GameObject
         Matrix cannonBoneTraslation = _turret.GetCannonTraslation();
         Matrix cannonWorld = cannonBoneTraslation * _world;
         Vector3 cannonPos = cannonWorld.Translation;
-        Vector3 turretDirection = cannonWorld.Down;
+        // Vector3 turretDirection = cannonWorld.Down;
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
-            _shootSound.Play();
+            _shootSound.Play(GameManager.GetVolumeFloat(), 0, 0);
         Projectile p = new Projectile(_projectileModel, cannonPos, cannonDirection, this, _projectileTexture, _projectileNormal);
         _projectiles.Add(p);
         return p;
@@ -315,7 +315,7 @@ public class Tank : GameObject
         _life += amount;
         if (_life == 0)
         {
-            _deadSound.Play();
+            _deadSound.Play(GameManager.GetVolumeFloat(), 0, 0);
             if (GetIsPlayer())
             {
                 GameManager.SetState(GameState.Defeat);
@@ -325,7 +325,7 @@ public class Tank : GameObject
     }
     public void PlayHitSound()
     {
-        var volume = Math.Clamp(GameManager.GetVolume(), 0f, 1f);
+        var volume = GameManager.GetVolumeFloat();
         if (_hitSound.Name == "metal-hit")
             volume = .01f;
         _hitSound.Play(volume, 0, 0);

@@ -186,12 +186,12 @@ public class Options : HudState
         int x1MinusVolume = (int)(width * .7) + leftDown.X;
         Point leftBottomMinusVolume = new Point(x1MinusVolume, y1Buttons);
         var minusVolume = new Button(leftBottomMinusVolume, "-");
-        minusVolume._action = () => GameManager.ChangeVolume(-.1f);
+        minusVolume._action = () => GameManager.ChangeVolume(-1);
 
         int x1AddVolume = (int)(width * .85) + leftDown.X;
         Point leftBottomAddVolume = new Point(x1AddVolume, y1Buttons);
         var addVolume = new Button(leftBottomAddVolume, "+");
-        addVolume._action = () => GameManager.ChangeVolume(.1f);
+        addVolume._action = () => GameManager.ChangeVolume(1);
 
         _buttons.Add(minusVolume);
         _buttons.Add(addVolume);
