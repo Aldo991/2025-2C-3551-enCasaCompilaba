@@ -118,17 +118,13 @@ public class GameManager
     // Método auxiliar para crear enemigos
     public static void CreateEnemies(int amount)
     {
+        MapPopulator.GenerateEnemySpawns();
         for (int i = 0; i < amount; i++)
         {    
             Model tankModel = ContentLoader.GetModel("tank", 0);
             Random random = new Random();
-            Vector3 enemyPosition;
-            if (i == 0)
-                enemyPosition = new Vector3(0, 30, 0);
-            else
-                enemyPosition = new Vector3(-10, 30, 10);
-            // Vector3 enemyPosition = new Vector3(random.NextSingle()*100, 30f, random.NextSingle() * 100);
-            // float enemyRotation = random.NextSingle();
+            Vector2 enemyPositionXZ = MapPopulator.RandomEnemyPosition();
+            Vector3 enemyPosition = new Vector3(enemyPositionXZ.X, Land.Height(enemyPositionXZ.X, enemyPositionXZ.Y), enemyPositionXZ.Y);
             float enemyRotation = 0f;
             int textureIndex = (int)random.NextInt64() % 3;
             textureIndex = (int)MathF.Abs(textureIndex);

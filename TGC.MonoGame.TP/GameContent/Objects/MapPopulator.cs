@@ -8,6 +8,7 @@ public static class MapPopulator
     private static readonly int MaxX = 1587;
     private static readonly int MinY = -1612;
     private static readonly int MaxY = 1587;
+    private static int TotalSpawns = 50;
 
     private static readonly Random rng = new Random(12345); // Seed fijo para reproducibilidad
 
@@ -15,6 +16,7 @@ public static class MapPopulator
     public static List<Vector2> BigStones { get; private set; }
     public static List<Vector2> Bushes { get; private set; }
     public static List<Vector2> LittleStones { get; private set; }
+    public static List<Vector2> SpawnPosition { get; private set; }
 
     public static void Generate()
     {
@@ -61,5 +63,45 @@ public static class MapPopulator
         }
 
         return list;
+    }
+
+    // public static List<Vector2> GenerateEnemySpawns()
+    public static void GenerateEnemySpawns()
+    {
+        var list = new List<Vector2>();
+        Vector3 playerPos3 = GameManager.GetPlayer().GetPosition();
+        Vector2 playerPos = new Vector2(playerPos3.X, playerPos3.Z);
+
+        for (int i = 0; i < TotalSpawns; i++)
+        {
+            // Elegimos un ángulo al azar para el spawn
+            float angle = (float)(rng.NextDouble() * Math.PI * 2f);
+
+            // Radio alrededor de 300 (entre 250 y 350)
+            float radius = 100 + (float)rng.NextDouble() * 50f;
+
+            // Convertir el ángulo a desplazamiento en X/Y
+            float offsetX = (float)Math.Cos(angle) * radius;
+            float offsetY = (float)Math.Sin(angle) * radius;
+
+            // Posición final del spawn
+            float x = playerPos.X + offsetX;
+            float y = playerPos.Y + offsetY;
+
+            // Limitar al área del mapa
+            x = Math.Clamp(x, MinX, MaxX);
+            y = Math.Clamp(y, MinY, MaxY);
+
+            list.Add(new Vector2(x, y));
+        }
+        SpawnPosition = list;
+
+        // return list;
+    }
+
+    public static Vector2 RandomEnemyPosition()
+    {
+        var position = rng.Next(0, SpawnPosition.Count);
+        return SpawnPosition[position];
     }
 }
