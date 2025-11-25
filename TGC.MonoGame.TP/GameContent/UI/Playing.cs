@@ -36,10 +36,10 @@ public class Playing : HudState
     private List<EnemyArrowInfo> _enemyArrowsInfo;
     private bool _showScoreboard;
     private int _fps;
-    public Playing(GraphicsDevice graphicsDevice, Tank player) : base(graphicsDevice)
+    public Playing() : base()
     {
         
-        _player = player;
+        _player = GameManager.GetPlayer();
         _compassTexture = ContentLoader.GetTexture("hud", 0);
         _lifeBarTexture = ContentLoader.GetTexture("hud", 1);
         _arrowTexture = ContentLoader.GetTexture("hud", 2);
@@ -129,7 +129,7 @@ public class Playing : HudState
             );
             // Calculo el alfa de la flecha, dependiendo de la distancia hacia el jugador
             float distance = Vector2.Distance(enemyPosition, playerPosition);
-            byte distanceByte = (byte)Math.Clamp(distance, 20, 255);
+            byte distanceByte = (byte)Math.Clamp(distance, 5, 255);
             Color colorEnemyArrow = Color.White;
             colorEnemyArrow.A = (byte)(255 - distanceByte);
             EnemyArrowInfo info = new EnemyArrowInfo

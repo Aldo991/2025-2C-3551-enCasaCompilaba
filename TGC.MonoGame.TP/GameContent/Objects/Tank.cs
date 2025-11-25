@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BepuPhysics;
 using BepuPhysics.Collidables;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 #endregion
@@ -35,13 +36,7 @@ public class Tank : GameObject
     private int _kills;
     private bool _isPlayer;
     private EnemyAction _enemyAction;
-    private Song _shootSound;
-    private BoxPrimitive boxPrimitive;
-    private Matrix boxWorld;
-    private bool mostrarCaja;
-    private float altoCaja;
-    private float anchoCaja;
-    private float profundidadCaja;
+    private SoundEffect _shootSound;
     public Tank(
         Model model,
         Vector3 position,
@@ -71,13 +66,6 @@ public class Tank : GameObject
         _turret.SetCannonTexture(_texture);
         _meshes = new List<ModelMesh>();
         MeshesTanque();
-        anchoCaja = 2f;
-        altoCaja = 1.5f;
-        profundidadCaja = 3.5f;
-        mostrarCaja = false;
-        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 0);
-        boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
         CreateBoundingBoxToDraw();
         CreateCollisionBox();
     }
@@ -187,7 +175,7 @@ public class Tank : GameObject
         Vector3 turretDirection = cannonWorld.Down;
         Vector3 cannonDirection = _turret.GetCannonDirection();
         if (_shootSound != null)
-            MediaPlayer.Play(_shootSound);
+            _shootSound.Play();
         Projectile p = new Projectile(_projectileModel, cannonPos, cannonDirection, this, _projectileTexture, _projectileNormal);
         _projectiles.Add(p);
         return p;
@@ -240,13 +228,6 @@ public class Tank : GameObject
 
         UpdateBoundingBoxToDraw();
 
-        // BORRAR, ESTO ES PARA VER LA CAJA QUE SIMULA LA COLISIÓN
-        boxWorld = rotationMatrix * Matrix.CreateTranslation(_position);
-
-        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 0);
-        boxPrimitive = new BoxPrimitive(_graphicsDevice, boxSize, boxTexture);
-
         // Recalcular transforms absolutos luego de modificar los locales
         _model.CopyAbsoluteBoneTransformsTo(_boneTransforms);
 
@@ -256,10 +237,7 @@ public class Tank : GameObject
             _enemyAction.Update(gameTime,GameManager.Instance);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
-    {
-        if (mostrarCaja)
-            boxPrimitive.Draw(boxWorld, view, projection);
-        
+    {        
         Vector3 specularColor = Color.White.ToVector3();
         Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
 
@@ -285,7 +263,7 @@ public class Tank : GameObject
         _turret.Draw(_world, view, projection);
         _wheels.Draw(_world, view, projection);
     }
-    public void SetShootSound(Song soundEffect) => _shootSound = soundEffect;
+    public void SetShootSound(SoundEffect soundEffect) => _shootSound = soundEffect;
     public void AddKill() => _kills += 1;
     public void AddScore(int points) => _score += points;
     #region PRIVATE METHODS
@@ -299,8 +277,7 @@ public class Tank : GameObject
     }
     private void CreateCollisionBox()
     {
-        // Box boxShape = new Box(boxWidht, boxHeight, boxLength);
-        Box boxShape = new Box(anchoCaja, altoCaja, profundidadCaja);
+        Box boxShape = new Box(_boxWidth, _boxHeight, _boxLength);
         var boxInertia = boxShape.ComputeInertia(0.1f);
         TypedIndex boxIndex = GameManager.AddShapeToSimulation(boxShape);
         CollidableDescription collidableDescription = new CollidableDescription(boxIndex, 0.1f);
@@ -318,8 +295,5 @@ public class Tank : GameObject
 
     /// BORRAR
     public void CambiarVida(float cantidad) => _life += cantidad;
-    public void CambiarCaja() => mostrarCaja = !mostrarCaja;
-    public void CambiarTamanioCaja(float cant) => altoCaja += cant;
     public Vector3 GetTankFrontDirection() => _tankFrontDirection;
-    public float GetAltoCaja() => altoCaja;
 }

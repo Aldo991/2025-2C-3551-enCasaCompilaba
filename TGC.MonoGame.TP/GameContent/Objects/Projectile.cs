@@ -43,27 +43,16 @@ public class Projectile : GameObject
         _textureNormal = normal;
         sphereRadius = .2f;
         spherePrimitive = new SpherePrimitive(GameManager.GetGraphicsDevice());
-        CreateBoundingBoxToDraw();
+        CreateBoundingSphereToDraw();
         CreateCollisionSphere();
     }
     private Vector3 Offset()
     {
-        /*
-        Vector2 test = new Vector2(_direction.X, _direction.Z);
-        test.Normalize();
-        var angle = MathF.Atan2(test.Y, test.X);
-        var radius = 1;
-        Vector3 offset;
-        offset.X = radius * MathF.Sin(angle);
-        offset.Y = .5f;
-        offset.Z = radius * MathF.Cos(angle);
-        return offset;
-        */
         return new Vector3(2,2,2) * _direction;
     }
     private void CreateCollisionSphere()
     {
-        Sphere sphereShape = new Sphere(sphereRadius);
+        Sphere sphereShape = new Sphere(_sphereRadius);
         var sphereInertia = sphereShape.ComputeInertia(0.1f);
         TypedIndex sphereIndex = GameManager.AddShapeSphereToSimulation(sphereShape);
         CollidableDescription collidableDescription = new CollidableDescription(sphereIndex, 0.1f);

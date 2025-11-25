@@ -18,9 +18,9 @@ public class Options : HudState
     private bool _mousePressedLast;
     private GameManager _gameManager;
     private Tank _player;
-    public Options(GraphicsDevice graphicsDevice, Tank player) : base(graphicsDevice)
+    public Options() : base()
     {
-        _player = player;
+        _player = GameManager.GetPlayer();
         _gameManager = GameManager.Instance;
         _mousePressedLast = false;
         _buttons = new List<Button>();
@@ -93,6 +93,9 @@ public class Options : HudState
         option1.Y -= optionHeight;
         option11.Y -= optionHeight;
         CreateChangeFullScreen(option1, option11);
+        option1.Y -= optionHeight;
+        option11.Y -= optionHeight;
+        CreateChangeVolume(option1, option11);
     }
     private void CreateMaxRounds(Point leftDown, Point rightUp)
     {
@@ -168,13 +171,38 @@ public class Options : HudState
         _buttons.Add(fullScreenButton);
 
         string textFullScreen = "Pantalla completa";
-        Point positionFullScreen = leftDown;
         var optionTextPositions = new OptionTextPositions
         {
-            position = positionFullScreen,
+            position = leftDown,
             text = () => textFullScreen
         };
         _texts.Add(optionTextPositions);
+    }
+    private void CreateChangeVolume(Point leftDown, Point rightUp)
+    {
+        int width = rightUp.X - leftDown.X;
+        int y1Buttons = leftDown.Y;
+
+        int x1MinusVolume = (int)(width * .7) + leftDown.X;
+        Point leftBottomMinusVolume = new Point(x1MinusVolume, y1Buttons);
+        var minusVolume = new Button(leftBottomMinusVolume, "-");
+        minusVolume._action = () => GameManager.ChangeVolume(-.1f);
+
+        int x1AddVolume = (int)(width * .85) + leftDown.X;
+        Point leftBottomAddVolume = new Point(x1AddVolume, y1Buttons);
+        var addVolume = new Button(leftBottomAddVolume, "+");
+        addVolume._action = () => GameManager.ChangeVolume(.1f);
+
+        _buttons.Add(minusVolume);
+        _buttons.Add(addVolume);
+
+        string text = "Volumen general: ";
+        var optionTextPosition = new OptionTextPositions
+        {
+            position = leftDown,
+            text = () => text + $"{GameManager.GetVolume()}"
+        };
+        _texts.Add(optionTextPosition);
     }
     private void DrawButton(Button button)
     {

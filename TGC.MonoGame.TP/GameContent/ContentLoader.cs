@@ -4,6 +4,7 @@
 #region Using Statements
 using System;
 using System.IO;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -15,19 +16,14 @@ public static class ContentLoader
 {
     // Folders
     private const string ContentFolderEffects = "Effects/";
-    private const string ContentFolderHuds = "hud";
     private const string ContentFolder3D = "Models";
-    private const string ContentFolderSounds = "Sounds/";
-    private const string ContentFolderTextures = "Textures";
     public const string ContentFolderMusic = "Music/";
     public const string ContentFolderSpriteFonts = "SpriteFonts/";
     private const string ContentFolderBushes = "/bushes";
     private const string ContentFolderLands = "/land";
-    private const string ContentFolderProjectiles = "/projectiles";
     private const string ContentFolderStones = "/stones";
     private const string ContentFolderTrees = "/trees";
     private const string ContentFolderWalls = "/walls";
-    private const string ContentFolderGrass = "/grass";
 
     private static string _rootDirectory;
     private static Model[] _bushModels;
@@ -52,17 +48,16 @@ public static class ContentLoader
     private static Texture2D[] _wallTextures;
     private static Texture2D[] _hudTextures;
     private static SpriteFont _spriteFont;
-    private static Song _shootTank;
+    private static Song[] _music;
+    private static SoundEffect[] _soundEffects;
     private static Texture2D[] _heightmapTerrain;
     private static Effect _terrainEffect;
-    private static Song _warBackground;
     
-
     public static void Load(ContentManager content)
     {
         var aux1 = Directory.GetCurrentDirectory();
         _rootDirectory = Directory.GetParent(aux1).Parent.Parent.FullName + "/Content/";
-        LoadSong(content);
+        // LoadSong(content);
 
         // Cargo los modelos de arbustos
         LoadBushModels(content);
@@ -101,17 +96,10 @@ public static class ContentLoader
 
         LoadSpriteFonts(content);
         LoadHudTextures(content);
-        LoadSounds(content);
+        LoadSoundEffects(content);
+        LoadMusic(content);
 
         LoadHeightmapTerrain(content);
-    }
-    
-    public static Song GetWarBackground() => _warBackground;
-
-    private static void LoadSong(ContentManager content)
-    {
-        _warBackground = content.Load<Song>(ContentFolderSounds + "war-background");
-        
     }
     private static void LoadBushModels(ContentManager content)
     {
@@ -131,20 +119,6 @@ public static class ContentLoader
     }
     private static void LoadHouseModels(ContentManager content)
     {
-        /*
-        var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderHouses + "/", "*.fbx");
-        _houseModels = new Model[_paths.Length];
-        for (int i = 0; i < _paths.Length; i++)
-        {
-            var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-            _houseModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderHouses + "/" + pathWithoutExtension);
-            foreach (var mesh in _houseModels[i].Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                    meshPart.Effect = effect;
-            }
-        }
-        */
         _houseModels = new Model[1];
         Effect effect = content.Load<Effect>("Effects/HouseShader");
         _houseModels[0] = content.Load<Model>("Models/houses/house0");
@@ -155,7 +129,6 @@ public static class ContentLoader
     {
         _houseTextures = new Texture2D[1];
         _houseTextures[0] = content.Load<Texture2D>("Textures/houses/house0");
-        // _houseTextures[3] = content.Load<Texture2D>("Textures/houses/caja-madera-3");
     }
     private static void LoadHouseNormals(ContentManager content)
     {
@@ -180,20 +153,6 @@ public static class ContentLoader
     }
     private static void LoadProjectileModels(ContentManager content)
     {
-        /*
-        var paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderProjectiles + "/", "*.fbx");
-        _projectileModels = new Model[paths.Length];
-        for (int i = 0; i < paths.Length; i++)
-        {
-            var pathWithoutExtension = Path.GetFileNameWithoutExtension(paths[i]);
-            _projectileModels[i] = content.Load<Model>(ContentFolder3D + ContentFolderProjectiles + "/" + pathWithoutExtension);
-            foreach (var mesh in _projectileModels[i].Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                    meshPart.Effect = effect;
-            }
-        }
-        */
         _projectileModels = new Model[1];
         _projectileModels[0] = content.Load<Model>("Models/projectiles/projectile0");
         Effect effect = content.Load<Effect>("Effects/ProjectileShader");
@@ -240,24 +199,6 @@ public static class ContentLoader
     }
     private static void LoadTankModels(ContentManager content)
     {
-        /*
-        var _paths = Directory.GetFiles(_rootDirectory + ContentFolder3D + ContentFolderTanks + "/", "*.fbx");
-        _tankModel = new Model[_paths.Length];
-        Effect effect = content.Load<Effect>(ContentFolderEffects + "TankShader");
-        for (int i = 0; i < _paths.Length; i++)
-        {
-            var pathWithoutExtension = Path.GetFileNameWithoutExtension(_paths[i]);
-            var model = content.Load<Model>(ContentFolder3D + ContentFolderTanks + "/" + pathWithoutExtension);
-            foreach (var mesh in model.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = effect;
-                }
-            }
-            _tankModel[i] = model;
-        }
-        */
         _tankModel = new Model[1];
         _tankModel[0] = content.Load<Model>("Models/tanks/T90");
         Effect effect = content.Load<Effect>("Effects/TankShader");
@@ -319,7 +260,6 @@ public static class ContentLoader
             }
         }
     }
-    
     private static void LoadWallTextures(ContentManager content)
          {
              _wallTextures = new Texture2D[1];
@@ -330,8 +270,6 @@ public static class ContentLoader
         _bushTextures = new Texture2D[1];
         _bushTextures[0] = content.Load<Texture2D>("Textures/bushes/hojas");
     }
-   
-   
     private static void LoadSpriteFonts(ContentManager content)
     {
         _spriteFont = content.Load<SpriteFont>("hud/DefaultFont");
@@ -344,10 +282,17 @@ public static class ContentLoader
         _hudTextures[2] = content.Load<Texture2D>("hud/red-arrow");
         // 0 es brújula, 1 health, 2 es flecha
     }
-    private static void LoadSounds(ContentManager content)
+    private static void LoadSoundEffects(ContentManager content)
     {
-        string path = ContentFolderSounds + "shoot";
-        _shootTank = content.Load<Song>(path);
+        _soundEffects = new SoundEffect[2];
+        _soundEffects[0] = content.Load<SoundEffect>("Sounds/shoot");
+        _soundEffects[1] = content.Load<SoundEffect>("Sounds/victory");
+    }
+    private static void LoadMusic(ContentManager content)
+    {
+        _music = new Song[2];
+        _music[0] = content.Load<Song>("Music/victory");
+        _music[1] = content.Load<Song>("Music/war-background");
     }
     private static void LoadHeightmapTerrain(ContentManager content)
     {
@@ -413,9 +358,23 @@ public static class ContentLoader
     {
         return _spriteFont;
     }
-    public static Song GetSoundEffect()
+    public static SoundEffect GetSoundEffect(string sound)
     {
-        return _shootTank;
+        return sound switch
+        {
+            "shoot" => _soundEffects[0],
+            "victory" => _soundEffects[1],
+            _ => throw new ArgumentException("Invalid Sound Name"),
+        };
+    }
+    public static Song GetMusic(string music)
+    {
+        return music switch
+        {
+            "victory" => _music[0],
+            "war-background" => _music[1],
+            _ => throw new ArgumentException("Invalid Music Name")
+        };
     }
     public static Texture2D GetTerrain(string part)
     {

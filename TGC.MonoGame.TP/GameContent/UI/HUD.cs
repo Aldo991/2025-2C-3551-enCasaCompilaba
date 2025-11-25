@@ -15,13 +15,14 @@ internal class Hud
     private HudState _hudState;
     private bool _showScoreboard;
     private Dictionary<GameState, HudState> _dictHudStates;
-    public Hud(GraphicsDevice graphicsDevice, Tank player)
+    public Hud()
     {
         _dictHudStates = new Dictionary<GameState, HudState>()
         {
-            {GameState.Menu, new Menu(graphicsDevice)},
-            {GameState.Options, new Options(graphicsDevice, player)},
-            {GameState.Playing, new Playing(graphicsDevice, player)}
+            {GameState.Menu, new Menu()},
+            {GameState.Options, new Options()},
+            {GameState.Playing, new Playing()},
+            {GameState.Win, new Win()}
         };
     }
     public void SetPlayer(Tank player)

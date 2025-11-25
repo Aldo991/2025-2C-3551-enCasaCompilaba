@@ -17,13 +17,13 @@ public abstract class HudState
     protected SpriteBatch _spriteBatch;
     protected SpriteFont _font;
     protected Texture2D _pixel;
-    protected HudState(GraphicsDevice graphicsDevice)
+    protected HudState()
     {
-        _graphicsDevice = graphicsDevice;
-        _spriteBatch = new SpriteBatch(graphicsDevice);
+        _graphicsDevice = GameManager.GetGraphicsDevice();
+        _spriteBatch = new SpriteBatch(_graphicsDevice);
         _font = ContentLoader.GetSpriteFont();
         // ?????????????
-        _pixel = new Texture2D(graphicsDevice, 1, 1);
+        _pixel = new Texture2D(_graphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
     }
     public abstract void Update(GameTime gameTime);

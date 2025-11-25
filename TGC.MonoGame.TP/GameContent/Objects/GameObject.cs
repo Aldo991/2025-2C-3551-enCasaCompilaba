@@ -30,8 +30,13 @@ public abstract class GameObject
     // este atributo sirve para generar una boundingBox y poder saber si está
     // dentro del frustum, para dibujarla. Es decir, para aplicar frustum culling
     protected BoundingBox _boundingBoxToDraw;
+    protected BoundingSphere _boundingSphereToDraw;
     protected Texture2D _textureNormal;
     protected BodyHandle _bodyHandle;
+    protected float _boxWidth;
+    protected float _boxHeight;
+    protected float _boxLength;
+    protected float _sphereRadius;
 
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(GameTime gameTime, Matrix view, Matrix projection);
@@ -40,11 +45,20 @@ public abstract class GameObject
     {
         var boundingBox = BoundingVolumesExtensions.CreateAABBFrom(_model);
         _boundingBoxToDraw = BoundingVolumesExtensions.Scale(boundingBox, _scale);
-        // _position.Y += BoundingVolumesExtensions.GetExtents(_boundingBoxToDraw).Y;
         var actualMin = _boundingBoxToDraw.Min;
         var actualMax = _boundingBoxToDraw.Max;
         _boundingBoxToDraw.Min = _position - (actualMax - actualMin) / 2;
         _boundingBoxToDraw.Max = _position + (actualMax - actualMin) / 2;
+        _boxWidth = _boundingBoxToDraw.Max.X - _boundingBoxToDraw.Min.X;
+        _boxHeight = _boundingBoxToDraw.Max.Y - _boundingBoxToDraw.Min.Y;
+        _boxLength = _boundingBoxToDraw.Max.Z - _boundingBoxToDraw.Min.Z;
+    }
+    protected void CreateBoundingSphereToDraw()
+    {
+        var boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(_model);
+        _boundingSphereToDraw = BoundingVolumesExtensions.Scale(boundingSphere, _scale);
+        _sphereRadius = _boundingSphereToDraw.Radius;
+
     }
     protected void UpdateBoundingBoxToDraw()
     {

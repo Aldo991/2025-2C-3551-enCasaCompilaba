@@ -1,5 +1,6 @@
 ﻿#region Using Statements
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -11,7 +12,6 @@ public class TGCGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
     private Tank _tank;
-    private ElementosLand _elementosLand;
     private GameManager _gameManager;
     public TGCGame()
     {
@@ -19,13 +19,13 @@ public class TGCGame : Game
         // Título del juego en la ventana del programa
         Window.Title = "TankWars";
         // Ancho y altura de la ventana
-        // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-        // _graphics.ToggleFullScreen();
+        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
         _graphics.ApplyChanges();
         Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
         // Visibilidad del mouse
         IsMouseVisible = false;
+        MediaState state = MediaPlayer.State;
     }
 
     protected override void Initialize()
@@ -42,14 +42,10 @@ public class TGCGame : Game
 
         _gameManager.InitializeIndependentContent(GraphicsDevice, _graphics);
         InitializeTank();
-        // _gameManager.SetHudPlayer(_tank);
         // Inicializo el Game Manager
         _gameManager.InitializeDependentContent(_tank);
-        // Creo el terreno
-        // _landHeightmap = new Land();
         // Cargo los elementos del mundo, esto debería ir en GameManager?
         /// todo: revisar si esto debería ir en GameManager y pasarlo
-        _elementosLand = new ElementosLand();
 
         // Instancio el tanque con todo lo necesario para funcionar. Este tanque es el del
         // Personaje que vamos a controlar. Revisar si debería estar en GameManager
@@ -96,13 +92,6 @@ public class TGCGame : Game
             }
             if (kb.IsKeyUp(Keys.F) && _tank.GetIsShooting()) _tank.SetIsShooting(false);
 
-            if (kb.IsKeyDown(Keys.O)) GameManager.ModificarKAmbiente(0.1f);
-            if (kb.IsKeyDown(Keys.I)) GameManager.ModificarKDiffuse(0.1f);
-            if (kb.IsKeyDown(Keys.U)) GameManager.ModificarKSpecular(0.1f);
-            if (kb.IsKeyDown(Keys.L)) GameManager.ModificarKAmbiente(-0.1f);
-            if (kb.IsKeyDown(Keys.K)) GameManager.ModificarKDiffuse(-0.1f);
-            if (kb.IsKeyDown(Keys.J)) GameManager.ModificarKSpecular(-0.1f);
-
             _tank.Update(gameTime);
 
             var cannonDirection = _tank.GetCannonDirection();
@@ -122,6 +111,7 @@ public class TGCGame : Game
                 IsMouseVisible = false;
                 _gameManager.SetCameraBehindTank(_tank.GetCannonPosition(), _tank.GetCannonDirection());
                 Mouse.SetPosition(GameManager.GetScreenCenterWidth(), GameManager.GetScreenCenterHeight());
+                MediaPlayer.Stop();
             }
             else // Se está jugando y se desea poner en pausa
             { _gameManager.SetState(GameState.Menu); IsMouseVisible = true; }
@@ -136,7 +126,6 @@ public class TGCGame : Game
         { _gameManager.UpdateOrbitAuto(_tank.GetPosition(), gameTime); IsMouseVisible = true; }
 
         // Actualizo el GameManager para que actualice todos los objetos del juego
-        _elementosLand.Update(gameTime);
         _gameManager.Update(gameTime);
         base.Update(gameTime);
     }
@@ -164,7 +153,7 @@ public class TGCGame : Game
         _tank = new Tank(tankModel, tankPosition, Tank.DefaultScale, 0f, tankTexture);
         Model projectileModel = ContentLoader.GetModel("projectile", 0);
         _tank.SetProjectileModel(projectileModel);
-        Song shootTank = ContentLoader.GetSoundEffect();
+        SoundEffect shootTank = ContentLoader.GetSoundEffect("shoot");
         _tank.SetShootSound(shootTank);
         _tank.SetIsPlayer(true);
         Texture2D tankNormal = ContentLoader.GetNormal("tank", 0);

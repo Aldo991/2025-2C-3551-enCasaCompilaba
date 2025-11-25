@@ -60,6 +60,13 @@ namespace TGC.MonoGame.Samples.Collisions
             return new BoundingBox(center - scaledExtents, center + scaledExtents);
         }
 
+        public static BoundingSphere Scale(BoundingSphere sphere, float scale)
+        {
+            var scaledCenter = sphere.Center * scale;
+            var scaledRadius = sphere.Radius * scale;
+            return new BoundingSphere(scaledCenter, scaledRadius);
+        }
+
         /// <summary>
         ///     Scales the box by a given scalar per axis.
         /// </summary>

@@ -17,13 +17,15 @@ using System.Collections.Generic;
 
 public enum GameState
 {
-    Menu, Options, Playing, Exit
+    Menu, Options, Playing, Exit, Win
 }
 public class GameManager
 {
     private static readonly Vector3 LigthPosition = new Vector3(10000, 500, 10000);
     private static readonly Vector3 Ambientcolor = Color.LightYellow.ToVector3();
     private static readonly Vector3 SpecularColor = Color.White.ToVector3();
+    private static float Volume;
+    private static bool CanPlayWinMusic;
     private static int TotalRounds;
     private static int ActualRound;
     private static int EnemiesPerRound;
@@ -38,7 +40,7 @@ public class GameManager
     private static int _screenWidth, _screenHeight;
     private static bool _leftButtonMousePressed;
     // Estado del juego
-    private GameState _state;
+    private static GameState _state;
     // Hud y UI
     private Hud _hud;
     // ObjectManagers
@@ -52,7 +54,7 @@ public class GameManager
     private static PhysicsManager _physicManager;
     private static GraphicsDevice _graphicsDevice;
     private static GraphicsDeviceManager _graphicsManager;
-    private static ElementosLand _GameElements;
+    private static GameElements _gameElements;
     private static Land _land;
     public static GameManager Instance
     {
@@ -70,13 +72,15 @@ public class GameManager
     )
     {
         TotalRounds = 3;
-        ActualRound = 0;
+        ActualRound = 1;
         EnemiesPerRound = 1;
+        Volume = .4f;
+        CanPlayWinMusic = true;
         _graphicsDevice = graphicsDevice;
         _graphicsManager = graphicsManager;
         _physicManager = PhysicsManager.Instance;
         _land = new Land();
-        _GameElements = new ElementosLand();
+        _gameElements = new GameElements();
         SetScreenInfo(graphicsDevice);
         _state = GameState.Menu;
         _projectileManager = new ProjectileManager();
@@ -86,7 +90,7 @@ public class GameManager
     public void InitializeDependentContent(Tank player)
     {
         _tankManager = new TankManager(player);
-        _hud = new Hud(_graphicsDevice, player);
+        _hud = new Hud();
         _hud.SetHudState(GameState.Menu);
     }
     public void SetHudPlayer(Tank player) => _hud.SetPlayer(player);
@@ -144,23 +148,33 @@ public class GameManager
         _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
+        _gameElements.Update(gameTime);
         _physicManager.Update();
-        if (_state != GameState.Playing)
+        if (_state != GameState.Playing && _state != GameState.Win)
+        {
+            if (MediaPlayer.State != MediaState.Playing)
             {
-                if (MediaPlayer.State != MediaState.Playing)
-                {
-                    MediaPlayer.IsRepeating = true;
-                    MediaPlayer.Volume = 0.4f;
-                    MediaPlayer.Play(ContentLoader.GetWarBackground());
-                }
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Play(ContentLoader.GetMusic("war-background"));
             }
-            else
+        }
+        else if (_state == GameState.Win && CanPlayWinMusic)
+        {
+            if (MediaPlayer.State != MediaState.Playing)
             {
-                // Si está jugando -> detener la música del menú
-                if (MediaPlayer.State == MediaState.Playing)
-                    MediaPlayer.Stop();
+                MediaPlayer.IsRepeating = false;
+                MediaPlayer.Volume = GetVolume();
+                MediaPlayer.Play(ContentLoader.GetMusic("victory"));
+                CanPlayWinMusic = false;
             }
-            
+        }
+        else if (_state == GameState.Playing)
+        {
+            // Si está jugando -> detener la música del menú
+            if (MediaPlayer.State == MediaState.Playing)
+                MediaPlayer.Stop();
+        }
     }
     public void Draw(Tank player, GameTime gameTime)
     {
@@ -168,7 +182,7 @@ public class GameManager
         Matrix projection = _camera.ProjectionMatrix;
         if (_state == GameState.Playing)
             player.Draw(gameTime, view, projection);
-        _GameElements.Draw(gameTime, _camera);
+        _gameElements.Draw(gameTime, _camera);
         _projectileManager.Draw(gameTime, view, projection);
         _tankManager.Draw(gameTime, view, projection);
         _land.Draw(view, projection);
@@ -243,8 +257,8 @@ public class GameManager
                 CreateEnemies(EnemiesPerRound);
                 ActualRound += 1;
             }
-            // else
-                // _state = GameState.Win;
+            else
+                _state = GameState.Win;
         }
     }
     public static void SetIluminationParameters(
@@ -267,30 +281,6 @@ public class GameManager
     }
     public static int TotalEnemies() => _tankManager.GetSize();
     public static List<Vector3> GetEnemiesPosition() => _tankManager.GetPositions();
-    public static void ModificarKAmbiente(float cant)
-    {
-        KAmbient += cant;
-        if (KAmbient > 1)
-            KAmbient = 1;
-        else if (KAmbient < 0)
-            KAmbient = 0;
-    }
-    public static void ModificarKDiffuse(float cant)
-    {
-        KDiffuse += cant;
-        if (KDiffuse > 1)
-            KDiffuse = 1;
-        else if (KDiffuse < 0)
-            KDiffuse = 0;
-    }
-    public static void ModificarKSpecular(float cant)
-    {
-        KSpecular += cant;
-        if (KSpecular > 1)
-            KSpecular = 1;
-        else if (KSpecular < 0)
-            KSpecular = 0;
-    }
     public static void ChangeMaxRounds(int i)
     {
         TotalRounds += i;
@@ -310,10 +300,11 @@ public class GameManager
     {
         Tank player = GetPlayer();
         _tankManager.DeleteAll();
-        ActualRound = 0;
+        ActualRound = 1;
         player.SetScore(0);
         player.SetKills(0);
         CreateEnemies(EnemiesPerRound);
+        CanPlayWinMusic = true;
     }
     public static Tank GetPlayer() => _tankManager.GetPlayer();
     public static void SetFullScreen(bool setFull)
@@ -325,5 +316,7 @@ public class GameManager
         SetScreenInfo(_graphicsDevice);
         _graphicsManager.ApplyChanges();
     }
+    public static float GetVolume() => Volume;
+    public static float ChangeVolume(float volume) => Volume += volume;
     #endregion
 }

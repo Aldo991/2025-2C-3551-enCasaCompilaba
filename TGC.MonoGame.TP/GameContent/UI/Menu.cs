@@ -12,7 +12,7 @@ public class Menu : HudState
     private Button _exitButton;
     private Button test;
     private GameManager _gameManager;
-    public Menu(GraphicsDevice graphicsDevice) : base(graphicsDevice)
+    public Menu() : base()
     {
         _gameManager = GameManager.Instance;
         _mousePressedLast = false;

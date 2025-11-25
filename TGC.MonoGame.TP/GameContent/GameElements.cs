@@ -9,21 +9,13 @@ using TGC.MonoGame.TP;
 
 namespace TGC.MonoGame.TP;
 
-public class ElementosLand
+public class GameElements
 {
     private List<GameObject> _gameElements;
-    public ElementosLand()
+    public GameElements()
     {
         // Inicializo las variables
         _gameElements = new List<GameObject>();
-        // Con 0.003f queda bien
-        // float scaleBushModel0 = 0.003f;
-        // float scaleProjectileModel0 = 0.001f;
-        // Con 0.003f queda como una piedra más chica que la rueda.
-        // Si fuera 0.03f queda del tamaño del tanque, se puede tomar como una montaña?
-        float scaleStoneModel0 = 0.0015f;
-        float scaleStoneModel1 = 0.003f;
-        // float scaleTankModel1 = 0.01f;
         // 0.003f está bien, aunque podría ser apenas un poquito más grande, para hacerlo más alto al árbol
         // Son los 3 el mismo modelo?
         float scaleTreeModel0 = 0.003f;
@@ -311,26 +303,33 @@ public class ElementosLand
             new Vector3(-2800, 0, -9800), new Vector3(-7800, 0, 11800),
             new Vector3(-9800, 0, 13700)
         };
-        
-        var posicionesCasasModelo1 = new List<Vector3>
+        List<Vector2> houses = new List<Vector2>
         {
-            new Vector3(225, 0, -150),      new Vector3(225, 0, -165),
-            new Vector3(225, 0, -180),      new Vector3(225, 0, -135),
-            new Vector3(225, 0, -120),      new Vector3(225, 0, -195),
-
-            new Vector3(-725, 0, -400),     new Vector3(-725, 0, -385),
-            new Vector3(-725, 0, -415),     new Vector3(-725, 0, -370),
-            new Vector3(-725, 0, -430),     new Vector3(-725, 0, -355),
-        };
-        var posicionesCasasModelo2 = new List<Vector3>
-        {
-            new Vector3(200, 0, -150),      new Vector3(200, 0, -165),
-            new Vector3(200, 0, -180),      new Vector3(200, 0, -135),
-            new Vector3(200, 0, -120),      new Vector3(200, 0, -195),
-
-            new Vector3(-700, 0, -400),     new Vector3(-700, 0, -385),
-            new Vector3(-700, 0, -415),     new Vector3(-700, 0, -370),
-            new Vector3(-700, 0, -430),     new Vector3(-700, 0, -355),
+            new Vector2( -1438, -1424 ),
+            new Vector2( -1330,  -953 ),
+            new Vector2(  -747, -1548 ),
+            new Vector2(     14,   829 ),
+            new Vector2(   396,    27 ),
+            new Vector2(  -682,   779 ),
+            new Vector2(  -409, -1177 ),
+            new Vector2(   343, -1247 ),
+            new Vector2(  -222, -1094 ),
+            new Vector2( -1075,  1492 ),
+            new Vector2(  -253,  -209 ),
+            new Vector2(  -907,   -71 ),
+            new Vector2(   988, -1565 ),
+            new Vector2(  -901,   189 ),
+            new Vector2(   877, -1045 ),
+            new Vector2(   988, -1099 ),
+            new Vector2(   -14,  -581 ),
+            new Vector2(   623,   551 ),
+            new Vector2(  -178,  -161 ),
+            new Vector2(   161,   190 ),
+            new Vector2(   290,   909 ),
+            new Vector2(   657,   138 ),
+            new Vector2(   275,  -280 ),
+            new Vector2(   206,  -189 ),
+            new Vector2(   677,  -378 )
         };
         var posicionesArbustos = new List<Vector2>
         {
@@ -427,13 +426,13 @@ public class ElementosLand
         foreach (var pos in posicionesRocas)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var roca = new Stone(ContentLoader.GetModel("stone", 0), finalPos, scaleStoneModel0);
+            var roca = new Stone(ContentLoader.GetModel("stone", 0), finalPos, Stone.DefaultScaleLittleStone);
             _gameElements.Add(roca);
         }
         foreach (var pos in posicionesPiedras)
         {
             Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var piedra = new Stone(ContentLoader.GetModel("stone", 1), finalPos, scaleStoneModel1);
+            var piedra = new Stone(ContentLoader.GetModel("stone", 1), finalPos, Stone.DefaultScaleBigStone);
             _gameElements.Add(piedra);
         }
         foreach (var pos in posicionesArbustos)
@@ -443,25 +442,15 @@ public class ElementosLand
             bush.SetTexture(ContentLoader.GetTexture("bush", 0));
             _gameElements.Add(bush);
         }
-        foreach (var pos in posicionesCasasModelo1)
+        foreach (var pos in houses)
         {
-            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
+            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Y), pos.Y);
             var casaModelo1 = new House(ContentLoader.GetModel("house", 0), finalPos, House.DefaultScaleHouse, 0);
             Texture2D texture = ContentLoader.GetTexture("house", 0);
             Texture2D normal = ContentLoader.GetNormal("house", 0);
             casaModelo1.SetTexture(texture);
             casaModelo1.SetNormal(normal);
             _gameElements.Add(casaModelo1);
-        }
-        foreach (var pos in posicionesCasasModelo2) // Cambiado a modelo 1
-        {
-            Vector3 finalPos = new Vector3(pos.X, Land.Height(pos.X, pos.Z), pos.Z);
-            var casaModelo2 = new House(ContentLoader.GetModel("house", 0), finalPos, House.DefaultScaleHouse, 180f);
-            Texture2D texture = ContentLoader.GetTexture("house", 0);
-            Texture2D normal = ContentLoader.GetNormal("house", 0);
-            casaModelo2.SetTexture(texture);
-            casaModelo2.SetNormal(normal);
-            _gameElements.Add(casaModelo2);
         }
         foreach (var pos in posicionesWalls1)
         {
@@ -488,79 +477,46 @@ public class ElementosLand
             _gameElements.Add(wall);
         }
 
-        /* Arbustos de prueba
-        var bushModel0TestHeight = Land.Height(25,30);
-        Vector3 bushModel0TestPosition = new Vector3(25f, bushModel0TestHeight, 30f);
-        Bush bushModel0Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel0TestPosition);
-        bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
-        _gameElements.Add(bushModel0Test);
-        var bushModel1TestHeight = Land.Height(20,30);
-        Vector3 bushModel1TestPosition = new Vector3(20f, bushModel1TestHeight, 30f);
-        Bush bushModel1Test = new Bush(ContentLoader.GetModel("bush", 1), bushModel1TestPosition);
-        bushModel0Test.SetTexture(ContentLoader.GetTexture("bush", 0));
-        _gameElements.Add(bushModel1Test);
-        /* Arbustos de prueba */
-        
-
-        /* Casas de prueba
-        var houseModel0TestHeight = Land.Height(50,50);
-        Texture2D houseModel0TestTexture = ContentLoader.GetTexture("house", 0);
-        Vector3 houseModel0TestPosition = new Vector3(50f, houseModel0TestHeight, 50f);
-        House houseModel0Test = new House(ContentLoader.GetModel("house", 0), houseModel0TestPosition, House.DefaultScaleHouse);
-        houseModel0Test.SetTexture(houseModel0TestTexture);
-        Texture2D houseModel0TextureNormal = ContentLoader.GetNormal("house", 0);
-        houseModel0Test.SetNormal(houseModel0TextureNormal);
-        _gameElements.Add(houseModel0Test);
-        /* Casas de prueba */
-
-        /* Projectiles de prueba
-        var projectileModel0TestHeight = Land.Height(20,30);
-        Vector3 projectileModel0TestPosition = new Vector3(20f, projectileModel0TestHeight, 30f);
-        Vector3 direction = Vector3.Up;
-        Projectile projectileModel0Test = new Projectile(ContentLoader.GetModel("projectile", 0), projectileModel0TestPosition, direction, null, 0.001f, 500, scaleProjectileModel0);
-        _gameElements.Add(projectileModel0Test);
-        /* Projectiles de prueba */
-
         /* Piedras de prueba */
         /* Piedra 1 */
         var stoneModel0TestHeight = Land.Height(30,30);
         Vector3 stoneModel0TestPosition = new Vector3(30f, stoneModel0TestHeight, 30f);
-        Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, scaleStoneModel0);
+        Stone stoneModel0Test = new Stone(ContentLoader.GetModel("stone", 0), stoneModel0TestPosition, Stone.DefaultScaleLittleStone);
         Texture2D stoneModel0TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel0Test.SetTexture(stoneModel0TestTexture);
         _gameElements.Add(stoneModel0Test);
         /* Piedra 2 */
         var stoneModel1TestHeight = Land.Height(30,35);
         Vector3 stoneModel1TestPosition = new Vector3(30f, stoneModel1TestHeight, 35f);
-        Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, scaleStoneModel1);
+        Stone stoneModel1Test = new Stone(ContentLoader.GetModel("stone", 1), stoneModel1TestPosition, Stone.DefaultScaleLittleStone);
         Texture2D stoneModel1TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel1Test.SetTexture(stoneModel1TestTexture);
         _gameElements.Add(stoneModel1Test);
         /* Piedra 3 */
         var stoneModel2TestHeight = Land.Height(30,40);
         Vector3 stoneModel2TestPosition = new Vector3(30f, stoneModel2TestHeight, 40f);
-        Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, scaleStoneModel1);
+        Stone stoneModel2Test = new Stone(ContentLoader.GetModel("stone", 2), stoneModel2TestPosition, Stone.DefaultScaleLittleStone);
         Texture2D stoneModel2TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel2Test.SetTexture(stoneModel2TestTexture);
         _gameElements.Add(stoneModel2Test);
         /* Piedra 4 */
         var stoneModel3TestHeight = Land.Height(30,45);
         Vector3 stoneModel3TestPosition = new Vector3(30f, stoneModel3TestHeight, 45f);
-        Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, scaleStoneModel0);
+        Stone stoneModel3Test = new Stone(ContentLoader.GetModel("stone", 3), stoneModel3TestPosition, Stone.DefaultScaleLittleStone);
         Texture2D stoneModel3TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel3Test.SetTexture(stoneModel3TestTexture);
         _gameElements.Add(stoneModel3Test);
         /* Piedra 5 */
         var stoneModel4TestHeight = Land.Height(30,50);
         Vector3 stoneModel4TestPosition = new Vector3(30f, stoneModel4TestHeight, 50f);
-        Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, scaleStoneModel1);
+        Stone stoneModel4Test = new Stone(ContentLoader.GetModel("stone", 4), stoneModel4TestPosition, Stone.DefaultScaleLittleStone);
         Texture2D stoneModel4TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel4Test.SetTexture(stoneModel4TestTexture);
         _gameElements.Add(stoneModel4Test);
         /* Piedra 6 */
-        var stoneModel5TestHeight = Land.Height(30,55);
-        Vector3 stoneModel5TestPosition = new Vector3(30f, stoneModel5TestHeight, 55f);
-        Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, scaleStoneModel1);
+        var stoneModel5TestHeight = Land.Height(100,55);
+        Vector3 stoneModel5TestPosition = new Vector3(100f, stoneModel5TestHeight, 55f);
+        Stone stoneModel5Test = new Stone(ContentLoader.GetModel("stone", 5), stoneModel5TestPosition, Stone.DefaultScaleBigStone);
         Texture2D stoneModel5TestTexture = ContentLoader.GetTexture("stone", 2);
         stoneModel5Test.SetTexture(stoneModel5TestTexture);
         _gameElements.Add(stoneModel5Test);

@@ -458,17 +458,29 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/walls/Bluestone_wall.fbx;Models/walls/Bluestone_wall
 
-#begin Sounds/shoot.mp3
+#begin Music/victory.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Sounds/shoot.mp3
+/build:Music/victory.mp3
 
-#begin Sounds/war-background.mp3
+#begin Music/war-background.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Sounds/war-background.mp3
+/build:Music/war-background.mp3
+
+#begin Sounds/shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/shoot.wav
+
+#begin Sounds/victory.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/victory.wav
 
 #begin Terrain/grass.png
 /importer:TextureImporter

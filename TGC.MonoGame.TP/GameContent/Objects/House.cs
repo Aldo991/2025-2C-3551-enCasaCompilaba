@@ -11,11 +11,6 @@ public class House : GameObject
 {
     public const float DefaultScaleHouse = 0.003f;
     private Effect _effect;
-    // private BoxPrimitive boxPrimitive;
-    // private Matrix boxWorld;
-    private float boxWidht;
-    private float boxHeight;
-    private float boxLength;
     public House(
         Model model,
         Vector3 position,
@@ -27,37 +22,23 @@ public class House : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        boxWidht = 10f;
-        boxHeight = 4.5f;
-        boxLength = 5f;
-        /*
-        Vector3 boxSize = new Vector3(boxWidht, boxHeight, boxLength);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
-        boxPrimitive = new BoxPrimitive(graphicsDevice, boxSize, boxTexture);
-        */
         CreateBoundingBoxToDraw();
         CreateCollisionBox();
     }
     private void CreateCollisionBox()
     {
-        Box boxShape = new Box(boxWidht, boxHeight, boxLength);
+        Box boxShape = new Box(_boxWidth, _boxHeight, _boxLength);
         TypedIndex boxIndex = GameManager.AddShapeToSimulation(boxShape);
         CollidableDescription collidableDescription = new CollidableDescription(boxIndex, 0.1f);
         BodyActivityDescription bodyActivityDescription = new BodyActivityDescription(0.01f);
         var position = _position.ToNumerics();
-        // ajustes por desfase del modelo
-        position.Y += 2.25f;
-        position.X -= 1f;
-        var rotationY = MathHelper.ToRadians(3f);
-        Quaternion rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, rotationY);
-
         var bodyDescription = BodyDescription.CreateKinematic(
             position,
             collidableDescription,
             bodyActivityDescription
         );
         var currentOrientation = bodyDescription.Pose.Orientation;
-        bodyDescription.Pose.Orientation = Quaternion.Normalize(rotation * currentOrientation).ToNumerics();
+        // bodyDescription.Pose.Orientation = Quaternion.Normalize(rotation * currentOrientation).ToNumerics();
         _bodyHandle = GameManager.AddBodyToSimulation(bodyDescription, this);
     }
     public override void Update(GameTime gameTime)
@@ -66,17 +47,6 @@ public class House : GameObject
         Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY,_rotation);
         Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
         _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
-        /*
-        var boxPosition = _position + new Vector3(-1f, 2.25f, 0);
-        var boxRotation = _rotation + MathHelper.ToRadians(3f);
-        Quaternion boxQuaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY, boxRotation);
-        Matrix boxRotationMatrix = Matrix.CreateFromQuaternion(boxQuaternion);
-        boxWorld = boxRotationMatrix * Matrix.CreateTranslation(boxPosition);
-
-        Vector3 boxSize = new Vector3(anchoCaja, altoCaja, profundidadCaja);
-        Texture2D boxTexture = ContentLoader.GetTexture("house", 3);
-        boxPrimitive = new BoxPrimitive(graphicsDevice, boxSize, boxTexture);
-        */
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
