@@ -18,14 +18,17 @@ public class TGCGame : Game
         _graphics = new GraphicsDeviceManager(this);
         // Título del juego en la ventana del programa
         Window.Title = "TankWars";
+        var diplay = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
         // Ancho y altura de la ventana
-        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+        // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+        // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+        _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        _graphics.IsFullScreen = true;
         _graphics.ApplyChanges();
         Content.RootDirectory = "Content"; // Carpeta donde está el contenido del juego (modelos, sonidos, etc.)
         // Visibilidad del mouse
         IsMouseVisible = false;
-        MediaState state = MediaPlayer.State;
     }
 
     protected override void Initialize()

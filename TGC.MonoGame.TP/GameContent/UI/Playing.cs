@@ -23,6 +23,8 @@ public class Playing : HudState
     private const float LifeBarWidth = 0.25f;
     private const float LifeBarHeight = 0.04f;
     private const float EnemyArrowsScale = 0.41f;
+    private const float InfoWidthScale = 0.011f;
+    private const float InfoHeightScale = 0.05f;
     private Tank _player;
     private Texture2D _lifeBarTexture;
     private Rectangle _lifeBarPosition;
@@ -75,10 +77,10 @@ public class Playing : HudState
     {
         int width = GameManager.GetScreenWidth();
         int height = GameManager.GetScreenHeight();
-        float widthScale = 0.011f;
-        float heightScale = 0.02f;
-        int positionX = (int)(width * widthScale);
-        int positionY = (int)(height * heightScale);
+        // float widthScale = 0.011f;
+        // float heightScale = 0.02f;
+        int positionX = (int)(width * InfoWidthScale);
+        int positionY = (int)(height * InfoHeightScale);
         for (int i = 0; i < strings.Count; i++)
         {
             Vector2 position = new Vector2(positionX, (i+1) * positionY);
@@ -210,9 +212,9 @@ public class Playing : HudState
 
         stringsToDraw.Add(score);
         stringsToDraw.Add(kills);
-        stringsToDraw.Add(positionX);
-        stringsToDraw.Add(positionY);
-        stringsToDraw.Add(positionZ);
+        // stringsToDraw.Add(positionX);
+        // stringsToDraw.Add(positionY);
+        // stringsToDraw.Add(positionZ);
         stringsToDraw.Add(fps);
         stringsToDraw.Add(totalEnemies);
         stringsToDraw.Add(actualRound);

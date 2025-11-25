@@ -83,10 +83,10 @@ public class GameManager
         _physicManager = PhysicsManager.Instance;
         _land = new Land();
         _gameElements = new GameElements();
-        SetScreenInfo(graphicsDevice);
+        SetScreenInfo();
         _state = GameState.Menu;
         _projectileManager = new ProjectileManager();
-        InitializeCamera(graphicsDevice);
+        InitializeCamera();
     }
     // Inicializa las variables dependientes del tanque del GameManager
     public void InitializeDependentContent(Tank player)
@@ -143,11 +143,11 @@ public class GameManager
     // Update de GameManager, se lo aplica a hud, y los managers de objetos
     public void Update(GameTime gameTime)
     {
-        _hud.Update(gameTime);
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
         _gameElements.Update(gameTime);
         _physicManager.Update();
+        _hud.Update(gameTime);
         if (_state != GameState.Playing && _state != GameState.Win && _state != GameState.Defeat)
         {
             if (MediaPlayer.State != MediaState.Playing)
@@ -206,8 +206,8 @@ public class GameManager
     public void SetCameraBehindTank(Vector3 target, Vector3 direction)
         => _camera.SetCameraDirection(target, direction);
     // Método auxiliar que inicializa la cámara
-    private void InitializeCamera(GraphicsDevice graphicsDevice)
-        => _camera = new FollowCamera(graphicsDevice.Viewport.AspectRatio);
+    private void InitializeCamera()
+        => _camera = new FollowCamera(_graphicsDevice.Viewport.AspectRatio);
     // Setea la información del juego, más que nada del mouse
     public void SetGameInfo()
     {
@@ -217,10 +217,12 @@ public class GameManager
         _leftButtonMousePressed = ms.LeftButton == ButtonState.Pressed;
     }
     // Setea información de la pantalla
-    private static void SetScreenInfo(GraphicsDevice graphicsDevice)
+    private static void SetScreenInfo()
     {
-        _screenWidth = graphicsDevice.Viewport.Width;
-        _screenHeight = graphicsDevice.Viewport.Height;
+        // _screenWidth = graphicsDevice.Viewport.Width;
+        // _screenHeight = graphicsDevice.Viewport.Height;
+        _screenWidth = _graphicsManager.PreferredBackBufferWidth;
+        _screenHeight = _graphicsManager.PreferredBackBufferHeight;
     }
     #region StaticMethods
     // Entrega información de la posición del mouse y de la pantalla.
@@ -310,11 +312,12 @@ public class GameManager
     public static Tank GetPlayer() => _tankManager.GetPlayer();
     public static void SetFullScreen(bool setFull)
     {
-        if (_graphicsManager.IsFullScreen && !setFull)
-            _graphicsManager.ToggleFullScreen();
-        else if (!_graphicsManager.IsFullScreen && setFull)
-            _graphicsManager.ToggleFullScreen();
-        SetScreenInfo(_graphicsDevice);
+        if (setFull && !_graphicsManager.IsFullScreen)
+            _graphicsManager.IsFullScreen = true;
+        else if (!setFull && _graphicsManager.IsFullScreen)
+            _graphicsManager.IsFullScreen = false;
+        _graphicsManager.ApplyChanges();
+        SetScreenInfo();
         _graphicsManager.ApplyChanges();
     }
     public static int GetVolume() => Volume;
