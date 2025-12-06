@@ -145,7 +145,7 @@ public class GameManager
     {
         _projectileManager.Update(gameTime);
         _tankManager.Update(gameTime);
-        _gameElements.Update(gameTime);
+        // _gameElements.Update(gameTime);
         _physicManager.Update();
         _hud.Update(gameTime);
         if (_state != GameState.Playing && _state != GameState.Win && _state != GameState.Defeat)
