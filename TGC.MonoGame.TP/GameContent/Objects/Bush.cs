@@ -30,7 +30,6 @@ public class Bush : GameObject
     }
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {

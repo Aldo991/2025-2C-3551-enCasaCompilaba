@@ -29,12 +29,12 @@ public class Grass : GameObject
         _position = position;
         _scale = scale;
         _rotation = MathHelper.ToRadians(rotation);
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
         CreateBoundingBoxToDraw();
+        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
     }
     public override void Update(GameTime gameTime)
     {
-        _world = Matrix.CreateScale(_scale) * Matrix.CreateRotationY(_rotation) * Matrix.CreateTranslation(_position);
+        
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {

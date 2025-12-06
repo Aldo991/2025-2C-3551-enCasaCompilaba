@@ -24,6 +24,10 @@ public class House : GameObject
         _rotation = MathHelper.ToRadians(rotation);
         CreateBoundingBoxToDraw();
         CreateCollisionBox();
+        // Creo que esto se puede sacar, hacer en el constructor y listo. Total, no se van a mover
+        Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY,_rotation);
+        Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
+        _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
     }
     private void CreateCollisionBox()
     {
@@ -43,10 +47,6 @@ public class House : GameObject
     }
     public override void Update(GameTime gameTime)
     {
-        // Creo que esto se puede sacar, hacer en el constructor y listo. Total, no se van a mover
-        Quaternion quaternion = Quaternion.CreateFromAxisAngle(Vector3.UnitY,_rotation);
-        Matrix rotationMatrix = Matrix.CreateFromQuaternion(quaternion);
-        _world = Matrix.CreateScale(_scale) * rotationMatrix * Matrix.CreateTranslation(_position);
     }
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
