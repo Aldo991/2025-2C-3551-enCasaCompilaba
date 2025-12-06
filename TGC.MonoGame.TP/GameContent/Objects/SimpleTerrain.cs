@@ -9,6 +9,8 @@ namespace TGC.MonoGame.TP
     /// </summary>
     public class SimpleTerrain
     {
+        private const float ScaleXZ = 10f;
+        private const float ScaleY = .05f;
         private readonly Texture2D colorMapTexture;
         private readonly Effect Effect;
         private float m_scaleXZ = 1;
@@ -24,7 +26,7 @@ namespace TGC.MonoGame.TP
             Effect = effect;
 
             // cargo el heightmap
-            LoadHeightmap(graphicsDevice, heightMap, 25, .1f, Vector3.Zero);
+            LoadHeightmap(graphicsDevice, heightMap, ScaleXZ, ScaleY, Vector3.Zero);
             // textura con el color Map
             colorMapTexture = colorMap;
             // diffuse maps auxiliares
