@@ -53,7 +53,7 @@ struct VS_INPUT
 {
     float4 Position : POSITION0;
     float2 Texcoord : TEXCOORD0;
-    float3 Normal : NORMAL0;
+    float4 Normal : NORMAL0;
 };
 
 struct VS_OUTPUT
