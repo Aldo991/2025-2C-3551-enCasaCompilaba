@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public static class MapPopulator
 {
-    private static readonly int MinX = -1612;
-    private static readonly int MaxX = 1587;
-    private static readonly int MinY = -1612;
-    private static readonly int MaxY = 1587;
+    private static readonly int MinX = -644;
+    private static readonly int MaxX = 634;
+    private static readonly int MinY = -644;
+    private static readonly int MaxY = 634;
     private static int TotalSpawns = 50;
 
     private static readonly Random rng = new Random(12345); // Seed fijo para reproducibilidad
@@ -20,10 +20,10 @@ public static class MapPopulator
 
     public static void Generate()
     {
-        Houses = GenerateRandomPositions(250);
-        BigStones = GenerateRandomPositions(1000);
-        Bushes = GenerateRandomPositions(5000);
-        LittleStones = GeneratePebblesNearBushes(Bushes, 11000);
+        Houses = GenerateRandomPositions(250); // 250 * 3
+        BigStones = GenerateRandomPositions(500); // 1000 * 2
+        Bushes = GenerateRandomPositions(1000); // 5000 * 5
+        LittleStones = GeneratePebblesNearBushes(Bushes, 2200); // 11000 * 5
     }
     public static int GenerateRandomInt(int min, int max)
     {
