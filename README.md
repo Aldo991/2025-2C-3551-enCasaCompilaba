@@ -27,4 +27,4 @@ Hola! Soy Gonzalo, siendo diciembre de 2025 tengo 23 años y estoy estudiando in
 
 ## Game Play
 
-[![Watch the video](https://img.youtube.com/vi/pgEwUC0jvH4/0.jpg)](https://youtu.be/vSd77u1qZp8)
+[![Watch the video](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/MiniaturaVideo.png)](https://youtu.be/vSd77u1qZp8)
