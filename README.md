@@ -8,30 +8,23 @@
 
 ## Descripción
 
-Proyecto plantilla para los trabajos prácticos de la asignatura electiva [Técnicas de Gráficos por Computadora](https://tgc-utn.github.io/) (TGC) en la carrera de Ingeniería en Sistemas de Información. Universidad Tecnológica Nacional, Facultad Regional Buenos Aires (UTN-FRBA).
-
-## Configuración del entorno de desarrollo
-
-Los pasos a seguir según su sistema operativo se pueden leer en el siguiente documento [install.md](https://github.com/tgc-utn/tgc-monogame-samples/blob/master/docs/install/install.md).
-
-Afuera del mundo Windows, vas a necesitar la ayudar de [Wine](https://www.winehq.org) para los shaders, por lo menos por [ahora](https://github.com/MonoGame/MonoGame/issues/2167).
-
-Los recursos usados se almacenan utilizando [Git LFS](https://git-lfs.github.com), con lo cual antes de clonar el repositorio les conviene tenerlo instalado así es automático el pull o si ya lo tienen pueden hacer `git lfs pull`.
+El juego consiste en un mundo abierto, donde distintos tanques enemigos aparecen por oleadas a deambular por el mapa en busca de un sentido de la vida. El juego admite una personalización de la cantidad de oleadas y la cantidad de enemigos que aparecen por ronda que, aunque parecen tontos, mientras más enemigos haya más dificil se pone.
 
 ## Integrantes
 
-TGC, Tgcito  |  Apellido, Nombre
------------- | -------------
-| <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/main/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/main/images/trofeotp.png" height="500"> |
+Castro Torre, Gonzalo  |
+---------------------- |
+| <img src="https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/GonzaloCastro.jepg" height="500"> |
+-----------------------|
+Hola! Soy Gonzalo, siendo diciembre de 2025 tengo 23 años y estoy estudiando ingeniería en sistemas de información en la UTN FRBA. Este juego representa un trabajo práctico realizado en el marco de la materia Técnicas de Gráficos por Computadora.
 
 ## Capturas
 
-![screenshot1](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot2](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot3](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot4](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot5](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
+![screenshot1](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaUno.png)
+![screenshot2](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaDos.png)
+![screenshot3](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaTres.png)
+![screenshot4](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaCuatro.png)
 
 ## Game Play
 
-[![Watch the video](https://img.youtube.com/vi/pgEwUC0jvH4/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
+[![Watch the video](https://img.youtube.com/vi/pgEwUC0jvH4/0.jpg)](https://youtu.be/vSd77u1qZp8)
