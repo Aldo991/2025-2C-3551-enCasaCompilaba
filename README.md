@@ -14,16 +14,16 @@ El juego consiste en un mundo abierto, donde distintos tanques enemigos aparecen
 
 Castro Torre, Gonzalo  |
 ---------------------- |
-| <img src="https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/GonzaloCastro.jepg" height="500"> |
+| <img src="https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/GonzaloCastro.jpeg" height="500"> |
 -----------------------|
 Hola! Soy Gonzalo, siendo diciembre de 2025 tengo 23 años y estoy estudiando ingeniería en sistemas de información en la UTN FRBA. Este juego representa un trabajo práctico realizado en el marco de la materia Técnicas de Gráficos por Computadora.
 
 ## Capturas
 
-![screenshot1](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaUno.png)
-![screenshot2](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaDos.png)
-![screenshot3](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaTres.png)
-![screenshot4](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/ReadmeFiles/CapturaCuatro.png)
+![screenshot1](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/CapturaUno.png)
+![screenshot2](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/CapturaDos.png)
+![screenshot3](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/CapturaTres.png)
+![screenshot4](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/CapturaCuatro.png)
 
 ## Game Play
 
