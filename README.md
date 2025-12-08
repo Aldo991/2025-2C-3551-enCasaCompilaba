@@ -18,6 +18,12 @@ Castro Torre, Gonzalo  |
 -----------------------|
 Hola! Soy Gonzalo, siendo diciembre de 2025 tengo 23 años y estoy estudiando ingeniería en sistemas de información en la UTN FRBA. Este juego representa un trabajo práctico realizado en el marco de la materia Técnicas de Gráficos por Computadora.
 
+Vidal, Matias  |
+---------------------- |
+| <img src="https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/MatiasVidal.jpg" height="500"> |
+-----------------------|
+Hola! Soy Matias, siendo diciembre de 2025 tengo 26 años y estoy estudiando ingeniería en sistemas de información en la UTN FRBA. Este juego representa un trabajo práctico realizado en el marco de la materia Técnicas de Gráficos por Computadora.
+
 ## Capturas
 
 ![screenshot1](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/CapturaUno.png)
