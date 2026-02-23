@@ -215,7 +215,7 @@ public class Playing : HudState
         // stringsToDraw.Add(positionX);
         // stringsToDraw.Add(positionY);
         // stringsToDraw.Add(positionZ);
-        stringsToDraw.Add(fps);
+        // stringsToDraw.Add(fps);
         stringsToDraw.Add(totalEnemies);
         stringsToDraw.Add(actualRound);
         stringsToDraw.Add(totalEnemiesPerRound);

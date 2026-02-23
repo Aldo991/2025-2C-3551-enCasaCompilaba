@@ -22,6 +22,7 @@ public class FollowCamera
     private Vector3 Position;
     private Vector3 TargetPosition;
     private Vector3 UpDirection = Vector3.Up;
+    private Vector3 VerticalOffset = Vector3.Up * 5f;
     // Para optimización
     private BoundingFrustum _boundingFrustum;
 
@@ -79,7 +80,7 @@ public class FollowCamera
     public void SetCameraDirection(Vector3 target, Vector3 direction)
     {
         Vector3 offset = CalculateOffsetPosition(direction);
-        Position =  target + offset;
+        Position =  target + offset + VerticalOffset;
         TargetPosition = target;
         BuildView();
         _boundingFrustum.Matrix = View * Projection;

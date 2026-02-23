@@ -48,7 +48,8 @@ public class Projectile : GameObject
     }
     private Vector3 Offset()
     {
-        return new Vector3(2,2,2) * _direction;
+        // return new Vector3(2,2,2) * _direction;
+        return _direction * 2;
     }
     private void CreateCollisionSphere()
     {

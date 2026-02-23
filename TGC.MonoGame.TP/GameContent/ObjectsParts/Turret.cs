@@ -73,7 +73,7 @@ public class Turret
             _matrixTurretRotation = Matrix.CreateRotationZ(-_turretAngle);
             // Cannon
             _cannonAngle += offsetY * _sensitivity;
-            // _cannonAngle = (float)Math.Clamp((double)_cannonAngle, -0.2, 0.06);
+            _cannonAngle = (float)Math.Clamp((double)_cannonAngle, -0.2, 0.06);
             _matrixCannonRotation = Matrix.CreateRotationX(_cannonAngle);
         }
     }
