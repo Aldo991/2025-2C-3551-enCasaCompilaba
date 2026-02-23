@@ -96,23 +96,34 @@ public class Wheels
         _effect.Parameters["NormalTexture"]?.SetValue(_wheelNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
+        
         for (int i = 0; i < _wheelsMeshes.Count; i++)
         {
             ModelMesh mesh = _wheelsMeshes[i];
             Matrix boneTransform = _boneTransform[_wheelsMeshes[i].ParentBone.Index];
             var boneWorld = _matrixWheelRotation * boneTransform * world;
             _effect.Parameters["World"].SetValue(boneWorld);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(boneWorld));
+            GameManager.SetIluminationParameters(_effect, inverseTransposeWorld, Color.White.ToVector3());
+            
             mesh.Draw();
         }
+        
         _effect.Parameters["Texture"]?.SetValue(_treadmillTexture);
         _effect.Parameters["NormalTexture"]?.SetValue(_treadmillNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(_treadmillsOffset);
+        
         for (int i = 0; i < _treadmillsMesh.Count; i++)
         {
             ModelMesh mesh = _treadmillsMesh[i];
             Matrix boneTransform = _boneTransform[_treadmillsBone[i].Index];
             var boneWorld = boneTransform * world;
             _effect.Parameters["World"].SetValue(boneWorld);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(boneWorld));
+            GameManager.SetIluminationParameters(_effect, inverseTransposeWorld, Color.White.ToVector3());
+            
             mesh.Draw();
         }
     }

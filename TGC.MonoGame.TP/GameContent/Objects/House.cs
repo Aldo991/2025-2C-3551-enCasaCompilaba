@@ -51,13 +51,6 @@ public class House : GameObject
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {
         Vector3 specularColor = Color.LightYellow.ToVector3();
-        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
-
-        GameManager.SetIluminationParameters(
-            _effect,
-            inverseTransposeWorld,
-            specularColor
-        );
 
         // boxPrimitive.Draw(boxWorld, view, projection);
         _effect.Parameters["View"].SetValue(view);
@@ -67,7 +60,16 @@ public class House : GameObject
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Gray.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
-            _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);
+            Matrix world = mesh.ParentBone.Transform * _world;
+            _effect.Parameters["World"].SetValue(world);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(world));
+            GameManager.SetIluminationParameters(
+                _effect,
+                inverseTransposeWorld,
+                specularColor
+            );
+            
             mesh.Draw();
         }
     }

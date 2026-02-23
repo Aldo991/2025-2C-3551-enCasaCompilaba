@@ -58,6 +58,12 @@ namespace TGC.MonoGame.TP
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
 
+            // Calculate InverseTransposeWorld
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(world));
+            
+            // Set Illumination Parameters
+            GameManager.SetIluminationParameters(Effect, inverseTransposeWorld, Color.White.ToVector3());
+
             graphicsDevice.SetVertexBuffer(vbTerrain);
 
             //Render con shader

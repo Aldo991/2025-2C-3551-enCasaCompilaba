@@ -34,9 +34,15 @@ public class Tree : GameObject
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.DarkGreen.ToVector3());
         if (_texture != null)
             _effect.Parameters["Texture"]?.SetValue(_texture);
+        
         foreach (var mesh in _model.Meshes)
         {
-            _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);
+            Matrix world = mesh.ParentBone.Transform * _world;
+            _effect.Parameters["World"].SetValue(world);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(world));
+            GameManager.SetIluminationParameters(_effect, inverseTransposeWorld, Color.White.ToVector3());
+            
             mesh.Draw();
         }
     }

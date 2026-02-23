@@ -259,13 +259,6 @@ public class Tank : GameObject
     public override void Draw(GameTime gameTime, Matrix view, Matrix projection)
     {        
         Vector3 specularColor = Color.White.ToVector3();
-        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
-
-        GameManager.SetIluminationParameters(
-            _effect,
-            inverseTransposeWorld, // este si es necesario, es propio de cada instancia de cada objeto
-            specularColor // este si debería ser propio de cada objeto no?
-        );
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
@@ -273,10 +266,19 @@ public class Tank : GameObject
         _effect.Parameters["NormalTexture"]?.SetValue(_textureNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.White.ToVector3());
+        
         foreach (var mesh in _meshes)
         {
             var worldMesh = _boneTransforms[mesh.ParentBone.Index] * _world;
             _effect.Parameters["World"].SetValue(worldMesh);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(worldMesh));
+            GameManager.SetIluminationParameters(
+                _effect,
+                inverseTransposeWorld,
+                specularColor
+            );
+            
             mesh.Draw();
         }
 

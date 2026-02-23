@@ -21,7 +21,7 @@ public enum GameState
 }
 public class GameManager
 {
-    private static readonly Vector3 LigthPosition = new Vector3(10000, 500, 10000);
+    private static readonly Vector3 LigthPosition = new Vector3(10000, 10000, 10000);
     private static readonly Vector3 Ambientcolor = Color.LightYellow.ToVector3();
     private static readonly Vector3 SpecularColor = Color.White.ToVector3();
     private static int Volume;

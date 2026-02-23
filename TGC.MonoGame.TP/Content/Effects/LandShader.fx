@@ -16,20 +16,31 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float4x4 InverseTransposeWorld;
 
 float3 DiffuseColor;
+float3 AmbientColor;
+float3 SpecularColor;
+float KAmbient;
+float KDiffuse; 
+float KSpecular;
+float Shininess; 
+float3 LightPosition;
+float3 EyePosition;
 
 float Time = 0;
 
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
+    float3 Normal : NORMAL0;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float4 WorldPos : TEXCOORD0;
+    float4 Normal : TEXCOORD1;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -44,6 +55,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
 
 	output.WorldPos = worldPosition;
+    output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
 
     return output;
 }
@@ -51,18 +63,22 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-	/*
-	float3 BottomColor = float3(0.4, 0.3, 0.1);; // marrón tierra
-	float3 TopColor    = float3(0.05, 0.3, 0.05); // verde pasto	
+    // Vectores que inciden en el modelo
+	float3 LightDirection = normalize(LightPosition - input.WorldPos.xyz);
+	float3 viewDirection = normalize(EyePosition - input.WorldPos.xyz);
+	float3 halfVector = normalize(LightDirection + viewDirection);
+	float3 normal = normalize(input.Normal.xyz);
 	
-	//smoothstep(edge0, edge1, x)//edge0:valor donde empieza la transición (factor = 0), edge1: valor donde termina la transición (factor = 1) , x:valor que queremos normalizar (en tu caso
-	float factor = smoothstep(-490.0, 100.0, input.WorldPos.y); 
+	// Luz difusa
+	float NdotL = saturate(dot(normal ,LightDirection));
+	float3 diffuseLight = KDiffuse * DiffuseColor * NdotL;
+	// Luz especular
+	float NdotH = saturate(dot(normal, halfVector));
+	float3 specularLight = KSpecular * SpecularColor * pow(saturate(NdotH), Shininess);
 
-	//lerp(a, b, t) a: valor inicial, b: valor final, t factor de interpolacion
-	float3 color = lerp(BottomColor, TopColor, factor);
-    return float4(color, 1);
-	*/
-	return float4(DiffuseColor, 1.0);
+	float3 color = saturate(AmbientColor * KAmbient + diffuseLight) + specularLight;
+	
+	return float4(color, 1.0);
 }
 
 technique BasicColorDrawing

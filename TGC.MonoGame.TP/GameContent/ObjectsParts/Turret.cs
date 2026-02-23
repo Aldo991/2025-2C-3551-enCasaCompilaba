@@ -87,10 +87,15 @@ public class Turret
         _effect.Parameters["NormalTexture"]?.SetValue(_turretNormal);
         _effect.Parameters["TreadmillsOffset"].SetValue(0.0f);
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Brown.ToVector3());
+        
         // Torreta
         Matrix boneTransformTurret = _boneTransform[_turretMesh.ParentBone.Index];
         var boneWorldTurret = _matrixTurretRotation * boneTransformTurret * world;
         _effect.Parameters["World"].SetValue(boneWorldTurret);
+        
+        Matrix inverseTransposeWorldTurret = Matrix.Transpose(Matrix.Invert(boneWorldTurret));
+        GameManager.SetIluminationParameters(_effect, inverseTransposeWorldTurret, Color.White.ToVector3());
+        
         _turretMesh.Draw();
 
         // Cannon
@@ -102,6 +107,10 @@ public class Turret
         _cannonDirection = boneWorldCannon.Down;
 
         _effect.Parameters["World"].SetValue(boneWorldCannon);
+        
+        Matrix inverseTransposeWorldCannon = Matrix.Transpose(Matrix.Invert(boneWorldCannon));
+        GameManager.SetIluminationParameters(_effect, inverseTransposeWorldCannon, Color.White.ToVector3());
+        
         _cannonMesh.Draw();
     }
     public bool ContainMesh(string meshName)

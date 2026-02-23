@@ -81,6 +81,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
 	// Propagación de textura
 	output.TexCoord = input.TexCoord;
+    // Propagación de la posición en el mundo
+    output.WorldPosition = worldPosition;
 	// Propagación del color??? esto sirve??
     output.Color = input.Color;
 	// Normales del tanque
@@ -109,8 +111,6 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	float4 ret = float4(color, text.a);
 
     return ret;
-    // return input.Color;
-	// return float4(DiffuseColor, 1.0);
 }
 
 technique BasicColorDrawing

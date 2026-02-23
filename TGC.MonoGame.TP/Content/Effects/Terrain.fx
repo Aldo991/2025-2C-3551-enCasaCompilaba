@@ -10,9 +10,17 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float4x4 InverseTransposeWorld;
 
-float alphaValue = 1;
-float3 lightPosition = float3(1000, 1000, 1000);
+float3 EyePosition;
+float3 LightPosition;
+float3 AmbientColor;
+float3 SpecularColor;
+float KAmbient;
+float KDiffuse;
+float KSpecular;
+float Shininess;
+
 float time = 0;
 
 //Textura para DiffuseMap
@@ -76,10 +84,8 @@ VS_OUTPUT vs_RenderTerrain(VS_INPUT input)
     //Enviar Texcoord directamente
     output.Texcoord = input.Texcoord;
 
-    //todo: que le pase el inv trasp. word
-    float4x4 matInverseTransposeWorld = World;
     output.WorldPos = worldPosition.xyz;
-    output.WorldNormal = mul(input.Normal, matInverseTransposeWorld).xyz;
+    output.WorldNormal = mul(input.Normal, InverseTransposeWorld).xyz;
 
     return output;
 }
@@ -95,14 +101,31 @@ struct PS_INPUT
 float4 ps_RenderTerrain(PS_INPUT input) : COLOR0
 {
     float3 N = normalize(input.WorldNormal);
-    float3 L = normalize(lightPosition - input.WorldPos);
-    float kd = saturate(0.4 + 0.7 * saturate(dot(N, L)));
+    float3 L = normalize(LightPosition - input.WorldPos);
+    float3 V = normalize(EyePosition - input.WorldPos);
+    float3 H = normalize(L + V);
 
+    // Ambient
+    float3 ambient = AmbientColor * KAmbient;
+
+    // Diffuse
+    float diffuseFactor = max(dot(N, L), 0);
+    float3 diffuse = diffuseFactor * KDiffuse;
+
+    // Specular
+    float specularFactor = pow(max(dot(N, H), 0), Shininess);
+    float3 specular = SpecularColor * KSpecular * specularFactor;
+
+    // Texture sampling
     float3 c = tex2D(colorMap, input.Texcoord).rgb;
     float3 tex1 = tex2D(diffuseMap, input.Texcoord * 31).rgb;
     float3 tex2 = tex2D(diffuseMap2, input.Texcoord * 27).rgb;
-    float3 clr = lerp(lerp(tex1, tex2, c.r), c, 0.3);
-    return float4(clr * kd, 1);
+    float3 texColor = lerp(lerp(tex1, tex2, c.r), c, 0.3);
+
+    // Combine
+    float3 finalColor = (ambient + diffuse) * texColor + specular;
+    
+    return float4(finalColor, 1);
 }
 
 technique RenderTerrain

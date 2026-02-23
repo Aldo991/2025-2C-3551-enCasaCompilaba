@@ -113,13 +113,6 @@ public class Projectile : GameObject
         if (!_isActive) return;
 
         Vector3 specularColor = Color.White.ToVector3();
-        Matrix inverseTransposeWorld = Matrix.Invert(Matrix.Transpose(_world));
-
-        GameManager.SetIluminationParameters(
-            _effect,
-            inverseTransposeWorld,
-            specularColor
-        );
 
         _effect.Parameters["View"].SetValue(view);
         _effect.Parameters["Projection"].SetValue(projection);
@@ -128,7 +121,16 @@ public class Projectile : GameObject
         _effect.Parameters["DiffuseColor"]?.SetValue(Color.Green.ToVector3());
         foreach (var mesh in _model.Meshes)
         {
-            _effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _world);
+            Matrix world = mesh.ParentBone.Transform * _world;
+            _effect.Parameters["World"].SetValue(world);
+            
+            Matrix inverseTransposeWorld = Matrix.Transpose(Matrix.Invert(world));
+            GameManager.SetIluminationParameters(
+                _effect,
+                inverseTransposeWorld,
+                specularColor
+            );
+            
             mesh.Draw();
         }
     }
