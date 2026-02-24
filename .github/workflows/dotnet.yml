@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore TGC.MonoGame.TP/TGC.MonoGame.TP.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build TGC.MonoGame.TP/TGC.MonoGame.TP.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test TGC.MonoGame.TP/TGC.MonoGame.TP.sln --no-build --verbosity normal
