@@ -33,4 +33,4 @@ Hola! Soy Matias, siendo diciembre de 2025 tengo 26 años y estoy estudiando ing
 
 ## Game Play
 
-[![Watch the video](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/MiniaturaVideo.png)](https://youtu.be/vSd77u1qZp8)
+[![Watch the video!](https://github.com/Aldo991/2025-2C-3551-enCasaCompilaba/blob/master/TGC.MonoGame.TP/ReadmeFiles/MiniaturaVideo.png)](https://youtu.be/vSd77u1qZp8)
